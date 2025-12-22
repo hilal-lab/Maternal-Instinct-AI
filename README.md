@@ -17,8 +17,3 @@ CI: GitHub Actions
 Requirements for publishing
 - Set up secrets in your GitHub repository: `DOCKERHUB_USERNAME` and `DOCKERHUB_TOKEN` (your Docker Hub access token).
 - Ensure repository `Workflows permissions` allow `Read and write permissions` for `Contents` and `Packages`.
-
-If you want, I can:
-- Update the workflow to push to Docker Hub instead.
-- Add tagging based on Git tags or releases.
-- Create a small test that runs `python -m pytest` in CI before building the image.
