@@ -11,7 +11,7 @@ from backend.core.llm_client import generate_text
 class SpecialistAgents:
     """Three specialist agents that can work in parallel or alternately."""
 
-    def run_planner(self, task_list):
+    def run_planner(self, task_list, rag_context: str = ""):
         """
         Study Planner Agent (Paper Section III-B-a).
         Capabilities: Task Chunking, Priority Structuring, Load Balancing,
@@ -38,13 +38,15 @@ class SpecialistAgents:
         4. Sisipkan waktu istirahat (minimal 10 menit per 50 menit kerja).
         5. Estimasikan total jam dan pastikan tidak melebihi 8 jam/hari.
         Gunakan format Markdown yang rapi.
+
+        {rag_context}
         """
         return generate_text(
             prompt,
             system_instruction="Anda adalah Study Planner Profesional yang mengutamakan produktivitas sekaligus kesejahteraan."
         )
 
-    def run_tutor(self, topic: str):
+    def run_tutor(self, topic: str, rag_context: str = ""):
         """
         Tutor Agent (Paper Section III-B-b).
         Capabilities: Concept Simplification, Scaffolding, Diagnostic Prompting,
@@ -59,13 +61,15 @@ class SpecialistAgents:
         2. Gunakan pendekatan scaffolding (step-by-step).
         3. Akhiri dengan pertanyaan active recall untuk menguji pemahaman.
         Gunakan bahasa yang mudah dipahami mahasiswa.
+
+        {rag_context}
         """
         return generate_text(
             prompt,
             system_instruction="Anda adalah Tutor Agent yang sabar dan pedagogis. Jelaskan dengan analogi dan pendekatan scaffolding."
         )
 
-    def run_coach(self, emotion, empathy_data=None):
+    def run_coach(self, emotion, empathy_data=None, rag_context: str = ""):
         """
         Coach Agent (Paper Section III-B-c).
         Capabilities: Cognitive Reframing, Micro-Goal Encouragement,
@@ -94,9 +98,12 @@ class SpecialistAgents:
             sys_inst = "Anda adalah Coach yang suportif, hangat, dan memotivasi."
             prompt = "Berikan motivasi semangat yang positif untuk memulai hari."
 
+        if rag_context:
+            prompt += f"\n\nReferensi Tambahan:\n{rag_context}"
+
         return generate_text(prompt, system_instruction=sys_inst)
 
-    def run_general_chat(self, user_input, emotion, empathy_data=None):
+    def run_general_chat(self, user_input, emotion, empathy_data=None, rag_context: str = ""):
         """
         General chat handler for non-task requests.
         Strategy: When stressed, deliberately cold/factual to showcase
@@ -112,4 +119,8 @@ class SpecialistAgents:
         else:
             sys_inst = "Anda adalah asisten yang ramah dan membantu."
 
-        return generate_text(user_input, system_instruction=sys_inst)
+        prompt = user_input
+        if rag_context:
+            prompt += f"\n\nReferensi Tambahan:\n{rag_context}"
+
+        return generate_text(prompt, system_instruction=sys_inst)

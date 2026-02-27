@@ -1,8 +1,7 @@
-import streamlit as st
+import os
 from google import genai
 from google.genai import types
 import time
-import os
 from dotenv import load_dotenv
 
 # --- KONFIGURASI MODEL ---
@@ -10,17 +9,9 @@ from dotenv import load_dotenv
 DEFAULT_MODEL = "gemini-2.5-flash" 
 
 def get_client():
-    """Mengambil klien Gemini dengan prioritas: Secrets > Env"""
-    api_key = None
-    
-    # 1. Cek Streamlit Secrets
-    if hasattr(st, "secrets") and "GEMINI_API_KEY" in st.secrets:
-        api_key = st.secrets["GEMINI_API_KEY"]
-    
-    # 2. Cek Environment Variable
-    if not api_key:
-        load_dotenv()
-        api_key = os.getenv("GEMINI_API_KEY")
+    """Mengambil klien Gemini dari Environment Variable"""
+    load_dotenv()
+    api_key = os.getenv("GEMINI_API_KEY")
     
     if api_key:
         return genai.Client(api_key=api_key)

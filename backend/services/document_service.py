@@ -6,6 +6,7 @@ from pathlib import Path
 
 from backend.models.database import get_db
 from backend.models.schemas import DocumentResponse
+from backend.services import rag_service
 
 UPLOAD_DIR = Path(__file__).parent.parent / "data" / "uploads"
 ALLOWED_EXTENSIONS = {".md", ".txt", ".pdf", ".csv"}
@@ -23,8 +24,8 @@ async def upload(filename: str, content: bytes, content_type: str) -> DocumentRe
     with open(file_path, "wb") as f:
         f.write(content)
 
-    # TODO (Phase 2): Run through RAG ingestion pipeline
-    chunk_count = 0
+    # Phase 2: Run through RAG ingestion pipeline
+    chunk_count = await rag_service.ingest_uploaded_file(str(file_path), doc_id=filename)
 
     db = await get_db()
     try:
@@ -76,7 +77,8 @@ async def delete(doc_id: int) -> bool:
         if file_path.exists():
             os.remove(file_path)
 
-        # TODO (Phase 2): Remove from FAISS index
+        # Phase 2: Remove from FAISS index -> doc_id used in ingestion is the filename
+        await rag_service.remove_document(doc_id=row[0])
 
         await db.execute("DELETE FROM documents WHERE id = ?", (doc_id,))
         await db.commit()

@@ -10,7 +10,7 @@ from backend.core.layer_1_orchestrator import ExecutiveAgent
 from backend.core.layer_2_specialists import SpecialistAgents
 from backend.core.layer_3_ethics import PolicyAggregator
 from backend.core.layer_4_guardrail import MaternalGuardrail
-from backend.services import schedule_service
+from backend.services import schedule_service, rag_service
 
 
 async def run_pipeline(message: str) -> ChatResponse:
@@ -32,6 +32,10 @@ async def run_pipeline(message: str) -> ChatResponse:
         intent=intent, emotion=emotion, intensity=intensity, flags=flags
     )
 
+    # --- Retrieve RAG Context ---
+    # Fetch relevant knowledge base documents to augment the specialists' prompts
+    rag_context = rag_service.retrieve_context(message, top_k=3)
+
     # ── Layer 2: Specialist Agent Execution ──
     schedule_list = await schedule_service.get_active_list()
     raw_response = ""
@@ -39,23 +43,23 @@ async def run_pipeline(message: str) -> ChatResponse:
     is_task_request = (intent == "TASK_OPS")
 
     if intent == "TASK_OPS":
-        plan = specialists.run_planner(schedule_list)
-        coach = specialists.run_coach(emotion, empathy_data)
+        plan = specialists.run_planner(schedule_list, rag_context=rag_context)
+        coach = specialists.run_coach(emotion, empathy_data, rag_context=rag_context)
         raw_response = f"{plan}\n\n**Pesan Coach:**\n{coach}"
         agent_used = "planner+coach"
 
     elif intent == "ACADEMIC_HELP":
-        raw_response = specialists.run_tutor(message)
+        raw_response = specialists.run_tutor(message, rag_context=rag_context)
         agent_used = "tutor"
 
     elif intent in ("MOTIVATION_SUPPORT", "EMOTIONAL_DISTRESS"):
-        coach = specialists.run_coach(emotion, empathy_data)
-        general = specialists.run_general_chat(message, emotion, empathy_data)
+        coach = specialists.run_coach(emotion, empathy_data, rag_context=rag_context)
+        general = specialists.run_general_chat(message, emotion, empathy_data, rag_context=rag_context)
         raw_response = f"{general}\n\n**Pesan Coach:**\n{coach}"
         agent_used = "general_chat+coach"
 
     else:
-        raw_response = specialists.run_general_chat(message, emotion, empathy_data)
+        raw_response = specialists.run_general_chat(message, emotion, empathy_data, rag_context=rag_context)
 
     layer2 = LayerTwoData(agent_used=agent_used, raw_response=raw_response)
 
