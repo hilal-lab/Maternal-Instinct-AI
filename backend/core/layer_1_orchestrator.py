@@ -18,7 +18,7 @@ class EmpathyScout:
         "STRESS": 0.4,
         "OVERWHELMED": 0.6,
         "PANIC": 0.9,
-        "SELF-CRITICAL": 0.5,
+        "SELF-CRITICAL": 0.3,  # Lowered from 0.5 to allow natural self-reflection
         "FATIGUE": 0.7,
     }
 
@@ -98,7 +98,7 @@ class EmpathyScout:
         elif any(k in text for k in fatigue_kw):
             return "FATIGUE", 0.7
         elif any(k in text for k in self_crit_kw):
-            return "SELF-CRITICAL", 0.5
+            return "SELF-CRITICAL", 0.3  # Lowered to allow natural self-reflection
         elif any(k in text for k in overwhelm_kw):
             return "OVERWHELMED", 0.6
         elif any(k in text for k in stress_kw):
@@ -107,15 +107,21 @@ class EmpathyScout:
             return "NEUTRAL", 0.0
 
     def _generate_flags(self, emotion: str, intensity: float) -> dict:
-        """Generate intervention flags based on distress level (Paper Section III-A-b-iii)."""
+        """
+        Generate intervention flags based on distress level (Paper Section III-A-b-iii).
+        Modified to be less restrictive - only activate guardrail for severe cases.
+        """
         is_distressed = intensity >= self.DISTRESS_THRESHOLD
 
         return {
             "soft_tone": is_distressed,
             "slower_pacing": intensity >= 0.7,
-            "extra_validation": emotion in ("PANIC", "SELF-CRITICAL"),
+            # Only require extra validation for extreme panic, not self-critical
+            "extra_validation": emotion == "PANIC" and intensity >= 0.8,
             "burnout_monitoring": emotion == "FATIGUE",
-            "guardrail_active": is_distressed or emotion != "NEUTRAL",
+            # Only activate guardrail for severe distress (panic, extreme fatigue)
+            # Allow natural conversation for mild stress and self-reflection
+            "guardrail_active": emotion in ("PANIC", "FATIGUE") and intensity >= 0.7,
         }
 
 

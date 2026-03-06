@@ -30,12 +30,13 @@ async def get_active_list() -> list[dict]:
     db = await get_db()
     try:
         cursor = await db.execute(
-            "SELECT task, deadline, est_hours, priority FROM schedules "
+            "SELECT task, deadline, est_hours, priority, status FROM schedules "
             "WHERE status != 'completed' ORDER BY deadline"
         )
         rows = await cursor.fetchall()
         return [
-            {"task": r[0], "deadline": r[1], "est_hours": r[2], "priority": r[3]}
+            {"task": r[0], "deadline": r[1], "est_hours": r[2],
+             "priority": r[3], "status": r[4]}
             for r in rows
         ]
     finally:

@@ -2,7 +2,7 @@
   {
     "text": "# Panduan Manajemen Stres untuk Mahasiswa\n\n## Tanda-Tanda Stres Akademik\n- Sulit berkonsentrasi saat belajar\n- Merasa kewalahan dengan tugas yang menumpuk\n- Gangguan pola tidur (insomnia atau tidur berlebihan)\n- Kehilangan motivasi belajar\n- Mudah marah atau menangis\n- Sakit kepala, sakit perut, atau kelelahan fisik\n\n## Teknik Relaksasi",
     "metadata": {
-      "source": "C:\\Users\\Andi Alvin\\Documents\\File Kuliah\\PROF-RIRI\\Jurnal-Maternal-RAG\\Maternal-Instinct-AI\\rag\\knowledge_base\\stress_management.md",
+      "source": "rag/knowledge_base/stress_management.md",
       "filename": "stress_management.md",
       "filetype": ".md",
       "chunk_index": 0,
@@ -14,7 +14,7 @@
   {
     "text": "t perut, atau kelelahan fisik\n\n## Teknik Relaksasi... ### 1. Pernapasan 4-7-8\n1. Tarik napas melalui hidung selama 4 detik\n2. Tahan napas selama 7 detik\n3. Hembuskan perlahan melalui mulut selama 8 detik\n4. Ulangi 3-4 siklus\n\n### 2. Progressive Muscle Relaxation\n1. Mulai dari kaki — tegangkan otot selama 5 detik, lalu lepaskan\n2. Bergerak ke atas: betis, paha, perut, tangan, bahu, wajah\n3. Fokus pada kontras antara tegang dan rileks\n4. Total durasi: 10-15 menit",
     "metadata": {
-      "source": "C:\\Users\\Andi Alvin\\Documents\\File Kuliah\\PROF-RIRI\\Jurnal-Maternal-RAG\\Maternal-Instinct-AI\\rag\\knowledge_base\\stress_management.md",
+      "source": "rag/knowledge_base/stress_management.md",
       "filename": "stress_management.md",
       "filetype": ".md",
       "chunk_index": 1,
@@ -26,7 +26,7 @@
   {
     "text": "ara tegang dan rileks\n4. Total durasi: 10-15 menit... ### 3. Grounding Technique (5-4-3-2-1)\nSaat merasa panik atau cemas:\n- 5 hal yang bisa DILIHAT\n- 4 hal yang bisa DISENTUH\n- 3 hal yang bisa DIDENGAR\n- 2 hal yang bisa DICIUM\n- 1 hal yang bisa DIRASAKAN\n\n## Cognitive Reframing\nUbah pola pikir negatif menjadi produktif:",
     "metadata": {
-      "source": "C:\\Users\\Andi Alvin\\Documents\\File Kuliah\\PROF-RIRI\\Jurnal-Maternal-RAG\\Maternal-Instinct-AI\\rag\\knowledge_base\\stress_management.md",
+      "source": "rag/knowledge_base/stress_management.md",
       "filename": "stress_management.md",
       "filetype": ".md",
       "chunk_index": 2,
@@ -38,7 +38,7 @@
   {
     "text": "framing\nUbah pola pikir negatif menjadi produktif:... | Pikiran Negatif | Reframing |\n|----------------|-----------|\n| \"Saya tidak akan pernah selesai\" | \"Saya bisa menyelesaikan satu tugas pada satu waktu\" |\n| \"Saya bodoh\" | \"Saya sedang belajar, dan belajar butuh waktu\" |\n| \"Semua orang lebih pintar\" | \"Setiap orang punya kecepatan belajar berbeda\" |\n| \"Saya gagal\" | \"Ini adalah pelajaran untuk perbaikan\" |\n\n## Burnout: Warning Signs & Recovery",
     "metadata": {
-      "source": "C:\\Users\\Andi Alvin\\Documents\\File Kuliah\\PROF-RIRI\\Jurnal-Maternal-RAG\\Maternal-Instinct-AI\\rag\\knowledge_base\\stress_management.md",
+      "source": "rag/knowledge_base/stress_management.md",
       "filename": "stress_management.md",
       "filetype": ".md",
       "chunk_index": 3,
@@ -50,7 +50,7 @@
   {
     "text": "perbaikan\" |\n\n## Burnout: Warning Signs & Recovery... ### Tanda-Tanda Burnout\n- Kelelahan yang tidak hilang meski sudah istirahat\n- Cynicism — merasa apa yang dilakukan tidak bermakna\n- Penurunan performa akademik\n- Isolasi sosial\n- Merasa \"kosong\" atau mati rasa",
     "metadata": {
-      "source": "C:\\Users\\Andi Alvin\\Documents\\File Kuliah\\PROF-RIRI\\Jurnal-Maternal-RAG\\Maternal-Instinct-AI\\rag\\knowledge_base\\stress_management.md",
+      "source": "rag/knowledge_base/stress_management.md",
       "filename": "stress_management.md",
       "filetype": ".md",
       "chunk_index": 4,
@@ -62,7 +62,7 @@
   {
     "text": "\n- Isolasi sosial\n- Merasa \"kosong\" atau mati rasa... ### Langkah Pemulihan\n1. **STOP**: Berhenti menambah beban. Cancel komitmen yang tidak esensial.\n2. **REST**: Tidur 7-9 jam per malam. No negotiation.\n3. **MOVE**: Aktivitas fisik ringan 15 menit per hari (jalan kaki cukup).\n4. **CONNECT**: Bicara dengan teman, keluarga, atau konselor.\n5. **PLAN**: Setelah stabil, buat rencana realistis dengan buffer time.",
     "metadata": {
-      "source": "C:\\Users\\Andi Alvin\\Documents\\File Kuliah\\PROF-RIRI\\Jurnal-Maternal-RAG\\Maternal-Instinct-AI\\rag\\knowledge_base\\stress_management.md",
+      "source": "rag/knowledge_base/stress_management.md",
       "filename": "stress_management.md",
       "filetype": ".md",
       "chunk_index": 5,
@@ -74,7 +74,7 @@
   {
     "text": "stabil, buat rencana realistis dengan buffer time.... ## Kapan Harus Mencari Bantuan Profesional\n- Pikiran menyakiti diri sendiri\n- Perasaan putus asa yang berlangsung lebih dari 2 minggu\n- Tidak mampu menjalankan aktivitas sehari-hari\n- Penggunaan alkohol/zat untuk coping",
     "metadata": {
-      "source": "C:\\Users\\Andi Alvin\\Documents\\File Kuliah\\PROF-RIRI\\Jurnal-Maternal-RAG\\Maternal-Instinct-AI\\rag\\knowledge_base\\stress_management.md",
+      "source": "rag/knowledge_base/stress_management.md",
       "filename": "stress_management.md",
       "filetype": ".md",
       "chunk_index": 6,
@@ -86,7 +86,7 @@
   {
     "text": "# Teknik Belajar Efektif\n\n## Pomodoro Technique\nMetode fokus dengan timer:\n- 25 menit belajar fokus (1 Pomodoro)\n- 5 menit istirahat pendek\n- Setelah 4 Pomodoro: istirahat panjang 15-30 menit\n\n### Tips Pomodoro\n- Matikan notifikasi HP selama sesi\n- Catat gangguan untuk ditangani nanti\n- Sesuaikan durasi jika perlu (misalnya 45/10 untuk mahasiswa tingkat akhir)",
     "metadata": {
-      "source": "C:\\Users\\Andi Alvin\\Documents\\File Kuliah\\PROF-RIRI\\Jurnal-Maternal-RAG\\Maternal-Instinct-AI\\rag\\knowledge_base\\study_techniques.md",
+      "source": "rag/knowledge_base/study_techniques.md",
       "filename": "study_techniques.md",
       "filetype": ".md",
       "chunk_index": 0,
@@ -98,7 +98,7 @@
   {
     "text": "rlu (misalnya 45/10 untuk mahasiswa tingkat akhir)... ## Spaced Repetition\nTeknik mengulang materi secara terjadwal:\n- Hari 1: Pelajari materi baru\n- Hari 2: Review pertama\n- Hari 4: Review kedua\n- Hari 7: Review ketiga\n- Hari 14: Review keempat\n\nTools: Anki, Quizlet, atau kartu fisik.\n\n## Active Recall\nBelajar dengan cara mengingat aktif, bukan membaca pasif:\n- Tutup buku, coba tuliskan apa yang diingat\n- Buat pertanyaan sendiri dari materi\n- Jelaskan konsep ke \"teman imajiner\" (Feynman Technique)\n- Gunakan flashcard tanpa melihat jawaban dulu",
     "metadata": {
-      "source": "C:\\Users\\Andi Alvin\\Documents\\File Kuliah\\PROF-RIRI\\Jurnal-Maternal-RAG\\Maternal-Instinct-AI\\rag\\knowledge_base\\study_techniques.md",
+      "source": "rag/knowledge_base/study_techniques.md",
       "filename": "study_techniques.md",
       "filetype": ".md",
       "chunk_index": 1,
@@ -110,7 +110,7 @@
   {
     "text": "ue)\n- Gunakan flashcard tanpa melihat jawaban dulu... ## Cornell Note-Taking Method\nBagi halaman menjadi 3 bagian:\n- **Kolom Kanan (besar)**: Catatan utama selama kuliah\n- **Kolom Kiri (kecil)**: Kata kunci dan pertanyaan\n- **Bawah**: Ringkasan 2-3 kalimat\n\n### Keunggulan\n- Memaksa merangkum saat review\n- Kolom pertanyaan membantu active recall\n- Ringkasan bawah mempercepat review ulang",
     "metadata": {
-      "source": "C:\\Users\\Andi Alvin\\Documents\\File Kuliah\\PROF-RIRI\\Jurnal-Maternal-RAG\\Maternal-Instinct-AI\\rag\\knowledge_base\\study_techniques.md",
+      "source": "rag/knowledge_base/study_techniques.md",
       "filename": "study_techniques.md",
       "filetype": ".md",
       "chunk_index": 2,
@@ -122,7 +122,7 @@
   {
     "text": " recall\n- Ringkasan bawah mempercepat review ulang... ## Mind Mapping / Concept Mapping\nVisualisasi hubungan antar konsep:\n1. Tulis topik utama di tengah\n2. Cabangkan sub-topik\n3. Hubungkan dengan garis berlabel\n4. Gunakan warna untuk kategori\n\n### Kapan Menggunakan\n- Merangkum bab buku\n- Mempersiapkan presentasi\n- Memahami hubungan antar teori\n\n## Eisenhower Matrix untuk Prioritas Belajar",
     "metadata": {
-      "source": "C:\\Users\\Andi Alvin\\Documents\\File Kuliah\\PROF-RIRI\\Jurnal-Maternal-RAG\\Maternal-Instinct-AI\\rag\\knowledge_base\\study_techniques.md",
+      "source": "rag/knowledge_base/study_techniques.md",
       "filename": "study_techniques.md",
       "filetype": ".md",
       "chunk_index": 3,
@@ -134,7 +134,7 @@
   {
     "text": "eori\n\n## Eisenhower Matrix untuk Prioritas Belajar... | | Urgent | Not Urgent |\n|---|---|---|\n| **Important** | UAS besok, tugas deadline hari ini | Belajar untuk ujian minggu depan |\n| **Not Important** | Email dari dosen (1 hari) | Scrolling media sosial |\n\n### Prioritas Belajar\n1. **Do First**: Important + Urgent (tugas deadline)\n2. **Schedule**: Important + Not Urgent (persiapan ujian)\n3. **Delegate**: Not Important + Urgent (bisa minta tolong)\n4. **Eliminate**: Not Important + Not Urgent (distraksi)",
     "metadata": {
-      "source": "C:\\Users\\Andi Alvin\\Documents\\File Kuliah\\PROF-RIRI\\Jurnal-Maternal-RAG\\Maternal-Instinct-AI\\rag\\knowledge_base\\study_techniques.md",
+      "source": "rag/knowledge_base/study_techniques.md",
       "filename": "study_techniques.md",
       "filetype": ".md",
       "chunk_index": 4,
@@ -146,7 +146,7 @@
   {
     "text": "# Manajemen Waktu untuk Mahasiswa\n\n## Prinsip Dasar\n- **Waktu belajar produktif maksimal: 6–8 jam per hari** (tidak termasuk kuliah)\n- Sisakan minimal 1 jam per hari untuk istirahat aktif\n- Jangan jadwalkan tugas berat setelah jam 10 malam\n- Selalu sediakan buffer time 20% dari estimasi\n\n## Daily Planning Template\n\n### Pagi (08.00–12.00) — Peak Focus\n- Tugas yang membutuhkan konsentrasi tinggi\n- Mengerjakan soal, coding, menulis paper\n- 2–3 sesi Pomodoro",
     "metadata": {
-      "source": "C:\\Users\\Andi Alvin\\Documents\\File Kuliah\\PROF-RIRI\\Jurnal-Maternal-RAG\\Maternal-Instinct-AI\\rag\\knowledge_base\\time_management.md",
+      "source": "rag/knowledge_base/time_management.md",
       "filename": "time_management.md",
       "filetype": ".md",
       "chunk_index": 0,
@@ -158,7 +158,7 @@
   {
     "text": "an soal, coding, menulis paper\n- 2–3 sesi Pomodoro... ### Siang (13.00–16.00) — Collaborative\n- Diskusi kelompok\n- Tutorial atau lab\n- Review catatan kuliah pagi\n\n### Sore (16.00–18.00) — Light Work\n- Membaca referensi\n- Meninjau progress tugas\n- Planning untuk esok hari\n\n### Malam (19.00–21.00) — Review\n- Review materi yang dipelajari hari ini\n- Spaced repetition flashcard\n- Persiapan materi kuliah besok\n\n### STOP: Setelah 21.00\n- No academic work\n- Relaksasi, hobi, ngobrol dengan teman\n- Persiapan tidur\n\n## Load Balancing Strategy",
     "metadata": {
-      "source": "C:\\Users\\Andi Alvin\\Documents\\File Kuliah\\PROF-RIRI\\Jurnal-Maternal-RAG\\Maternal-Instinct-AI\\rag\\knowledge_base\\time_management.md",
+      "source": "rag/knowledge_base/time_management.md",
       "filename": "time_management.md",
       "filetype": ".md",
       "chunk_index": 1,
@@ -170,7 +170,7 @@
   {
     "text": "eman\n- Persiapan tidur\n\n## Load Balancing Strategy... ### Hitung Weekly Capacity\n```\nJam tersedia per minggu = (16 jam bangun - 6 jam kuliah) × 5 hari kerja = 50 jam\nBuffer 20% = 40 jam efektif\n```\n\n### Distribusi Tugas\n1. Tugas deadline minggu ini: **40% kapasitas** (16 jam)\n2. Persiapan ujian: **30% kapasitas** (12 jam)\n3. Project jangka panjang: **20% kapasitas** (8 jam)\n4. Pengembangan diri: **10% kapasitas** (4 jam)",
     "metadata": {
-      "source": "C:\\Users\\Andi Alvin\\Documents\\File Kuliah\\PROF-RIRI\\Jurnal-Maternal-RAG\\Maternal-Instinct-AI\\rag\\knowledge_base\\time_management.md",
+      "source": "rag/knowledge_base/time_management.md",
       "filename": "time_management.md",
       "filetype": ".md",
       "chunk_index": 2,
@@ -182,7 +182,7 @@
   {
     "text": "m)\n4. Pengembangan diri: **10% kapasitas** (4 jam)... ### Red Flags — Overload\n- Total estimasi tugas > 50 jam/minggu → HARUS diprioritaskan ulang\n- Tidak ada hari tanpa tugas dalam seminggu → BUTUH hari recovery\n- Tidur < 6 jam/malam → DARURAT, kurangi beban\n\n## Recovery Slot Scheduling\nSetiap minggu WAJIB ada:\n- 1 hari penuh tanpa tugas akademik (weekend)\n- 30 menit aktivitas fisik 3x/minggu\n- 1 kegiatan sosial per minggu\n\n## Break Recommendations",
     "metadata": {
-      "source": "C:\\Users\\Andi Alvin\\Documents\\File Kuliah\\PROF-RIRI\\Jurnal-Maternal-RAG\\Maternal-Instinct-AI\\rag\\knowledge_base\\time_management.md",
+      "source": "rag/knowledge_base/time_management.md",
       "filename": "time_management.md",
       "filetype": ".md",
       "chunk_index": 3,
@@ -194,7 +194,7 @@
   {
     "text": "giatan sosial per minggu\n\n## Break Recommendations... | Durasi Belajar | Rekomendasi Break |\n|----------------|-------------------|\n| 25 menit (Pomodoro) | 5 menit: stretching, air minum |\n| 50 menit | 10 menit: jalan kaki, snack |\n| 90 menit | 20 menit: udara segar, ngobrol |\n| 3+ jam | 45 menit: makan, istirahat penuh |",
     "metadata": {
-      "source": "C:\\Users\\Andi Alvin\\Documents\\File Kuliah\\PROF-RIRI\\Jurnal-Maternal-RAG\\Maternal-Instinct-AI\\rag\\knowledge_base\\time_management.md",
+      "source": "rag/knowledge_base/time_management.md",
       "filename": "time_management.md",
       "filetype": ".md",
       "chunk_index": 4,
@@ -206,7 +206,7 @@
   {
     "text": "ol |\n| 3+ jam | 45 menit: makan, istirahat penuh |... ## Tips Mengatasi Prokrastinasi\n1. **2-Minute Rule**: Jika tugas bisa selesai dalam 2 menit, kerjakan SEKARANG\n2. **Eat the Frog**: Tugas paling berat dikerjakan pertama\n3. **Accountability Partner**: Belajar bareng teman\n4. **Environment Design**: Meja bersih, HP jauh, pakai headphone\n5. **Reward System**: Setelah 2 Pomodoro, boleh 10 menit bebas",
     "metadata": {
-      "source": "C:\\Users\\Andi Alvin\\Documents\\File Kuliah\\PROF-RIRI\\Jurnal-Maternal-RAG\\Maternal-Instinct-AI\\rag\\knowledge_base\\time_management.md",
+      "source": "rag/knowledge_base/time_management.md",
       "filename": "time_management.md",
       "filetype": ".md",
       "chunk_index": 5,

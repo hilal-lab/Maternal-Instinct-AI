@@ -15,8 +15,10 @@ class MaternalGuardrail:
     Triggers on emotional distress or ethical violations.
     """
 
-    # Emotions that trigger the guardrail (all non-neutral states)
-    TRIGGER_EMOTIONS = ["STRESS", "OVERWHELMED", "PANIC", "SELF-CRITICAL", "FATIGUE"]
+    # Emotions that trigger the guardrail (only severe distress states)
+    # Removed SELF-CRITICAL and STRESS to allow more natural, motherly responses
+    # A real mother doesn't always intervene - she lets her child learn and grow
+    TRIGGER_EMOTIONS = ["PANIC", "FATIGUE"]  # Only extreme cases trigger rewriting
 
     # Persona-specific system prompts per emotion type
     PERSONA_PROMPTS = {

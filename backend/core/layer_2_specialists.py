@@ -11,6 +11,19 @@ from backend.core.llm_client import generate_text
 class SpecialistAgents:
     """Three specialist agents that can work in parallel or alternately."""
 
+    # --- Helper to format schedule data for injection into prompts ---
+    @staticmethod
+    def _format_schedule(task_list):
+        """Format schedule tasks into a readable string for LLM context."""
+        if not task_list:
+            return ""
+        tasks_str = "\n".join([
+            f"  - {t['task']} (Deadline: {t['deadline']} | Estimasi: {t['est_hours']} jam | "
+            f"Prioritas: {t['priority']} | Status: {t.get('status', 'pending')})"
+            for t in task_list
+        ])
+        return f"\n\n📋 DATA JADWAL USER SAAT INI:\n{tasks_str}\n"
+
     def run_planner(self, task_list, rag_context: str = ""):
         """
         Study Planner Agent (Paper Section III-B-a).
@@ -20,13 +33,9 @@ class SpecialistAgents:
         if not task_list:
             return "Tidak ada data jadwal untuk diproses."
 
-        tasks_str = "\n".join([
-            f"- {t['task']} (DL: {t['deadline']} | {t['est_hours']}h | Pri: {t['priority']})"
-            for t in task_list
-        ])
+        tasks_str = self._format_schedule(task_list)
 
         prompt = f"""
-        Data Tugas User:
         {tasks_str}
 
         Instruksi:
@@ -46,7 +55,7 @@ class SpecialistAgents:
             system_instruction="Anda adalah Study Planner Profesional yang mengutamakan produktivitas sekaligus kesejahteraan."
         )
 
-    def run_tutor(self, topic: str, rag_context: str = ""):
+    def run_tutor(self, topic: str, rag_context: str = "", schedule_context: str = ""):
         """
         Tutor Agent (Paper Section III-B-b).
         Capabilities: Concept Simplification, Scaffolding, Diagnostic Prompting,
@@ -61,7 +70,7 @@ class SpecialistAgents:
         2. Gunakan pendekatan scaffolding (step-by-step).
         3. Akhiri dengan pertanyaan active recall untuk menguji pemahaman.
         Gunakan bahasa yang mudah dipahami mahasiswa.
-
+        {schedule_context}
         {rag_context}
         """
         return generate_text(
@@ -69,57 +78,54 @@ class SpecialistAgents:
             system_instruction="Anda adalah Tutor Agent yang sabar dan pedagogis. Jelaskan dengan analogi dan pendekatan scaffolding."
         )
 
-    def run_coach(self, emotion, empathy_data=None, rag_context: str = ""):
+    def run_coach(self, emotion, empathy_data=None, rag_context: str = "", schedule_context: str = ""):
         """
         Coach Agent (Paper Section III-B-c).
         Capabilities: Cognitive Reframing, Micro-Goal Encouragement,
         Burnout Prevention, Habit Reinforcement, Emotional Validation.
 
-        Strategy: When user is stressed, Coach is intentionally 'harsh' so that
-        Layer 4 (Maternal Guardrail) has material to rewrite — demonstrating
-        the architecture's value.
+        Always warm and supportive — like a real mother who encourages her child.
         """
-        # The Coach's persona changes based on emotion
-        # In stressed scenarios, it's deliberately rigid to showcase Layer 4
-        distressed_emotions = ["STRESS", "OVERWHELMED", "PANIC", "SELF-CRITICAL", "FATIGUE"]
+        sys_inst = (
+            "Anda adalah 'Ara', seorang Coach dengan naluri keibuan yang hangat dan penuh kasih sayang. "
+            "Anda selalu memvalidasi perasaan user terlebih dahulu, lalu memberikan semangat "
+            "dan saran praktis dengan nada lembut tapi tegas. "
+            "Jika ada data jadwal, gunakan untuk memberikan saran yang spesifik dan relevan."
+        )
 
-        if emotion in distressed_emotions:
-            sys_inst = (
-                "Anda adalah Productivity Coach yang Keras, Tegas, dan disiplin militer. "
-                "Jangan lembek. Fokus pada efisiensi dan deadline."
-            )
-            prompt = (
-                "User sedang mengeluh dan tertekan. "
-                "Berikan motivasi keras 'Tough Love'. "
-                "Suruh dia berhenti mengeluh dan mulai kerja keras. "
-                "Tekankan pentingnya deadline dan konsekuensi jika gagal."
-            )
-        else:
-            sys_inst = "Anda adalah Coach yang suportif, hangat, dan memotivasi."
-            prompt = "Berikan motivasi semangat yang positif untuk memulai hari."
+        prompt = (
+            f"Kondisi emosional user: {emotion} "
+            f"(Intensitas: {empathy_data.get('intensity', 0.5) if empathy_data else 0.5})\n"
+            f"Berikan motivasi dan dukungan yang tulus. "
+            f"Akui perasaan user, lalu bantu mereka melihat langkah kecil yang bisa dilakukan.\n"
+        )
 
+        if schedule_context:
+            prompt += f"\n{schedule_context}"
         if rag_context:
             prompt += f"\n\nReferensi Tambahan:\n{rag_context}"
 
         return generate_text(prompt, system_instruction=sys_inst)
 
-    def run_general_chat(self, user_input, emotion, empathy_data=None, rag_context: str = ""):
+    def run_general_chat(self, user_input, emotion, empathy_data=None,
+                         rag_context: str = "", schedule_context: str = ""):
         """
-        General chat handler for non-task requests.
-        Strategy: When stressed, deliberately cold/factual to showcase
-        the Layer 4 rewrite contrast.
+        General chat handler — always warm, helpful, and schedule-aware.
+        Acts as 'Ara', a motherly AI assistant who has full access to the
+        user's schedule and can answer questions about priorities, deadlines, etc.
         """
-        distressed = ["STRESS", "OVERWHELMED", "PANIC", "SELF-CRITICAL", "FATIGUE"]
-
-        if emotion in distressed:
-            sys_inst = (
-                "Anda adalah AI yang sangat logis, dingin, dan berbasis data. "
-                "Jawab tanpa empati, hanya berdasarkan fakta."
-            )
-        else:
-            sys_inst = "Anda adalah asisten yang ramah dan membantu."
+        sys_inst = (
+            "Anda adalah 'Ara', AI asisten dengan naluri keibuan yang hangat dan peduli. "
+            "Anda ramah, membantu, dan selalu memvalidasi perasaan user. "
+            "Jika user bertanya tentang jadwal, tugas, deadline, atau prioritas, "
+            "GUNAKAN data jadwal yang tersedia untuk menjawab dengan spesifik dan akurat. "
+            "Jangan pernah bilang Anda tidak bisa melihat jadwal — Anda SUDAH memiliki datanya. "
+            "Jawab dalam Bahasa Indonesia yang natural dan penuh kasih sayang."
+        )
 
         prompt = user_input
+        if schedule_context:
+            prompt += f"\n{schedule_context}"
         if rag_context:
             prompt += f"\n\nReferensi Tambahan:\n{rag_context}"
 

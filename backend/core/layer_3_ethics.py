@@ -87,7 +87,9 @@ class PolicyAggregator:
             recommendations["limit_task_count"] = True
             recommendations["max_suggested_tasks"] = 3
 
-        if emotion in ("PANIC", "SELF-CRITICAL"):
+        # Only require wellness check for extreme panic states
+        # Removed SELF-CRITICAL to allow natural self-reflection without intervention
+        if emotion == "PANIC":
             recommendations["require_wellness_check"] = True
 
         return recommendations

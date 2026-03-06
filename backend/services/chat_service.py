@@ -42,24 +42,34 @@ async def run_pipeline(message: str) -> ChatResponse:
     agent_used = "general_chat"
     is_task_request = (intent == "TASK_OPS")
 
+    # Always build schedule context so ALL agents can reference user's tasks
+    schedule_context = specialists._format_schedule(schedule_list)
+
     if intent == "TASK_OPS":
         plan = specialists.run_planner(schedule_list, rag_context=rag_context)
-        coach = specialists.run_coach(emotion, empathy_data, rag_context=rag_context)
+        coach = specialists.run_coach(emotion, empathy_data, rag_context=rag_context,
+                                      schedule_context=schedule_context)
         raw_response = f"{plan}\n\n**Pesan Coach:**\n{coach}"
         agent_used = "planner+coach"
 
     elif intent == "ACADEMIC_HELP":
-        raw_response = specialists.run_tutor(message, rag_context=rag_context)
+        raw_response = specialists.run_tutor(message, rag_context=rag_context,
+                                             schedule_context=schedule_context)
         agent_used = "tutor"
 
     elif intent in ("MOTIVATION_SUPPORT", "EMOTIONAL_DISTRESS"):
-        coach = specialists.run_coach(emotion, empathy_data, rag_context=rag_context)
-        general = specialists.run_general_chat(message, emotion, empathy_data, rag_context=rag_context)
+        coach = specialists.run_coach(emotion, empathy_data, rag_context=rag_context,
+                                      schedule_context=schedule_context)
+        general = specialists.run_general_chat(message, emotion, empathy_data,
+                                               rag_context=rag_context,
+                                               schedule_context=schedule_context)
         raw_response = f"{general}\n\n**Pesan Coach:**\n{coach}"
         agent_used = "general_chat+coach"
 
     else:
-        raw_response = specialists.run_general_chat(message, emotion, empathy_data, rag_context=rag_context)
+        raw_response = specialists.run_general_chat(message, emotion, empathy_data,
+                                                     rag_context=rag_context,
+                                                     schedule_context=schedule_context)
 
     layer2 = LayerTwoData(agent_used=agent_used, raw_response=raw_response)
 

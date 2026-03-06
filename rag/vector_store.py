@@ -59,10 +59,10 @@ class VectorStore:
     Metadata is stored in a JSON sidecar file alongside the FAISS index.
     """
 
-    def __init__(self, dimension: int = 768, index_path: Optional[str] = None):
+    def __init__(self, dimension: int = 1024, index_path: Optional[str] = None):
         """
         Args:
-            dimension: Embedding vector dimension (768 for Gemini).
+            dimension: Embedding vector dimension (1024 for bge-m3).
             index_path: Directory to persist the index. If None, in-memory only.
         """
         faiss = _get_faiss()
@@ -125,7 +125,7 @@ class VectorStore:
         Search for the most similar documents.
 
         Args:
-            query_embedding: Query vector (768-dim).
+            query_embedding: Query vector (1024-dim for bge-m3).
             top_k: Number of results to return.
 
         Returns:

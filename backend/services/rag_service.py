@@ -39,7 +39,7 @@ def _ensure_init():
         from rag.retriever import RAGRetriever
 
         _embedding_model = EmbeddingModel()
-        _vector_store = VectorStore(dimension=768, index_path=str(INDEX_DIR))
+        _vector_store = VectorStore(dimension=1024, index_path=str(INDEX_DIR))
         _ingester = DocumentIngester(_embedding_model, _vector_store)
         _retriever = RAGRetriever(_embedding_model, _vector_store, top_k=5)
 

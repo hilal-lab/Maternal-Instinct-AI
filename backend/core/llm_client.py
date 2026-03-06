@@ -1,53 +1,34 @@
-import os
-from google import genai
-from google.genai import types
-import time
-from dotenv import load_dotenv
+"""
+LLM Client — Local inference using llama3.1:8b via Ollama.
 
-# --- KONFIGURASI MODEL ---
-# Kita gunakan versi 'latest' yang biasanya punya limit token lebih besar
-DEFAULT_MODEL = "gemini-2.5-flash" 
-
-def get_client():
-    """Mengambil klien Gemini dari Environment Variable"""
-    load_dotenv()
-    api_key = os.getenv("GEMINI_API_KEY")
-    
-    if api_key:
-        return genai.Client(api_key=api_key)
-    return None
+This module provides a unified interface for text generation across all layers.
+Uses Ollama for complete offline capability.
+"""
+from backend.core.ollama_llm_client import (
+    generate_text as ollama_generate_text,
+    check_ollama_available,
+    DEFAULT_MODEL,
+)
 
 def generate_text(prompt, system_instruction=None, model_name=DEFAULT_MODEL):
-    client = get_client()
+    """
+    Generate text using local Ollama llama3.1:8b model.
     
-    # Jika API Key tidak ada, masuk mode simulasi
-    if not client:
-        time.sleep(1)
-        return "⚠️ [SIMULASI - NO KEY] API Key tidak ditemukan. Ini adalah jawaban otomatis karena sistem offline."
-
-    try:
-        # --- PERBAIKAN UTAMA DISINI ---
-        # max_output_tokens: 8000 (Agar jawaban panjang & tuntas)
-        config = types.GenerateContentConfig(
-            temperature=0.7,
-            max_output_tokens=8000, 
-            system_instruction=system_instruction
-        )
-        
-        response = client.models.generate_content(
-            model=model_name,
-            contents=[prompt],
-            config=config
-        )
-        return response.text
-
-    except Exception as e:
-        error_msg = str(e)
-        print(f"🔥 SYSTEM ERROR: {error_msg}") # Cek terminal Anda untuk error ini
-        
-        # Fallback jika model salah nama (404)
-        if "404" in error_msg and model_name != "gemini-2.5-flash":
-            return generate_text(prompt, system_instruction, model_name="gemini-2.5-flash")
-            
-        # Jika error lain, beri tahu user bahwa ini bukan jawaban AI
-        return f"⚠️ [SISTEM ERROR] AI Gagal Menjawab. Detail Error: {error_msg}"
+    This function maintains backward compatibility with the original Gemini interface
+    while using local Ollama models for inference.
+    
+    Args:
+        prompt: The user prompt/message.
+        system_instruction: Optional system instruction for behavior control.
+        model_name: Model name (default: llama3.1:8b).
+    
+    Returns:
+        Generated text string.
+    """
+    return ollama_generate_text(
+        prompt=prompt,
+        system_instruction=system_instruction,
+        model_name=model_name,
+        temperature=0.7,
+        max_output_tokens=8000,
+    )
