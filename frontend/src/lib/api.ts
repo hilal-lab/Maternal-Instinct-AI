@@ -1,5 +1,5 @@
 import axios from 'axios';
-import type { ChatResponse, ChatMessage, ScheduleTask, Analytics } from '@/types/api';
+import type { ChatResponse, ChatMessage, ScheduleTask, Analytics, Document } from '@/types/api';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
 
@@ -55,8 +55,29 @@ export const scheduleAPI = {
 // Analytics endpoints
 export const analyticsAPI = {
   getStats: async (): Promise<Analytics> => {
-    const { data } = await api.get<Analytics>('/analytics/stats');
+    const { data } = await api.get<Analytics>('/analytics');
     return data;
+  },
+};
+
+// Documents endpoints
+export const documentsAPI = {
+  list: async (): Promise<Document[]> => {
+    const { data } = await api.get<Document[]>('/documents');
+    return data;
+  },
+
+  upload: async (file: File): Promise<Document> => {
+    const formData = new FormData();
+    formData.append('file', file);
+    const { data } = await api.post<Document>('/documents/upload', formData, {
+      headers: { 'Content-Type': 'multipart/form-data' },
+    });
+    return data;
+  },
+
+  delete: async (id: number): Promise<void> => {
+    await api.delete(`/documents/${id}`);
   },
 };
 

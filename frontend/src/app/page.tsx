@@ -1,13 +1,14 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { MessageSquare, Calendar, BarChart3, Settings } from 'lucide-react';
+import { MessageSquare, Calendar, BarChart3, BookOpen } from 'lucide-react';
 import ChatInterface from '@/components/ChatInterface';
 import ScheduleManager from '@/components/ScheduleManager';
 import AnalyticsDashboard from '@/components/AnalyticsDashboard';
+import MaterialsManager from '@/components/MaterialsManager';
 import { healthCheck } from '@/lib/api';
 
-type Tab = 'chat' | 'schedule' | 'analytics' | 'settings';
+type Tab = 'chat' | 'schedule' | 'analytics' | 'materials';
 
 export default function Home() {
   const [activeTab, setActiveTab] = useState<Tab>('chat');
@@ -80,6 +81,12 @@ export default function Home() {
               active={activeTab === 'analytics'}
               onClick={() => setActiveTab('analytics')}
             />
+            <TabButton
+              icon={<BookOpen className="w-5 h-5" />}
+              label="Materials"
+              active={activeTab === 'materials'}
+              onClick={() => setActiveTab('materials')}
+            />
           </div>
         </div>
       </nav>
@@ -98,6 +105,7 @@ export default function Home() {
         {activeTab === 'chat' && <ChatInterface />}
         {activeTab === 'schedule' && <ScheduleManager />}
         {activeTab === 'analytics' && <AnalyticsDashboard />}
+        {activeTab === 'materials' && <MaterialsManager />}
       </main>
 
       {/* Footer */}

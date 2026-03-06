@@ -14,6 +14,12 @@ async def get_analytics() -> AnalyticsResponse:
         total_chats = (await cursor.fetchone())[0]
 
         cursor = await db.execute(
+            "SELECT AVG(intensity) FROM chat_history WHERE role='user' AND intensity IS NOT NULL"
+        )
+        avg_intensity_row = await cursor.fetchone()
+        avg_intensity = float(avg_intensity_row[0]) if avg_intensity_row[0] is not None else 0.0
+
+        cursor = await db.execute(
             "SELECT emotion, COUNT(*) FROM chat_history WHERE role='user' GROUP BY emotion"
         )
         emotion_dist = {row[0]: row[1] for row in await cursor.fetchall()}
@@ -43,6 +49,7 @@ async def get_analytics() -> AnalyticsResponse:
 
     return AnalyticsResponse(
         total_chats=total_chats,
+        avg_intensity=avg_intensity,
         emotion_distribution=emotion_dist,
         intent_distribution=intent_dist,
         layer3_violations=l3_violations,

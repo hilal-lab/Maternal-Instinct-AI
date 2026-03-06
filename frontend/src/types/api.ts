@@ -64,4 +64,14 @@ export interface Analytics {
   intent_distribution: Record<string, number>;
   layer3_violations: number;
   layer4_rewrites: number;
+  dataset_stats: Record<string, any>;
+}
+
+export interface Document {
+  id: number;
+  filename: string;
+  content_type: string;
+  chunk_count: number;
+  file_size: number;
+  created_at: string;
 }

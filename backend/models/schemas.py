@@ -132,6 +132,7 @@ class ChatResponse(BaseModel):
 
 class AnalyticsResponse(BaseModel):
     total_chats: int = 0
+    avg_intensity: float = 0.0
     emotion_distribution: dict = {}
     intent_distribution: dict = {}
     layer3_violations: int = 0

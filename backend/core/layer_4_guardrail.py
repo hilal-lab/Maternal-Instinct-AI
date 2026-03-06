@@ -1,24 +1,134 @@
 """
 Layer 4: Maternal Guardrail — The Protector (Paper Section III-D).
-Implements the 'Nurturing Core' concept with the following mechanisms:
-  a. Emotional Check-in Trigger
-  b. Validation Module (avoid toxic positivity, acknowledge effort)
-  c. Negative Self-Talk Reframing
-  d. Sentiment Weighting Mechanism: Response = f(logical_accuracy, empathy_weight)
+
+Workflow (matches diagram):
+  Raw Response (from Layer 3 Draft Logic Response)
+          │
+          ▼
+  LLM Response Wrap          ← wraps the raw response into a structured envelope
+          │
+          ▼
+  Maternal Filter Protection Check  ← decision diamond
+          │                │
+    Good Response      Need Improve
+          │                │
+          ▼                ▼
+  Final Response    Nurturing and Empathic Rewriter
+  to User                  │
+                           ▼
+                    Final Response to User
+
+Components:
+  a. LLMResponseWrapper      — Wraps raw response, normalizes structure
+  b. MaternalFilterChecker   — Decision gate (Good Response / Need Improve)
+  c. NurturingEmpathicRewriter — Rewrites with maternal persona
+  d. MaternalGuardrail       — Orchestrates the above (main public class)
 """
+from typing import Optional
 from backend.core.llm_client import generate_text
 
 
-class MaternalGuardrail:
+class LLMResponseWrapper:
     """
-    The final protective layer. Acts as 'Ara', an AI with maternal instinct.
-    Triggers on emotional distress or ethical violations.
+    LLM Response Wrap (diagram block).
+
+    Takes the raw Draft Logic Response from Layer 3 and wraps it
+    into a normalized envelope with metadata for the filter check.
+
+    This step ensures the filter checker always receives a well-structured
+    input regardless of which specialist agent produced the response.
     """
 
-    # Emotions that trigger the guardrail (only severe distress states)
-    # Removed SELF-CRITICAL and STRESS to allow more natural, motherly responses
-    # A real mother doesn't always intervene - she lets her child learn and grow
-    TRIGGER_EMOTIONS = ["PANIC", "FATIGUE"]  # Only extreme cases trigger rewriting
+    def wrap(self, raw_response: str, emotion: str, layer_3_status: str,
+             empathy_data: Optional[dict] = None) -> dict:
+        """
+        Wrap the raw response into a normalized envelope.
+
+        Returns:
+            {
+                "content": str,       # The response text
+                "emotion": str,       # Detected emotion
+                "layer3_status": str, # "PASS" | "VIOLATION"
+                "intensity": float,
+                "flags": dict,
+                "needs_wrap": bool,   # True if this is a violation or distressed state
+            }
+        """
+        intensity = empathy_data.get("intensity", 0.0) if empathy_data else 0.0
+        flags = empathy_data.get("flags", {}) if empathy_data else {}
+
+        needs_wrap = (
+            layer_3_status == "VIOLATION" or
+            intensity >= 0.5 or
+            flags.get("guardrail_active", False)
+        )
+
+        return {
+            "content": raw_response,
+            "emotion": emotion,
+            "layer3_status": layer_3_status,
+            "intensity": intensity,
+            "flags": flags,
+            "needs_wrap": needs_wrap,
+        }
+
+
+class MaternalFilterChecker:
+    """
+    Maternal Filter Protection Check (diagram diamond).
+
+    Decision gate that evaluates the wrapped response and decides:
+      - "GOOD_RESPONSE":  Pass through as-is (no rewriting needed)
+      - "NEED_IMPROVE":   Route to Nurturing Empathic Rewriter
+
+    A response "Needs Improvement" when any of these are true:
+      - Emotion triggers guardrail (PANIC, FATIGUE at high intensity)
+      - Layer 3 detected a VIOLATION
+      - Empathy flags explicitly activate the guardrail
+    """
+
+    # Emotions that always trigger rewriting
+    TRIGGER_EMOTIONS = ["PANIC", "FATIGUE"]
+
+    def check(self, wrapped_response: dict) -> str:
+        """
+        Evaluate the wrapped response.
+
+        Returns:
+            "GOOD_RESPONSE" or "NEED_IMPROVE"
+        """
+        emotion = wrapped_response.get("emotion", "NEUTRAL")
+        layer3_status = wrapped_response.get("layer3_status", "PASS")
+        flags = wrapped_response.get("flags", {})
+
+        # Explicit guardrail activation flag from Layer 1 Empathy Scout
+        if flags.get("guardrail_active", False):
+            return "NEED_IMPROVE"
+
+        # Hard-trigger emotions
+        if emotion in self.TRIGGER_EMOTIONS:
+            return "NEED_IMPROVE"
+
+        # Ethics violation from Layer 3
+        if layer3_status == "VIOLATION":
+            return "NEED_IMPROVE"
+
+        return "GOOD_RESPONSE"
+
+
+class NurturingEmpathicRewriter:
+    """
+    Nurturing and Empathic Rewriter (diagram block).
+
+    Takes a response that "Needs Improvement" and rewrites it
+    using the Maternal Instinct persona ('Ara').
+
+    Implements:
+      - Emotional Check-in Trigger
+      - Validation Module (avoid toxic positivity)
+      - Negative Self-Talk Reframing
+      - Sentiment Weighting: Response = f(logical_accuracy, empathy_weight)
+    """
 
     # Persona-specific system prompts per emotion type
     PERSONA_PROMPTS = {
@@ -79,56 +189,96 @@ class MaternalGuardrail:
         4. Gunakan sapaan hangat seperti "Sayang" atau "Teman".
     """
 
-    def sanitize(self, raw_response, emotion, layer_3_status, empathy_data=None):
+    def rewrite(self, wrapped_response: dict) -> str:
         """
-        Main guardrail process.
+        Rewrite the response with maternal empathic persona.
+
         Args:
-            raw_response: Output from Layer 2 (Specialist Agents)
-            emotion: Detected emotion from Empathy Scout
-            layer_3_status: PASS or VIOLATION from Layer 3
-            empathy_data: Full empathy analysis dict (emotion, intensity, flags)
-        Returns: (final_response, is_rewritten)
+            wrapped_response: Normalized envelope from LLMResponseWrapper.
+
+        Returns:
+            Rewritten response string.
         """
-        is_rewritten = False
-        final_response = raw_response
+        raw_response = wrapped_response.get("content", "")
+        emotion = wrapped_response.get("emotion", "NEUTRAL")
+        layer3_status = wrapped_response.get("layer3_status", "PASS")
+        intensity = wrapped_response.get("intensity", 0.5)
+        flags = wrapped_response.get("flags", {})
 
-        # --- TRIGGER CONDITION ---
-        should_trigger = (
-            emotion in self.TRIGGER_EMOTIONS or
-            layer_3_status == "VIOLATION"
-        )
+        system_prompt = self.PERSONA_PROMPTS.get(emotion, self.DEFAULT_PERSONA)
 
-        # Additional flag-based triggers
-        if empathy_data and empathy_data.get("flags", {}).get("guardrail_active", False):
-            should_trigger = True
+        prompt = f"""
+        INPUT (Pesan dari Sistem Logis):
+        ---
+        {raw_response}
+        ---
 
-        if should_trigger:
-            is_rewritten = True
+        KONTEKS:
+        - Emosi User: {emotion}
+        - Intensitas Emosi: {intensity:.1f}/1.0
+        - Status Etika: {layer3_status}
+        - Perlu Validasi Ekstra: {"Ya" if flags.get("extra_validation") else "Tidak"}
+        - Monitoring Burnout: {"Ya" if flags.get("burnout_monitoring") else "Tidak"}
 
-            # Select persona prompt based on emotion type
-            system_prompt = self.PERSONA_PROMPTS.get(emotion, self.DEFAULT_PERSONA)
+        INSTRUKSI: Tulis ulang pesan di atas sesuai persona Maternal Instinct.
+        Pastikan KALIMAT PERTAMA memvalidasi perasaan user sebelum memberikan saran apapun.
+        """
 
-            # Build intensity context
-            intensity = empathy_data.get("intensity", 0.5) if empathy_data else 0.5
-            flags = empathy_data.get("flags", {}) if empathy_data else {}
+        return generate_text(prompt, system_instruction=system_prompt)
 
-            prompt = f"""
-            INPUT (Pesan dari Sistem Logis):
-            ---
-            {raw_response}
-            ---
 
-            KONTEKS:
-            - Emosi User: {emotion}
-            - Intensitas Emosi: {intensity:.1f}/1.0
-            - Status Etika: {layer_3_status}
-            - Perlu Validasi Ekstra: {"Ya" if flags.get("extra_validation") else "Tidak"}
-            - Monitoring Burnout: {"Ya" if flags.get("burnout_monitoring") else "Tidak"}
+class MaternalGuardrail:
+    """
+    Maternal Guardrail — Main orchestrator of Layer 4 (Paper Section III-D).
 
-            INSTRUKSI: Tulis ulang pesan di atas sesuai persona Maternal Instinct.
-            Pastikan KALIMAT PERTAMA memvalidasi perasaan user sebelum memberikan saran apapun.
-            """
+    Implements the full diagram flow:
+      Raw Response → LLM Response Wrap → Maternal Filter Check
+          → Good: pass through | Need Improve: Nurturing Rewriter
+          → Final Response to User
+    """
 
-            final_response = generate_text(prompt, system_instruction=system_prompt)
+    def __init__(self):
+        self._wrapper = LLMResponseWrapper()
+        self._filter = MaternalFilterChecker()
+        self._rewriter = NurturingEmpathicRewriter()
 
-        return final_response, is_rewritten
+    def sanitize(
+        self,
+        raw_response: str,
+        emotion: str,
+        layer_3_status: str,
+        empathy_data: Optional[dict] = None,
+    ) -> tuple[str, bool]:
+        """
+        Full Layer 4 pipeline.
+
+        Step 1: LLM Response Wrap    — normalize response into structured envelope
+        Step 2: Maternal Filter Check — decide Good Response / Need Improve
+        Step 3: Route:
+                  Good → return as-is
+                  Need Improve → Nurturing Empathic Rewriter → return rewritten
+
+        Args:
+            raw_response:   Output from Layer 3 (Draft Logic Response).
+            emotion:        Detected emotion from Layer 1 Empathy Scout.
+            layer_3_status: "PASS" or "VIOLATION" from Layer 3.
+            empathy_data:   Full empathy dict (emotion, intensity, flags).
+
+        Returns:
+            (final_response: str, is_rewritten: bool)
+        """
+        # ── Step 1: LLM Response Wrap ──────────────────────────────────────
+        wrapped = self._wrapper.wrap(raw_response, emotion, layer_3_status, empathy_data)
+
+        # ── Step 2: Maternal Filter Protection Check ───────────────────────
+        filter_decision = self._filter.check(wrapped)
+
+        # ── Step 3: Route based on decision ───────────────────────────────
+        if filter_decision == "GOOD_RESPONSE":
+            # Good Response → pass through directly to user
+            return raw_response, False
+
+        else:
+            # Need Improve → Nurturing and Empathic Rewriter
+            rewritten = self._rewriter.rewrite(wrapped)
+            return rewritten, True
