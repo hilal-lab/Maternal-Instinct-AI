@@ -35,6 +35,23 @@ class IntentType(str, Enum):
     GENERAL_CHAT = "GENERAL_CHAT"
 
 
+class ChatMode(str, Enum):
+    CONVERSATION = "conversation"
+    LEARNING = "learning"
+
+
+class LearningMode(str, Enum):
+    LESSON = "lesson"
+    QUIZ = "quiz"
+    REVIEW = "review"
+
+
+class UserLevel(str, Enum):
+    PEMULA = "pemula"
+    MENENGAH = "menengah"
+    MAHIR = "mahir"
+
+
 # ─── Schedule Schemas ────────────────────────────────────
 
 class ScheduleCreate(BaseModel):
@@ -138,3 +155,78 @@ class AnalyticsResponse(BaseModel):
     layer3_violations: int = 0
     layer4_rewrites: int = 0
     dataset_stats: dict = {}
+
+
+# ─── Learning Schemas ────────────────────────────────────
+
+class LessonSection(BaseModel):
+    type: str
+    content: str
+    duration_mins: int = 5
+    quiz_questions: list = []
+
+
+class LessonResponse(BaseModel):
+    session_id: int
+    topic: str
+    subtopic: str
+    level: str
+    sections: list[LessonSection]
+    total_duration_mins: int
+
+
+class QuizQuestion(BaseModel):
+    id: int
+    type: str
+    question: str
+    options: list[str] = []
+    correct_answer: Optional[str] = None
+    explanation: Optional[str] = None
+
+
+class QuizSubmission(BaseModel):
+    session_id: int
+    answers: dict[int, str]
+
+
+class QuizResult(BaseModel):
+    session_id: int
+    total_questions: int
+    correct_count: int
+    score_percentage: float
+    results: list[dict]
+    recommendations: list[str]
+
+
+class TopicMastery(BaseModel):
+    topic: str
+    mastery_level: float
+    total_attempts: int
+    last_reviewed: Optional[str]
+    next_review: Optional[str]
+
+
+class UserProfile(BaseModel):
+    current_level: str = "pemula"
+    learning_goals: list[str] = []
+    preferred_topics: list[str] = []
+
+
+class LearningSessionResponse(BaseModel):
+    id: int
+    mode: str
+    topic: str
+    subtopic: str
+    level: str
+    status: str
+    current_section: int
+    total_sections: int
+    created_at: str
+    completed_at: Optional[str]
+
+
+class ReviewItem(BaseModel):
+    topic: str
+    mastery_level: float
+    due_review: str
+    interval_days: int

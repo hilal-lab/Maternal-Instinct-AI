@@ -146,3 +146,25 @@ def get_index_stats() -> dict:
         "total_vectors": _vector_store.count,
         "status": "active" if _vector_store.count > 0 else "empty",
     }
+
+
+def list_materials() -> list[dict]:
+    """List all unique documents/materials in the RAG index."""
+    _ensure_init()
+    if _vector_store is None:
+        return []
+
+    unique_docs = {}
+    for chunk in _vector_store.chunks:
+        doc_id = chunk.doc_id
+        if doc_id and doc_id not in unique_docs:
+            unique_docs[doc_id] = {
+                "doc_id": doc_id,
+                "topic": chunk.metadata.get("topic", chunk.metadata.get("filename", doc_id)),
+                "filename": chunk.metadata.get("filename", doc_id),
+                "chunk_count": 0,
+            }
+        if doc_id in unique_docs:
+            unique_docs[doc_id]["chunk_count"] += 1
+
+    return list(unique_docs.values())

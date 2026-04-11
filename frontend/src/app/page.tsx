@@ -6,12 +6,16 @@ import ChatInterface from '@/components/ChatInterface';
 import ScheduleManager from '@/components/ScheduleManager';
 import AnalyticsDashboard from '@/components/AnalyticsDashboard';
 import MaterialsManager from '@/components/MaterialsManager';
+import ModeSwitcher from '@/components/ModeSwitcher';
+import LearningInterface from '@/components/LearningInterface';
 import { healthCheck } from '@/lib/api';
 
 type Tab = 'chat' | 'schedule' | 'analytics' | 'materials';
+type ChatMode = 'conversation' | 'learning';
 
 export default function Home() {
   const [activeTab, setActiveTab] = useState<Tab>('chat');
+  const [chatMode, setChatMode] = useState<ChatMode>('conversation');
   const [apiStatus, setApiStatus] = useState<'checking' | 'online' | 'offline'>('checking');
 
   useEffect(() => {
@@ -102,7 +106,14 @@ export default function Home() {
           </div>
         )}
 
-        {activeTab === 'chat' && <ChatInterface />}
+        {activeTab === 'chat' && (
+          <>
+            <div className="mb-4 flex justify-center">
+              <ModeSwitcher currentMode={chatMode} onModeChange={setChatMode} />
+            </div>
+            {chatMode === 'conversation' ? <ChatInterface /> : <LearningInterface />}
+          </>
+        )}
         {activeTab === 'schedule' && <ScheduleManager />}
         {activeTab === 'analytics' && <AnalyticsDashboard />}
         {activeTab === 'materials' && <MaterialsManager />}

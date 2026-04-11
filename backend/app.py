@@ -27,6 +27,7 @@ from backend.routes.chat_routes import router as chat_router
 from backend.routes.schedule_routes import router as schedule_router
 from backend.routes.document_routes import router as document_router
 from backend.routes.analytics_routes import router as analytics_router
+from backend.routes.learning_routes import router as learning_router
 
 
 # ─── Lifecycle ───────────────────────────────────────────
@@ -69,6 +70,7 @@ app.include_router(chat_router, prefix="/api", tags=["Chat"])
 app.include_router(schedule_router, prefix="/api", tags=["Schedule"])
 app.include_router(document_router, prefix="/api", tags=["Documents"])
 app.include_router(analytics_router, prefix="/api", tags=["Analytics"])
+app.include_router(learning_router, prefix="/api", tags=["Learning"])
 
 
 @app.get("/", tags=["Health"])

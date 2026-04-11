@@ -2,31 +2,32 @@
 Chat Routes — API endpoint definitions.
 """
 import json
-from fastapi import APIRouter, WebSocket, WebSocketDisconnect
+from fastapi import APIRouter, WebSocket, WebSocketDisconnect, Query
 
-from backend.models.schemas import ChatRequest, ChatResponse
+from backend.models.schemas import ChatRequest, ChatResponse, ChatMode
 from backend.controllers import chat_controller
 from backend.services import chat_service
+from backend.services.learning_service import learning_service
 
 router = APIRouter()
 
 
 @router.post("/chat", response_model=ChatResponse)
-async def chat(request: ChatRequest):
+async def chat(request: ChatRequest, mode: str = Query("conversation")):
     """Send a message through the 4-layer pipeline."""
-    return await chat_controller.send_message(request)
+    return await chat_controller.send_message(request, mode=mode)
 
 
 @router.get("/chat/history")
-async def history(limit: int = 50):
-    """Get recent chat messages."""
-    return await chat_controller.get_history(limit)
+async def history(limit: int = 50, mode: str = Query(None)):
+    """Get recent chat messages, optionally filtered by mode."""
+    return await chat_controller.get_history(limit, mode=mode)
 
 
 @router.delete("/chat/history")
-async def clear():
-    """Clear all chat history."""
-    return await chat_controller.clear_history()
+async def clear(mode: str = Query(None)):
+    """Clear chat history, optionally filtered by mode."""
+    return await chat_controller.clear_history(mode=mode)
 
 
 @router.websocket("/ws/chat")
@@ -34,39 +35,106 @@ async def websocket_chat(websocket: WebSocket):
     """
     Real-time chat via WebSocket with per-layer progress events.
 
+    Supports both Conversation Mode and Learning Mode.
+
     Incoming message types
     ----------------------
-    { "type": "message", "message": "..." }   — or legacy { "message": "..." }
+    { "type": "message", "message": "...", "mode": "conversation|learning" }
         Start a new pipeline run.
 
     { "type": "tool_confirm_response", "confirm_id": "...", "approved": true/false }
         Resume a pipeline that is suspended waiting for destructive tool confirmation.
+
+    { "type": "learning", "action": "start|continue|quiz", ... }
+        Learning mode actions.
 
     Outgoing event types
     --------------------
     layer_start | layer_progress | layer_done  — pipeline progress
     tool_confirm                               — destructive tool needs confirmation
     response                                   — final assembled ChatResponse
+    learning_start | learning_section | learning_quiz | learning_result — learning mode events
     error                                      — something went wrong
     """
     await websocket.accept()
+    current_mode = "conversation"
+    
     try:
         while True:
             data = await websocket.receive_text()
             msg = json.loads(data)
 
-            # Determine message type — support both new typed format and
-            # legacy { "message": "..." } from older frontend builds.
             msg_type = msg.get("type", "message")
 
-            # ── Forward pipeline events live to the client ─────────────────
             async def on_event(event: dict):
                 await websocket.send_json(event)
 
-            # ── Branch on message type ─────────────────────────────────────
+            # ── Learning Mode Handler ────────────────────────────────────────
+            if msg_type == "learning" or current_mode == "learning":
+                learning_action = msg.get("action", "")
+                
+                if learning_action == "start":
+                    topic = msg.get("topic", "")
+                    mode = msg.get("learning_mode", "lesson")
+                    level = msg.get("level", "pemula")
+                    
+                    result = await learning_service.start_learning(
+                        topic=topic,
+                        subtopic=msg.get("subtopic", ""),
+                        level=level,
+                        mode=mode
+                    )
+                    
+                    await websocket.send_json({
+                        "type": "learning_start",
+                        "data": result
+                    })
+                    
+                elif learning_action == "continue":
+                    session_id = msg.get("session_id")
+                    user_response = msg.get("response", "")
+                    
+                    result = await learning_service.continue_learning(
+                        session_id=session_id,
+                        user_response=user_response
+                    )
+                    
+                    if result.get("done"):
+                        await websocket.send_json({
+                            "type": "learning_complete",
+                            "data": result
+                        })
+                    else:
+                        await websocket.send_json({
+                            "type": "learning_section",
+                            "data": result
+                        })
+                        
+                elif learning_action == "submit_quiz":
+                    session_id = msg.get("session_id")
+                    answers = msg.get("answers", {})
+                    
+                    result = await learning_service.submit_quiz(
+                        session_id=session_id,
+                        answers=answers
+                    )
+                    
+                    await websocket.send_json({
+                        "type": "learning_result",
+                        "data": result
+                    })
+                    
+                elif learning_action == "switch_mode":
+                    current_mode = msg.get("mode", "conversation")
+                    await websocket.send_json({
+                        "type": "mode_changed",
+                        "mode": current_mode
+                    })
+                
+                continue
 
+            # ── Tool Confirmation Handler ───────────────────────────────────
             if msg_type == "tool_confirm_response":
-                # User approved or rejected a pending destructive tool call
                 confirm_id = msg.get("confirm_id", "")
                 approved = bool(msg.get("approved", False))
 
@@ -77,7 +145,6 @@ async def websocket_chat(websocket: WebSocket):
                 )
 
                 if result is None:
-                    # Unknown confirm_id — pending entry may have expired
                     await websocket.send_json({
                         "type": "error",
                         "message": "Konfirmasi tidak ditemukan atau sudah kedaluwarsa.",
@@ -88,10 +155,40 @@ async def websocket_chat(websocket: WebSocket):
                         "data": result.model_dump(),
                     })
 
+            # ── Mode Switch Handler ─────────────────────────────────────────
+            elif msg_type == "switch_mode":
+                current_mode = msg.get("mode", "conversation")
+                await websocket.send_json({
+                    "type": "mode_changed",
+                    "mode": current_mode
+                })
+
+            # ── Default: Chat Message ─────────────────────────────────────────
             else:
-                # Default: new chat message (type == "message" or legacy)
                 user_message = msg.get("message", "")
                 if not user_message.strip():
+                    continue
+
+                # Check if message implies mode change
+                from backend.core.mode_router import detect_mode
+                detected_mode, topic = detect_mode(
+                    user_message, 
+                    msg.get("force_mode")
+                )
+                current_mode = detected_mode.value
+                
+                # If learning mode detected, start learning session
+                if current_mode == "learning" and topic:
+                    result = await learning_service.start_learning(
+                        topic=topic,
+                        level="pemula",
+                        mode="lesson"
+                    )
+                    await websocket.send_json({
+                        "type": "learning_start",
+                        "data": result,
+                        "detected_topic": topic
+                    })
                     continue
 
                 result = await chat_service.run_pipeline(
@@ -100,9 +197,6 @@ async def websocket_chat(websocket: WebSocket):
                 )
 
                 if result is None:
-                    # Pipeline suspended — tool_confirm event already sent.
-                    # Don't send a final "response" here; the client will
-                    # wait for the confirmation dialog and respond back.
                     pass
                 else:
                     await websocket.send_json({

@@ -93,6 +93,7 @@ pending_confirmations: dict[str, dict] = {}
 async def run_pipeline(
     message: str,
     on_event: ProgressCallback = None,
+    mode: str = "conversation",
 ) -> Optional[ChatResponse]:
     """
     Execute the full 4-layer architecture pipeline.
@@ -307,7 +308,7 @@ async def run_pipeline(
 
     # ── Persist to chat history ───────────────────────────────────────────────
     await _save_to_history(
-        message, final_output, emotion, intent, intensity, eth_status, is_rewritten
+        message, final_output, emotion, intent, intensity, eth_status, is_rewritten, mode
     )
 
     return ChatResponse(
@@ -460,6 +461,7 @@ async def _save_to_history(
     user_msg: str, bot_msg: str,
     emotion: str, intent: str, intensity: float,
     l3_status: str, l4_rewritten: bool,
+    mode: str = "conversation",
 ):
     """Save user + assistant messages to chat_history."""
     db = await get_db()
@@ -467,31 +469,39 @@ async def _save_to_history(
         for role, content in [("user", user_msg), ("assistant", bot_msg)]:
             await db.execute(
                 "INSERT INTO chat_history "
-                "(role, content, emotion, intent, intensity, layer3_status, layer4_rewritten) "
-                "VALUES (?, ?, ?, ?, ?, ?, ?)",
-                (role, content, emotion, intent, intensity, l3_status, int(l4_rewritten))
+                "(mode, role, content, emotion, intent, intensity, layer3_status, layer4_rewritten) "
+                "VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
+                (mode, role, content, emotion, intent, intensity, l3_status, int(l4_rewritten))
             )
         await db.commit()
     finally:
         await db.close()
 
 
-async def get_history(limit: int = 50) -> list[dict]:
-    """Get recent chat history."""
+async def get_history(limit: int = 50, mode: str = None) -> list[dict]:
+    """Get recent chat history, optionally filtered by mode."""
     db = await get_db()
     try:
-        cursor = await db.execute(
-            "SELECT id, role, content, emotion, intent, intensity, "
-            "layer3_status, layer4_rewritten, created_at "
-            "FROM chat_history ORDER BY id DESC LIMIT ?",
-            (limit,)
-        )
+        if mode:
+            cursor = await db.execute(
+                "SELECT id, mode, role, content, emotion, intent, intensity, "
+                "layer3_status, layer4_rewritten, created_at "
+                "FROM chat_history WHERE mode = ? ORDER BY id DESC LIMIT ?",
+                (mode, limit)
+            )
+        else:
+            cursor = await db.execute(
+                "SELECT id, mode, role, content, emotion, intent, intensity, "
+                "layer3_status, layer4_rewritten, created_at "
+                "FROM chat_history ORDER BY id DESC LIMIT ?",
+                (limit,)
+            )
         rows = await cursor.fetchall()
         return [
             {
-                "id": r[0], "role": r[1], "content": r[2], "emotion": r[3],
-                "intent": r[4], "intensity": r[5], "layer3_status": r[6],
-                "layer4_rewritten": bool(r[7]), "created_at": r[8],
+                "id": r[0], "mode": r[1], "role": r[2], "content": r[3], "emotion": r[4],
+                "intent": r[5], "intensity": r[6], "layer3_status": r[7],
+                "layer4_rewritten": bool(r[8]), "created_at": r[9],
             }
             for r in reversed(rows)
         ]
@@ -499,11 +509,14 @@ async def get_history(limit: int = 50) -> list[dict]:
         await db.close()
 
 
-async def clear_history():
-    """Clear all chat history."""
+async def clear_history(mode: str = None):
+    """Clear chat history, optionally filtered by mode."""
     db = await get_db()
     try:
-        await db.execute("DELETE FROM chat_history")
+        if mode:
+            await db.execute("DELETE FROM chat_history WHERE mode = ?", (mode,))
+        else:
+            await db.execute("DELETE FROM chat_history")
         await db.commit()
     finally:
         await db.close()

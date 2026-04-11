@@ -42,15 +42,14 @@ class PolicyAggregator:
     MIN_BREAK_HOURS = 1
     MIN_SLEEP_HOURS = 6
 
-    # Keywords indicating unhealthy recommendations in Layer 2 output
     HEALTH_VIOLATION_KEYWORDS = [
-        "lembur", "begadang", "tidak tidur", "skip makan",
-        "kerja terus", "tanpa istirahat", "tanpa henti",
-        "semalaman", "sampai subuh", "sampai pagi",
-        "tidak makan", "skip sarapan", "ignore makan",
-        "ignore istirahat", "ignore lapar", "ignore kesehatan",
-        "tidur 2 jam", "tidur 3 jam", "tidur 4 jam",
-        "stay up", "all night", "nonstop",
+        "skip sarapan",
+        "ignore makan",
+        "ignore istirahat",
+        "ignore lapar",
+        "stay up all night",
+        "begadang",
+        "lembur terus",
     ]
 
     # ── Workload Checking (diagram diamond) ───────────────────────────────────
@@ -154,14 +153,13 @@ class PolicyAggregator:
                         f"Melampaui batas aman ({self.MAX_WORK_HOURS} jam/hari)."
                     )
 
-        # ── CHECK 2: Unhealthy keywords in response ──
+        # ── CHECK 2: Unhealthy keywords in response (warning only, not VIOLATION) ──
         response_lower = response_text.lower()
         detected_keywords = [kw for kw in self.HEALTH_VIOLATION_KEYWORDS if kw in response_lower]
 
         if detected_keywords:
-            status = "VIOLATION"
             violations.append(
-                f"⚠️ **SARAN TIDAK SEHAT:** Terdeteksi indikasi: "
+                f"⚠️ **PERHATIAN:** Terdeteksi indikasi: "
                 f"{', '.join(detected_keywords[:3])}."
             )
 

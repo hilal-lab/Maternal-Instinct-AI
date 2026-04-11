@@ -3,8 +3,7 @@ services:
   ollama:
     image: ollama/ollama:latest
     container_name: maternal-ai-ollama
-    ports:
-      - "11434:11434"
+    network_mode: host
     volumes:
       - ollama_data:/root/.ollama
     environment:
@@ -26,14 +25,14 @@ services:
     ports:
       - "8000:8000"
     environment:
-      - OLLAMA_HOST=http://ollama:11434
-      - PYTHONPATH=/app
+      - OLLAMA_HOST=http://host.docker.internal:11434
+      - PYTHONPATH=/app:/app/backend
     volumes:
       - ./backend:/app/backend
+      - ./rag:/app/rag
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     working_dir: /app
-    depends_on:
-      ollama:
-        condition: service_healthy
     restart: unless-stopped
     command: ["python", "-m", "uvicorn", "backend.app:app", "--host", "0.0.0.0", "--port", "8000"]
 

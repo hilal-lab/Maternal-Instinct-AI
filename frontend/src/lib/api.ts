@@ -13,20 +13,73 @@ const api = axios.create({
 
 // Chat endpoints
 export const chatAPI = {
-  sendMessage: async (message: string): Promise<ChatResponse> => {
-    const { data } = await api.post<ChatResponse>('/chat', { message });
-    return data;
-  },
-
-  getHistory: async (limit: number = 50): Promise<ChatMessage[]> => {
-    const { data } = await api.get<ChatMessage[]>('/chat/history', {
-      params: { limit },
+  sendMessage: async (message: string, mode: string = 'conversation'): Promise<ChatResponse> => {
+    const { data } = await api.post<ChatResponse>('/chat', { message }, {
+      params: { mode },
     });
     return data;
   },
 
-  clearHistory: async (): Promise<void> => {
-    await api.delete('/chat/history');
+  getHistory: async (limit: number = 50, mode?: string): Promise<ChatMessage[]> => {
+    const { data } = await api.get<ChatMessage[]>('/chat/history', {
+      params: { limit, mode },
+    });
+    return data;
+  },
+
+  clearHistory: async (mode?: string): Promise<void> => {
+    await api.delete('/chat/history', { params: { mode } });
+  },
+};
+
+// Learning endpoints
+export const learningAPI = {
+  getTopics: async (): Promise<{ available_topics: string[]; user_topics: string[] }> => {
+    const { data } = await api.get('/learning/topics');
+    return data;
+  },
+
+  startLesson: async (topic: string, level: string = 'pemula'): Promise<any> => {
+    const { data } = await api.post('/learning/start', null, {
+      params: { topic, mode: 'lesson', level },
+    });
+    return data;
+  },
+
+  getSession: async (sessionId: number): Promise<any> => {
+    const { data } = await api.get(`/learning/session/${sessionId}`);
+    return data;
+  },
+
+  continueLesson: async (sessionId: number, response: string = ''): Promise<any> => {
+    const { data } = await api.get(`/learning/session/${sessionId}/continue`, {
+      params: { user_response: response },
+    });
+    return data;
+  },
+
+  submitQuiz: async (sessionId: number, answers: Record<number, string>): Promise<any> => {
+    const { data } = await api.post('/learning/quiz/submit', { session_id: sessionId, answers });
+    return data;
+  },
+
+  getReviewQueue: async (limit: number = 5): Promise<{ reviews: any[] }> => {
+    const { data } = await api.get('/learning/review-queue', { params: { limit } });
+    return data;
+  },
+
+  getHistory: async (limit: number = 20): Promise<{ sessions: any[] }> => {
+    const { data } = await api.get('/learning/history', { params: { limit } });
+    return data;
+  },
+
+  getUserProfile: async (): Promise<any> => {
+    const { data } = await api.get('/learning/profile');
+    return data;
+  },
+
+  setUserLevel: async (level: string): Promise<void> => {
+    await api.put('/learning/profile/level', null, { params: { level } });
   },
 };
 
