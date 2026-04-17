@@ -58,6 +58,7 @@ async def init_db():
 
             CREATE TABLE IF NOT EXISTS chat_history (
                 id              INTEGER PRIMARY KEY AUTOINCREMENT,
+                chat_id         TEXT NOT NULL DEFAULT 'default',
                 mode            TEXT NOT NULL DEFAULT 'conversation'
                     CHECK(mode IN ('conversation', 'learning')),
                 role            TEXT NOT NULL CHECK(role IN ('user','assistant')),
@@ -148,6 +149,7 @@ async def migrate_db(db: aiosqlite.Connection):
         ("chat_history", "mode", "TEXT NOT NULL DEFAULT 'conversation'"),
         ("chat_history", "layer3_status", "TEXT DEFAULT 'PASS'"),
         ("chat_history", "layer4_rewritten", "INTEGER DEFAULT 0"),
+        ("chat_history", "chat_id", "TEXT NOT NULL DEFAULT 'default'"),
     ]
 
     for table, column, column_def in migrations:

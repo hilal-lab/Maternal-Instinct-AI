@@ -19,15 +19,15 @@ async def chat(request: ChatRequest, mode: str = Query("conversation")):
 
 
 @router.get("/chat/history")
-async def history(limit: int = 50, mode: str = Query(None)):
-    """Get recent chat messages, optionally filtered by mode."""
-    return await chat_controller.get_history(limit, mode=mode)
+async def history(limit: int = 50, mode: str = Query(None), chat_id: str = Query(None)):
+    """Get recent chat messages, optionally filtered by mode and chat_id."""
+    return await chat_controller.get_history(limit, mode=mode, chat_id=chat_id)
 
 
 @router.delete("/chat/history")
-async def clear(mode: str = Query(None)):
-    """Clear chat history, optionally filtered by mode."""
-    return await chat_controller.clear_history(mode=mode)
+async def clear(mode: str = Query(None), chat_id: str = Query(None)):
+    """Clear chat history, optionally filtered by mode and chat_id."""
+    return await chat_controller.clear_history(mode=mode, chat_id=chat_id)
 
 
 @router.websocket("/ws/chat")
@@ -169,6 +169,8 @@ async def websocket_chat(websocket: WebSocket):
                 if not user_message.strip():
                     continue
 
+                chat_id = msg.get("chat_id", "default")
+
                 # Check if message implies mode change
                 from backend.core.mode_router import detect_mode
                 detected_mode, topic = detect_mode(
@@ -194,6 +196,7 @@ async def websocket_chat(websocket: WebSocket):
                 result = await chat_service.run_pipeline(
                     user_message,
                     on_event=on_event,
+                    chat_id=chat_id,
                 )
 
                 if result is None:

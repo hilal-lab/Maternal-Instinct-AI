@@ -94,9 +94,16 @@ async def run_pipeline(
     message: str,
     on_event: ProgressCallback = None,
     mode: str = "conversation",
+    chat_id: str = None,
 ) -> Optional[ChatResponse]:
     """
     Execute the full 4-layer architecture pipeline.
+
+    Args:
+        message: The user's input message.
+        on_event: Optional callback for WebSocket progress events.
+        mode: Chat mode — "conversation" or "learning".
+        chat_id: Optional chat session ID for loading conversation history context.
 
     Returns:
         ChatResponse on success, or None if the pipeline was suspended
@@ -114,6 +121,10 @@ async def run_pipeline(
     specialists = SpecialistAgents(mcp_server=mcp)
     ethics = PolicyAggregator()
     guardrail = MaternalGuardrail()
+
+    # ── Chat ID default ──────────────────────────────────────────────────────
+    if chat_id is None:
+        chat_id = "default"
 
     # ═══════════════════════════════════════════════════════════════════════════
     # LAYER 1: Orchestration & Data Retrieval
@@ -135,12 +146,13 @@ async def run_pipeline(
     await _emit({"type": "layer_progress", "layer": 1, "step": "context",
                  "message": "Mengambil konteks jadwal & RAG..."})
 
-    # Step 1b: Context Retrieval — DB (via MCP) + FAISS embedding search
-    context = await orchestrator.context_retriever.retrieve(message)
+    # Step 1b: Context Retrieval — DB (via MCP) + FAISS embedding search + Chat history
+    context = await orchestrator.context_retriever.retrieve(message, chat_id=chat_id)
 
     schedule_tasks = context.get("schedule_tasks", [])
     workload = context.get("workload", {})
     rag_context = context.get("rag_context", "")
+    chat_history_context = context.get("chat_history_context", "")
 
     await _emit({"type": "layer_done", "layer": 1,
                  "message": f"Layer 1 selesai. Routing ke: {', '.join(task_routing) or 'general_chat'}"})
@@ -170,6 +182,7 @@ async def run_pipeline(
         rag_context=rag_context,
         schedule_tasks=schedule_tasks,
         workload=workload,
+        chat_history_context=chat_history_context,
     )
 
     await _emit({"type": "layer_done", "layer": 2,
@@ -308,7 +321,7 @@ async def run_pipeline(
 
     # ── Persist to chat history ───────────────────────────────────────────────
     await _save_to_history(
-        message, final_output, emotion, intent, intensity, eth_status, is_rewritten, mode
+        message, final_output, emotion, intent, intensity, eth_status, is_rewritten, mode, chat_id
     )
 
     return ChatResponse(
@@ -462,6 +475,7 @@ async def _save_to_history(
     emotion: str, intent: str, intensity: float,
     l3_status: str, l4_rewritten: bool,
     mode: str = "conversation",
+    chat_id: str = "default",
 ):
     """Save user + assistant messages to chat_history."""
     db = await get_db()
@@ -469,29 +483,43 @@ async def _save_to_history(
         for role, content in [("user", user_msg), ("assistant", bot_msg)]:
             await db.execute(
                 "INSERT INTO chat_history "
-                "(mode, role, content, emotion, intent, intensity, layer3_status, layer4_rewritten) "
-                "VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
-                (mode, role, content, emotion, intent, intensity, l3_status, int(l4_rewritten))
+                "(chat_id, mode, role, content, emotion, intent, intensity, layer3_status, layer4_rewritten) "
+                "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
+                (chat_id, mode, role, content, emotion, intent, intensity, l3_status, int(l4_rewritten))
             )
         await db.commit()
     finally:
         await db.close()
 
 
-async def get_history(limit: int = 50, mode: str = None) -> list[dict]:
-    """Get recent chat history, optionally filtered by mode."""
+async def get_history(limit: int = 50, mode: str = None, chat_id: str = None) -> list[dict]:
+    """Get recent chat history, optionally filtered by mode and/or chat_id."""
     db = await get_db()
     try:
-        if mode:
+        if mode and chat_id:
             cursor = await db.execute(
-                "SELECT id, mode, role, content, emotion, intent, intensity, "
+                "SELECT id, chat_id, mode, role, content, emotion, intent, intensity, "
+                "layer3_status, layer4_rewritten, created_at "
+                "FROM chat_history WHERE mode = ? AND chat_id = ? ORDER BY id DESC LIMIT ?",
+                (mode, chat_id, limit)
+            )
+        elif mode:
+            cursor = await db.execute(
+                "SELECT id, chat_id, mode, role, content, emotion, intent, intensity, "
                 "layer3_status, layer4_rewritten, created_at "
                 "FROM chat_history WHERE mode = ? ORDER BY id DESC LIMIT ?",
                 (mode, limit)
             )
+        elif chat_id:
+            cursor = await db.execute(
+                "SELECT id, chat_id, mode, role, content, emotion, intent, intensity, "
+                "layer3_status, layer4_rewritten, created_at "
+                "FROM chat_history WHERE chat_id = ? ORDER BY id DESC LIMIT ?",
+                (chat_id, limit)
+            )
         else:
             cursor = await db.execute(
-                "SELECT id, mode, role, content, emotion, intent, intensity, "
+                "SELECT id, chat_id, mode, role, content, emotion, intent, intensity, "
                 "layer3_status, layer4_rewritten, created_at "
                 "FROM chat_history ORDER BY id DESC LIMIT ?",
                 (limit,)
@@ -499,9 +527,9 @@ async def get_history(limit: int = 50, mode: str = None) -> list[dict]:
         rows = await cursor.fetchall()
         return [
             {
-                "id": r[0], "mode": r[1], "role": r[2], "content": r[3], "emotion": r[4],
-                "intent": r[5], "intensity": r[6], "layer3_status": r[7],
-                "layer4_rewritten": bool(r[8]), "created_at": r[9],
+                "id": r[0], "chat_id": r[1], "mode": r[2], "role": r[3], "content": r[4],
+                "emotion": r[5], "intent": r[6], "intensity": r[7], "layer3_status": r[8],
+                "layer4_rewritten": bool(r[9]), "created_at": r[10],
             }
             for r in reversed(rows)
         ]
@@ -509,12 +537,16 @@ async def get_history(limit: int = 50, mode: str = None) -> list[dict]:
         await db.close()
 
 
-async def clear_history(mode: str = None):
-    """Clear chat history, optionally filtered by mode."""
+async def clear_history(mode: str = None, chat_id: str = None):
+    """Clear chat history, optionally filtered by mode and/or chat_id."""
     db = await get_db()
     try:
-        if mode:
+        if mode and chat_id:
+            await db.execute("DELETE FROM chat_history WHERE mode = ? AND chat_id = ?", (mode, chat_id))
+        elif mode:
             await db.execute("DELETE FROM chat_history WHERE mode = ?", (mode,))
+        elif chat_id:
+            await db.execute("DELETE FROM chat_history WHERE chat_id = ?", (chat_id,))
         else:
             await db.execute("DELETE FROM chat_history")
         await db.commit()

@@ -113,6 +113,7 @@ class DocumentResponse(BaseModel):
 
 class ChatRequest(BaseModel):
     message: str
+    chat_id: Optional[str] = None
 
 class LayerOneData(BaseModel):
     intent: str = "GENERAL_CHAT"

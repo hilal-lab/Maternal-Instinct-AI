@@ -251,7 +251,7 @@ Gunakan format Markdown yang rapi.
     # ── Tutor Agent ───────────────────────────────────────────────────────────
 
     def run_tutor(self, topic: str, rag_context: str = "",
-                  schedule_context: str = "") -> str:
+                  schedule_context: str = "", history_context: str = "") -> str:
         """
         Tutor Agent (Paper Section III-B-b).
 
@@ -267,6 +267,7 @@ Gunakan format Markdown yang rapi.
         2. Gunakan pendekatan scaffolding (step-by-step).
         3. Akhiri dengan pertanyaan active recall untuk menguji pemahaman.
         Gunakan bahasa yang mudah dipahami mahasiswa.
+        {history_context}
         {schedule_context}
         {rag_context}
         """
@@ -281,7 +282,8 @@ Gunakan format Markdown yang rapi.
     # ── Coach Agent ───────────────────────────────────────────────────────────
 
     def run_coach(self, emotion: str, empathy_data: Optional[dict] = None,
-                  rag_context: str = "", schedule_context: str = "") -> str:
+                  rag_context: str = "", schedule_context: str = "",
+                  history_context: str = "") -> str:
         """
         Coach Agent (Paper Section III-B-c).
 
@@ -291,8 +293,10 @@ Gunakan format Markdown yang rapi.
         Always warm and supportive — like a real mother who encourages her child.
         """
         sys_inst = (
-            "Anda adalah 'Ara', seorang Coach dengan naluri keibuan yang hangat dan penuh kasih sayang. "
-            "Anda selalu memvalidasi perasaan user terlebih dahulu, lalu memberikan semangat "
+            "Nama Anda adalah 'Ara'. Anda adalah Coach dengan naluri keibuan yang hangat dan penuh kasih sayang. "
+            "Penting: GUNAKAN 'kamu' atau 'anda' UNTUK USER. Jangan pernah memanggil user dengan nama 'Ara' — "
+            "nama itu adalah NAMA ANDA, bukan nama user. "
+            "Selalu validasi perasaan user terlebih dahulu, lalu berikan semangat "
             "dan saran praktis dengan nada lembut tapi tegas. "
             "Jika ada data jadwal, gunakan untuk memberikan saran yang spesifik dan relevan."
         )
@@ -304,6 +308,8 @@ Gunakan format Markdown yang rapi.
             f"Akui perasaan user, lalu bantu mereka melihat langkah kecil yang bisa dilakukan.\n"
         )
 
+        if history_context:
+            prompt += f"\n{history_context}"
         if schedule_context:
             prompt += f"\n{schedule_context}"
         if rag_context:
@@ -314,14 +320,17 @@ Gunakan format Markdown yang rapi.
     # ── General Chat ──────────────────────────────────────────────────────────
 
     def run_general_chat(self, user_input: str, emotion: str, empathy_data: Optional[dict] = None,
-                         rag_context: str = "", schedule_context: str = "") -> str:
+                         rag_context: str = "", schedule_context: str = "",
+                         history_context: str = "") -> str:
         """
         General chat handler — always warm, helpful, and schedule-aware.
         Acts as 'Ara', a motherly AI assistant who has full access to the
         user's schedule and can answer questions about priorities, deadlines, etc.
         """
         sys_inst = (
-            "Anda adalah 'Ara', AI asisten dengan naluri keibuan yang hangat dan peduli. "
+            "Nama Anda adalah 'Ara'. Anda adalah AI asisten dengan naluri keibuan yang hangat dan peduli. "
+            "Penting: GUNAKAN 'kamu' atau 'anda' UNTUK USER. Jangan pernah memanggil user dengan nama 'Ara' — "
+            "nama itu adalah NAMA ANDA, bukan nama user. "
             "Anda ramah, membantu, dan selalu memvalidasi perasaan user. "
             "Jika user bertanya tentang jadwal, tugas, deadline, atau prioritas, "
             "GUNAKAN data jadwal yang tersedia untuk menjawab dengan spesifik dan akurat. "
@@ -330,6 +339,8 @@ Gunakan format Markdown yang rapi.
         )
 
         prompt = user_input
+        if history_context:
+            prompt = f"{history_context}\n\n{prompt}"
         if schedule_context:
             prompt += f"\n{schedule_context}"
         if rag_context:
@@ -349,6 +360,7 @@ Gunakan format Markdown yang rapi.
         rag_context: str = "",
         schedule_tasks: Optional[list] = None,
         workload: Optional[dict] = None,
+        chat_history_context: str = "",
     ) -> tuple[str, str, Optional[dict]]:
         """
         Execute the appropriate specialist agent(s) based on task_routing from Layer 1,
@@ -365,6 +377,7 @@ Gunakan format Markdown yang rapi.
             rag_context:    Pre-fetched RAG context string.
             schedule_tasks: Pre-fetched schedule task list (from MCP get_schedule).
             workload:       Pre-fetched workload dict (from MCP get_daily_workload).
+            chat_history_context: Pre-fetched previous messages from same chat session.
 
         Returns:
             (raw_response: str, agent_used: str, tool_call: dict | None)
@@ -380,6 +393,11 @@ Gunakan format Markdown yang rapi.
         schedule_context = mcp.format_schedule_for_prompt({"tasks": schedule_tasks})
         workload_context = mcp.format_workload_for_prompt(workload)
         combined_context = "\n".join(filter(None, [schedule_context, workload_context]))
+
+        # Format chat history for context injection
+        history_context_str = ""
+        if chat_history_context:
+            history_context_str = f"\n\nRIWAYAT PERCAKAPAN SEBELUMNYA:\n{chat_history_context}\n"
 
         raw_response = ""
         agent_used = "general_chat"
@@ -401,6 +419,7 @@ Gunakan format Markdown yang rapi.
                     emotion, empathy_data,
                     rag_context=rag_context,
                     schedule_context=combined_context,
+                    history_context=history_context_str,
                 )
                 raw_response = f"{plan_text}\n\n**Pesan Coach:**\n{coach}"
                 agent_used = "planner+coach"
@@ -410,6 +429,7 @@ Gunakan format Markdown yang rapi.
                 emotion, empathy_data,
                 rag_context=rag_context,
                 schedule_context=combined_context,
+                history_context=history_context_str,
             )
             raw_response = f"{plan}\n\n**Pesan Coach:**\n{coach}"
             agent_used = "planner+coach"
@@ -419,6 +439,7 @@ Gunakan format Markdown yang rapi.
                 user_input,
                 rag_context=rag_context,
                 schedule_context=combined_context,
+                history_context=history_context_str,
             )
             agent_used = "tutor"
 
@@ -427,11 +448,13 @@ Gunakan format Markdown yang rapi.
                 emotion, empathy_data,
                 rag_context=rag_context,
                 schedule_context=combined_context,
+                history_context=history_context_str,
             )
             general = self.run_general_chat(
                 user_input, emotion, empathy_data,
                 rag_context=rag_context,
                 schedule_context=combined_context,
+                history_context=history_context_str,
             )
             raw_response = f"{general}\n\n**Pesan Coach:**\n{coach}"
             agent_used = "general_chat+coach"
@@ -441,6 +464,7 @@ Gunakan format Markdown yang rapi.
                 user_input, emotion, empathy_data,
                 rag_context=rag_context,
                 schedule_context=combined_context,
+                history_context=history_context_str,
             )
             agent_used = "general_chat"
 

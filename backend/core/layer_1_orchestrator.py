@@ -168,16 +168,22 @@ class ContextRetriever:
     """
     User Data & Context Retrieval (Diagram — Layer 1 centre block).
 
-    Pulls two types of context:
+    Pulls three types of context:
       1. DB context  — active schedule tasks and notes via MCP tools
       2. FAISS context — semantic search over knowledge base via RAG service
+      3. Chat history context — previous messages from the same chat session
 
     The combined context is injected into Layer 2 agent prompts.
     """
 
-    async def retrieve(self, user_query: str, top_k: int = 3) -> dict:
+    async def retrieve(self, user_query: str, top_k: int = 3, chat_id: str = None) -> dict:
         """
         Retrieve all context needed for Layer 2.
+
+        Args:
+            user_query: The current user message (used for RAG retrieval).
+            top_k: Number of RAG chunks to retrieve.
+            chat_id: Optional chat session ID to load conversation history.
 
         Returns:
             {
@@ -185,12 +191,14 @@ class ContextRetriever:
                 "workload": dict,               # Workload stats
                 "rag_context": str,             # Formatted RAG chunks for LLM injection
                 "rag_results": list[dict],      # Raw RAG results (for UI)
+                "chat_history_context": str,    # Formatted previous messages from same chat
             }
         """
         schedule_tasks = []
         workload = {}
         rag_context = ""
         rag_results = []
+        chat_history_context = ""
 
         # ── DB context via MCP tools ──
         try:
@@ -214,12 +222,45 @@ class ContextRetriever:
         except Exception as e:
             logger.warning(f"Context retrieval (FAISS) failed: {e}")
 
+        # ── Chat history context ──
+        if chat_id:
+            try:
+                chat_history_context = await self._get_chat_history(chat_id)
+            except Exception as e:
+                logger.warning(f"Context retrieval (chat history) failed: {e}")
+
         return {
             "schedule_tasks": schedule_tasks,
             "workload": workload,
             "rag_context": rag_context,
             "rag_results": rag_results,
+            "chat_history_context": chat_history_context,
         }
+
+    async def _get_chat_history(self, chat_id: str, limit: int = 10) -> str:
+        """Load recent messages from the same chat session for context."""
+        from backend.models.database import get_db
+
+        db = await get_db()
+        try:
+            cursor = await db.execute(
+                "SELECT role, content FROM chat_history "
+                "WHERE chat_id = ? AND mode = 'conversation' "
+                "ORDER BY id DESC LIMIT ?",
+                (chat_id, limit)
+            )
+            rows = await cursor.fetchall()
+            if not rows:
+                return ""
+
+            formatted = []
+            for row in reversed(rows):
+                role = "User" if row[0] == "user" else "Ara"
+                formatted.append(f"{role}: {row[1]}")
+
+            return "\n\n".join(formatted)
+        finally:
+            await db.close()
 
 
 # ─── Executive Agent ──────────────────────────────────────────────────────────
@@ -279,9 +320,13 @@ class ExecutiveAgent:
 
         return intent, empathy_data["emotion"], empathy_data, task_routing
 
-    async def analyze_with_context(self, user_input: str) -> dict:
+    async def analyze_with_context(self, user_input: str, chat_id: str = None) -> dict:
         """
         Full async pipeline including context retrieval (for use in chat_service).
+
+        Args:
+            user_input: The current user message.
+            chat_id: Optional chat session ID for loading conversation history.
 
         Returns:
             {
@@ -294,11 +339,12 @@ class ExecutiveAgent:
                     "workload": dict,
                     "rag_context": str,
                     "rag_results": list,
+                    "chat_history_context": str,
                 }
             }
         """
         intent, emotion, empathy_data, task_routing = self.analyze_intent(user_input)
-        context = await self.context_retriever.retrieve(user_input)
+        context = await self.context_retriever.retrieve(user_input, chat_id=chat_id)
 
         return {
             "intent": intent,
