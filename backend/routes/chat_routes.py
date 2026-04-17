@@ -4,7 +4,7 @@ Chat Routes — API endpoint definitions.
 import json
 from fastapi import APIRouter, WebSocket, WebSocketDisconnect, Query
 
-from backend.models.schemas import ChatRequest, ChatResponse, ChatMode
+from backend.models.schemas import ChatRequest, ChatResponse, ChatMode, UserLevel
 from backend.controllers import chat_controller
 from backend.services import chat_service
 from backend.services.learning_service import learning_service
@@ -76,12 +76,12 @@ async def websocket_chat(websocket: WebSocket):
                 if learning_action == "start":
                     topic = msg.get("topic", "")
                     mode = msg.get("learning_mode", "lesson")
-                    level = msg.get("level", "pemula")
+                    level_str = msg.get("level", "pemula")
                     
                     result = await learning_service.start_learning(
                         topic=topic,
                         subtopic=msg.get("subtopic", ""),
-                        level=level,
+                        level=UserLevel(level_str),
                         mode=mode
                     )
                     
@@ -183,7 +183,7 @@ async def websocket_chat(websocket: WebSocket):
                 if current_mode == "learning" and topic:
                     result = await learning_service.start_learning(
                         topic=topic,
-                        level="pemula",
+                        level=UserLevel.PEMULA,
                         mode="lesson"
                     )
                     await websocket.send_json({
