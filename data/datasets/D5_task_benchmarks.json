@@ -1,0 +1,14 @@
+[
+  {
+    "id": "D5_INTENT_01",
+    "task_type": "intent_classification",
+    "prompt": "Bisa bantu jelaskan konsep dasar Machine Learning?",
+    "expected_intent": "<ACADEMIC_HELP>"
+  },
+  {
+    "id": "D5_TOOL_01",
+    "task_type": "tool_calling",
+    "prompt": "Catatkan jadwal ujian saya besok jam 8 pagi di kalender.",
+    "expected_tool": "calendar_create_event"
+  }
+]

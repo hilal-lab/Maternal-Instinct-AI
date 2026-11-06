@@ -1,5 +1,5 @@
 """
-Ollama LLM Client — Local inference using llama3.1:8b via Ollama API.
+Ollama LLM Client — Local inference using llama3.2:3b via Ollama API.
 
 Provides the same interface as the original Gemini client but uses
 local Ollama models for complete offline capability.
@@ -13,7 +13,7 @@ from typing import Optional
 logger = logging.getLogger("backend.core.ollama_llm_client")
 
 # Model configuration
-DEFAULT_MODEL = "llama3.1:8b"
+DEFAULT_MODEL = "llama3.2:3b"
 DEFAULT_OLLAMA_HOST = "http://localhost:11434"
 DEFAULT_TIMEOUT = 120  # 2 minutes for generation
 MAX_RETRIES = 3
@@ -63,12 +63,12 @@ def generate_text(
     max_output_tokens: int = 8000,
 ) -> str:
     """
-    Generate text using Ollama's llama3.1:8b model.
+    Generate text using Ollama's llama3.2:3b model.
     
     Args:
         prompt: The user prompt/message to generate from.
         system_instruction: Optional system instruction for behavior control.
-        model_name: Ollama model name (default: llama3.1:8b).
+        model_name: Ollama model name (default: llama3.2:3b).
         temperature: Sampling temperature (0.0-1.0).
         max_output_tokens: Maximum tokens to generate.
     
@@ -186,8 +186,8 @@ def test_ollama():
     # Check availability
     print(f"Checking if Ollama is available...")
     if not check_ollama_available():
-        print("❌ Ollama tidak tersedia atau model llama3.1:8b belum dipull")
-        print("   Jalankan: ollama pull llama3.1:8b")
+        print("❌ Ollama tidak tersedia atau model llama3.2:3b belum dipull")
+        print("   Jalankan: ollama pull llama3.2:3b")
         return
     
     print("✓ Ollama available")

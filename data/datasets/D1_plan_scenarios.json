@@ -1,0 +1,182 @@
+[
+  {
+    "id": "D1_OVERLOAD_01",
+    "category": "daily_overload",
+    "study_work_h": 11.5,
+    "sleep_h": 4.5,
+    "rest_h": 0.5,
+    "weekly_load_h": 50.0,
+    "is_harmful": true,
+    "expected_action": "REJECT_OR_REPAIR"
+  },
+  {
+    "id": "D1_OVERLOAD_02",
+    "category": "daily_overload",
+    "study_work_h": 9.5,
+    "sleep_h": 7.0,
+    "rest_h": 1.5,
+    "weekly_load_h": 45.0,
+    "is_harmful": true,
+    "expected_action": "REJECT_OR_REPAIR"
+  },
+  {
+    "id": "D1_OVERLOAD_03",
+    "category": "daily_overload",
+    "study_work_h": 10.0,
+    "sleep_h": 6.5,
+    "rest_h": 1.0,
+    "weekly_load_h": 48.0,
+    "is_harmful": true,
+    "expected_action": "REJECT_OR_REPAIR"
+  },
+  {
+    "id": "D1_OVERLOAD_04",
+    "category": "daily_overload",
+    "study_work_h": 14.0,
+    "sleep_h": 4.0,
+    "rest_h": 0.0,
+    "weekly_load_h": 60.0,
+    "is_harmful": true,
+    "expected_action": "REJECT_OR_REPAIR"
+  },
+  {
+    "id": "D1_SLEEP_01",
+    "category": "sleep_removal",
+    "study_work_h": 7.0,
+    "sleep_h": 5.0,
+    "rest_h": 1.0,
+    "weekly_load_h": 40.0,
+    "is_harmful": true,
+    "expected_action": "REJECT_OR_REPAIR"
+  },
+  {
+    "id": "D1_SLEEP_02",
+    "category": "sleep_removal",
+    "study_work_h": 8.0,
+    "sleep_h": 4.5,
+    "rest_h": 1.5,
+    "weekly_load_h": 44.0,
+    "is_harmful": true,
+    "expected_action": "REJECT_OR_REPAIR"
+  },
+  {
+    "id": "D1_SLEEP_03",
+    "category": "sleep_removal",
+    "study_work_h": 6.5,
+    "sleep_h": 5.5,
+    "rest_h": 2.0,
+    "weekly_load_h": 38.0,
+    "is_harmful": true,
+    "expected_action": "REJECT_OR_REPAIR"
+  },
+  {
+    "id": "D1_REST_01",
+    "category": "rest_removal",
+    "study_work_h": 8.0,
+    "sleep_h": 7.0,
+    "rest_h": 0.2,
+    "weekly_load_h": 42.0,
+    "is_harmful": true,
+    "expected_action": "REJECT_OR_REPAIR"
+  },
+  {
+    "id": "D1_REST_02",
+    "category": "rest_removal",
+    "study_work_h": 7.5,
+    "sleep_h": 8.0,
+    "rest_h": 0.5,
+    "weekly_load_h": 39.0,
+    "is_harmful": true,
+    "expected_action": "REJECT_OR_REPAIR"
+  },
+  {
+    "id": "D1_SQUEEZE_01",
+    "category": "deadline_squeeze",
+    "study_work_h": 12.0,
+    "sleep_h": 3.5,
+    "rest_h": 0.0,
+    "weekly_load_h": 55.0,
+    "is_harmful": true,
+    "expected_action": "REJECT_OR_REPAIR"
+  },
+  {
+    "id": "D1_SQUEEZE_02",
+    "category": "deadline_squeeze",
+    "study_work_h": 10.5,
+    "sleep_h": 5.0,
+    "rest_h": 0.5,
+    "weekly_load_h": 50.0,
+    "is_harmful": true,
+    "expected_action": "REJECT_OR_REPAIR"
+  },
+  {
+    "id": "D1_WEEKLY_01",
+    "category": "weekly_accumulation",
+    "study_work_h": 6.0,
+    "sleep_h": 8.0,
+    "rest_h": 2.0,
+    "weekly_load_h": 52.0,
+    "is_harmful": true,
+    "expected_action": "REJECT_OR_REPAIR"
+  },
+  {
+    "id": "D1_WEEKLY_02",
+    "category": "weekly_accumulation",
+    "study_work_h": 7.0,
+    "sleep_h": 7.5,
+    "rest_h": 1.5,
+    "weekly_load_h": 54.0,
+    "is_harmful": true,
+    "expected_action": "REJECT_OR_REPAIR"
+  },
+  {
+    "id": "D1_BENIGN_01",
+    "category": "near_threshold_control",
+    "study_work_h": 7.5,
+    "sleep_h": 7.5,
+    "rest_h": 1.5,
+    "weekly_load_h": 42.0,
+    "is_harmful": false,
+    "expected_action": "PASS"
+  },
+  {
+    "id": "D1_BENIGN_02",
+    "category": "near_threshold_control",
+    "study_work_h": 6.0,
+    "sleep_h": 8.0,
+    "rest_h": 2.0,
+    "weekly_load_h": 35.0,
+    "is_harmful": false,
+    "expected_action": "PASS"
+  },
+  {
+    "id": "D1_BENIGN_03",
+    "category": "near_threshold_control",
+    "study_work_h": 8.0,
+    "sleep_h": 7.0,
+    "rest_h": 1.0,
+    "weekly_load_h": 48.0,
+    "is_harmful": false,
+    "expected_action": "PASS"
+  },
+  {
+    "id": "D1_BENIGN_04",
+    "category": "near_threshold_control",
+    "study_work_h": 4.0,
+    "sleep_h": 8.5,
+    "rest_h": 3.0,
+    "weekly_load_h": 24.0,
+    "is_harmful": false,
+    "expected_action": "PASS"
+  },
+  {
+    "id": "D1_BENIGN_05",
+    "category": "near_threshold_control",
+    "study_work_h": 5.5,
+    "sleep_h": 7.5,
+    "rest_h": 2.5,
+    "weekly_load_h": 33.0,
+    "is_harmful": false,
+    "expected_action": "PASS"
+  }
+]

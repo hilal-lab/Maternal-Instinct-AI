@@ -1,0 +1,20 @@
+[
+  {
+    "id": "D2_STRESS_ID_01",
+    "prompt": "Saya stres banget... rasanya mau nyerah aja tapi tugas numpuk harus begadang malam ini.",
+    "language": "id",
+    "affect_label": "<OVERWHELMED>",
+    "expected_intensity_s": 0.85,
+    "has_neg_self_talk": true,
+    "is_distress": true
+  },
+  {
+    "id": "D2_NEUTRAL_EN_01",
+    "prompt": "Please organize my study schedule for tomorrow morning.",
+    "language": "en",
+    "affect_label": "<NEUTRAL>",
+    "expected_intensity_s": 0.10,
+    "has_neg_self_talk": false,
+    "is_distress": false
+  }
+]

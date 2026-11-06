@@ -1,0 +1,1157 @@
+[
+  {
+    "id": "D5-PERF-0001",
+    "source_dataset": "MMLU / LACF Operational Benchmark 20x Scale",
+    "category": "intent_classification",
+    "prompt": "Tambahkan tugas review jurnal ke jadwal besok jam 9 pagi.",
+    "expected_target": "TASK_OPS"
+  },
+  {
+    "id": "D5-PERF-0002",
+    "source_dataset": "MMLU / LACF Operational Benchmark 20x Scale",
+    "category": "intent_classification",
+    "prompt": "Saya merasa sangat stres dan lelah dengan ujian ini.",
+    "expected_target": "EMOTIONAL_DISTRESS"
+  },
+  {
+    "id": "D5-PERF-0003",
+    "source_dataset": "MMLU / LACF Operational Benchmark 20x Scale",
+    "category": "intent_classification",
+    "prompt": "Bisa jelaskan konsep RAG dan Vector Database?",
+    "expected_target": "ACADEMIC_HELP"
+  },
+  {
+    "id": "D5-PERF-0004",
+    "source_dataset": "MMLU / LACF Operational Benchmark 20x Scale",
+    "category": "intent_classification",
+    "prompt": "Bagaimana cara agar tetap fokus saat belajar malam?",
+    "expected_target": "MOTIVATIONAL_SUPPORT"
+  },
+  {
+    "id": "D5-PERF-0005",
+    "source_dataset": "MMLU / LACF Operational Benchmark 20x Scale",
+    "category": "intent_classification",
+    "prompt": "Halo, apa kabar sistem hari ini?",
+    "expected_target": "GENERAL_CHAT"
+  },
+  {
+    "id": "D5-PERF-0006",
+    "source_dataset": "MMLU / LACF Operational Benchmark 20x Scale",
+    "category": "tool_calling",
+    "prompt": "Jadwalkan sesi belajar jam 14:00 - 16:00",
+    "expected_target": "schedule_service.create_task"
+  },
+  {
+    "id": "D5-PERF-0007",
+    "source_dataset": "MMLU / LACF Operational Benchmark 20x Scale",
+    "category": "tool_calling",
+    "prompt": "Tampilkan daftar tugas yang belum selesai",
+    "expected_target": "schedule_service.get_tasks"
+  },
+  {
+    "id": "D5-PERF-0008",
+    "source_dataset": "MMLU / LACF Operational Benchmark 20x Scale",
+    "category": "tool_calling",
+    "prompt": "Hapus jadwal kuliah jam 10 pagi besok",
+    "expected_target": "schedule_service.delete_task"
+  },
+  {
+    "id": "D5-PERF-0009",
+    "source_dataset": "MMLU / LACF Operational Benchmark 20x Scale",
+    "category": "academic_tutor",
+    "prompt": "Jelaskan perbedaan antara model regresi linier dan logistik.",
+    "expected_target": "TUTOR_RESPONSE"
+  },
+  {
+    "id": "D5-PERF-0010",
+    "source_dataset": "MMLU / LACF Operational Benchmark 20x Scale",
+    "category": "academic_tutor",
+    "prompt": "Apa fungsi dari FAISS index dalam sistem RAG?",
+    "expected_target": "TUTOR_RESPONSE"
+  },
+  {
+    "id": "D5-PERF-0011",
+    "source_dataset": "MMLU / LACF Operational Benchmark 20x Scale",
+    "category": "academic_tutor",
+    "prompt": "Bagaimana cara kerja arsitektur Transformer pada LLM?",
+    "expected_target": "TUTOR_RESPONSE"
+  },
+  {
+    "id": "D5-PERF-0012",
+    "source_dataset": "MMLU / LACF Operational Benchmark 20x Scale",
+    "category": "intent_classification",
+    "prompt": "Tambahkan tugas review jurnal ke jadwal besok jam 9 pagi. [Test Iteration 2]",
+    "expected_target": "TASK_OPS"
+  },
+  {
+    "id": "D5-PERF-0013",
+    "source_dataset": "MMLU / LACF Operational Benchmark 20x Scale",
+    "category": "intent_classification",
+    "prompt": "Saya merasa sangat stres dan lelah dengan ujian ini. [Test Iteration 2]",
+    "expected_target": "EMOTIONAL_DISTRESS"
+  },
+  {
+    "id": "D5-PERF-0014",
+    "source_dataset": "MMLU / LACF Operational Benchmark 20x Scale",
+    "category": "intent_classification",
+    "prompt": "Bisa jelaskan konsep RAG dan Vector Database? [Test Iteration 2]",
+    "expected_target": "ACADEMIC_HELP"
+  },
+  {
+    "id": "D5-PERF-0015",
+    "source_dataset": "MMLU / LACF Operational Benchmark 20x Scale",
+    "category": "intent_classification",
+    "prompt": "Bagaimana cara agar tetap fokus saat belajar malam? [Test Iteration 2]",
+    "expected_target": "MOTIVATIONAL_SUPPORT"
+  },
+  {
+    "id": "D5-PERF-0016",
+    "source_dataset": "MMLU / LACF Operational Benchmark 20x Scale",
+    "category": "intent_classification",
+    "prompt": "Halo, apa kabar sistem hari ini? [Test Iteration 2]",
+    "expected_target": "GENERAL_CHAT"
+  },
+  {
+    "id": "D5-PERF-0017",
+    "source_dataset": "MMLU / LACF Operational Benchmark 20x Scale",
+    "category": "tool_calling",
+    "prompt": "Jadwalkan sesi belajar jam 14:00 - 16:00 [Test Iteration 2]",
+    "expected_target": "schedule_service.create_task"
+  },
+  {
+    "id": "D5-PERF-0018",
+    "source_dataset": "MMLU / LACF Operational Benchmark 20x Scale",
+    "category": "tool_calling",
+    "prompt": "Tampilkan daftar tugas yang belum selesai [Test Iteration 2]",
+    "expected_target": "schedule_service.get_tasks"
+  },
+  {
+    "id": "D5-PERF-0019",
+    "source_dataset": "MMLU / LACF Operational Benchmark 20x Scale",
+    "category": "tool_calling",
+    "prompt": "Hapus jadwal kuliah jam 10 pagi besok [Test Iteration 2]",
+    "expected_target": "schedule_service.delete_task"
+  },
+  {
+    "id": "D5-PERF-0020",
+    "source_dataset": "MMLU / LACF Operational Benchmark 20x Scale",
+    "category": "academic_tutor",
+    "prompt": "Jelaskan perbedaan antara model regresi linier dan logistik. [Test Iteration 2]",
+    "expected_target": "TUTOR_RESPONSE"
+  },
+  {
+    "id": "D5-PERF-0021",
+    "source_dataset": "MMLU / LACF Operational Benchmark 20x Scale",
+    "category": "academic_tutor",
+    "prompt": "Apa fungsi dari FAISS index dalam sistem RAG? [Test Iteration 2]",
+    "expected_target": "TUTOR_RESPONSE"
+  },
+  {
+    "id": "D5-PERF-0022",
+    "source_dataset": "MMLU / LACF Operational Benchmark 20x Scale",
+    "category": "academic_tutor",
+    "prompt": "Bagaimana cara kerja arsitektur Transformer pada LLM? [Test Iteration 2]",
+    "expected_target": "TUTOR_RESPONSE"
+  },
+  {
+    "id": "D5-PERF-0023",
+    "source_dataset": "MMLU / LACF Operational Benchmark 20x Scale",
+    "category": "intent_classification",
+    "prompt": "Tambahkan tugas review jurnal ke jadwal besok jam 9 pagi. [Test Iteration 3]",
+    "expected_target": "TASK_OPS"
+  },
+  {
+    "id": "D5-PERF-0024",
+    "source_dataset": "MMLU / LACF Operational Benchmark 20x Scale",
+    "category": "intent_classification",
+    "prompt": "Saya merasa sangat stres dan lelah dengan ujian ini. [Test Iteration 3]",
+    "expected_target": "EMOTIONAL_DISTRESS"
+  },
+  {
+    "id": "D5-PERF-0025",
+    "source_dataset": "MMLU / LACF Operational Benchmark 20x Scale",
+    "category": "intent_classification",
+    "prompt": "Bisa jelaskan konsep RAG dan Vector Database? [Test Iteration 3]",
+    "expected_target": "ACADEMIC_HELP"
+  },
+  {
+    "id": "D5-PERF-0026",
+    "source_dataset": "MMLU / LACF Operational Benchmark 20x Scale",
+    "category": "intent_classification",
+    "prompt": "Bagaimana cara agar tetap fokus saat belajar malam? [Test Iteration 3]",
+    "expected_target": "MOTIVATIONAL_SUPPORT"
+  },
+  {
+    "id": "D5-PERF-0027",
+    "source_dataset": "MMLU / LACF Operational Benchmark 20x Scale",
+    "category": "intent_classification",
+    "prompt": "Halo, apa kabar sistem hari ini? [Test Iteration 3]",
+    "expected_target": "GENERAL_CHAT"
+  },
+  {
+    "id": "D5-PERF-0028",
+    "source_dataset": "MMLU / LACF Operational Benchmark 20x Scale",
+    "category": "tool_calling",
+    "prompt": "Jadwalkan sesi belajar jam 14:00 - 16:00 [Test Iteration 3]",
+    "expected_target": "schedule_service.create_task"
+  },
+  {
+    "id": "D5-PERF-0029",
+    "source_dataset": "MMLU / LACF Operational Benchmark 20x Scale",
+    "category": "tool_calling",
+    "prompt": "Tampilkan daftar tugas yang belum selesai [Test Iteration 3]",
+    "expected_target": "schedule_service.get_tasks"
+  },
+  {
+    "id": "D5-PERF-0030",
+    "source_dataset": "MMLU / LACF Operational Benchmark 20x Scale",
+    "category": "tool_calling",
+    "prompt": "Hapus jadwal kuliah jam 10 pagi besok [Test Iteration 3]",
+    "expected_target": "schedule_service.delete_task"
+  },
+  {
+    "id": "D5-PERF-0031",
+    "source_dataset": "MMLU / LACF Operational Benchmark 20x Scale",
+    "category": "academic_tutor",
+    "prompt": "Jelaskan perbedaan antara model regresi linier dan logistik. [Test Iteration 3]",
+    "expected_target": "TUTOR_RESPONSE"
+  },
+  {
+    "id": "D5-PERF-0032",
+    "source_dataset": "MMLU / LACF Operational Benchmark 20x Scale",
+    "category": "academic_tutor",
+    "prompt": "Apa fungsi dari FAISS index dalam sistem RAG? [Test Iteration 3]",
+    "expected_target": "TUTOR_RESPONSE"
+  },
+  {
+    "id": "D5-PERF-0033",
+    "source_dataset": "MMLU / LACF Operational Benchmark 20x Scale",
+    "category": "academic_tutor",
+    "prompt": "Bagaimana cara kerja arsitektur Transformer pada LLM? [Test Iteration 3]",
+    "expected_target": "TUTOR_RESPONSE"
+  },
+  {
+    "id": "D5-PERF-0034",
+    "source_dataset": "MMLU / LACF Operational Benchmark 20x Scale",
+    "category": "intent_classification",
+    "prompt": "Tambahkan tugas review jurnal ke jadwal besok jam 9 pagi. [Test Iteration 4]",
+    "expected_target": "TASK_OPS"
+  },
+  {
+    "id": "D5-PERF-0035",
+    "source_dataset": "MMLU / LACF Operational Benchmark 20x Scale",
+    "category": "intent_classification",
+    "prompt": "Saya merasa sangat stres dan lelah dengan ujian ini. [Test Iteration 4]",
+    "expected_target": "EMOTIONAL_DISTRESS"
+  },
+  {
+    "id": "D5-PERF-0036",
+    "source_dataset": "MMLU / LACF Operational Benchmark 20x Scale",
+    "category": "intent_classification",
+    "prompt": "Bisa jelaskan konsep RAG dan Vector Database? [Test Iteration 4]",
+    "expected_target": "ACADEMIC_HELP"
+  },
+  {
+    "id": "D5-PERF-0037",
+    "source_dataset": "MMLU / LACF Operational Benchmark 20x Scale",
+    "category": "intent_classification",
+    "prompt": "Bagaimana cara agar tetap fokus saat belajar malam? [Test Iteration 4]",
+    "expected_target": "MOTIVATIONAL_SUPPORT"
+  },
+  {
+    "id": "D5-PERF-0038",
+    "source_dataset": "MMLU / LACF Operational Benchmark 20x Scale",
+    "category": "intent_classification",
+    "prompt": "Halo, apa kabar sistem hari ini? [Test Iteration 4]",
+    "expected_target": "GENERAL_CHAT"
+  },
+  {
+    "id": "D5-PERF-0039",
+    "source_dataset": "MMLU / LACF Operational Benchmark 20x Scale",
+    "category": "tool_calling",
+    "prompt": "Jadwalkan sesi belajar jam 14:00 - 16:00 [Test Iteration 4]",
+    "expected_target": "schedule_service.create_task"
+  },
+  {
+    "id": "D5-PERF-0040",
+    "source_dataset": "MMLU / LACF Operational Benchmark 20x Scale",
+    "category": "tool_calling",
+    "prompt": "Tampilkan daftar tugas yang belum selesai [Test Iteration 4]",
+    "expected_target": "schedule_service.get_tasks"
+  },
+  {
+    "id": "D5-PERF-0041",
+    "source_dataset": "MMLU / LACF Operational Benchmark 20x Scale",
+    "category": "tool_calling",
+    "prompt": "Hapus jadwal kuliah jam 10 pagi besok [Test Iteration 4]",
+    "expected_target": "schedule_service.delete_task"
+  },
+  {
+    "id": "D5-PERF-0042",
+    "source_dataset": "MMLU / LACF Operational Benchmark 20x Scale",
+    "category": "academic_tutor",
+    "prompt": "Jelaskan perbedaan antara model regresi linier dan logistik. [Test Iteration 4]",
+    "expected_target": "TUTOR_RESPONSE"
+  },
+  {
+    "id": "D5-PERF-0043",
+    "source_dataset": "MMLU / LACF Operational Benchmark 20x Scale",
+    "category": "academic_tutor",
+    "prompt": "Apa fungsi dari FAISS index dalam sistem RAG? [Test Iteration 4]",
+    "expected_target": "TUTOR_RESPONSE"
+  },
+  {
+    "id": "D5-PERF-0044",
+    "source_dataset": "MMLU / LACF Operational Benchmark 20x Scale",
+    "category": "academic_tutor",
+    "prompt": "Bagaimana cara kerja arsitektur Transformer pada LLM? [Test Iteration 4]",
+    "expected_target": "TUTOR_RESPONSE"
+  },
+  {
+    "id": "D5-PERF-0045",
+    "source_dataset": "MMLU / LACF Operational Benchmark 20x Scale",
+    "category": "intent_classification",
+    "prompt": "Tambahkan tugas review jurnal ke jadwal besok jam 9 pagi. [Test Iteration 5]",
+    "expected_target": "TASK_OPS"
+  },
+  {
+    "id": "D5-PERF-0046",
+    "source_dataset": "MMLU / LACF Operational Benchmark 20x Scale",
+    "category": "intent_classification",
+    "prompt": "Saya merasa sangat stres dan lelah dengan ujian ini. [Test Iteration 5]",
+    "expected_target": "EMOTIONAL_DISTRESS"
+  },
+  {
+    "id": "D5-PERF-0047",
+    "source_dataset": "MMLU / LACF Operational Benchmark 20x Scale",
+    "category": "intent_classification",
+    "prompt": "Bisa jelaskan konsep RAG dan Vector Database? [Test Iteration 5]",
+    "expected_target": "ACADEMIC_HELP"
+  },
+  {
+    "id": "D5-PERF-0048",
+    "source_dataset": "MMLU / LACF Operational Benchmark 20x Scale",
+    "category": "intent_classification",
+    "prompt": "Bagaimana cara agar tetap fokus saat belajar malam? [Test Iteration 5]",
+    "expected_target": "MOTIVATIONAL_SUPPORT"
+  },
+  {
+    "id": "D5-PERF-0049",
+    "source_dataset": "MMLU / LACF Operational Benchmark 20x Scale",
+    "category": "intent_classification",
+    "prompt": "Halo, apa kabar sistem hari ini? [Test Iteration 5]",
+    "expected_target": "GENERAL_CHAT"
+  },
+  {
+    "id": "D5-PERF-0050",
+    "source_dataset": "MMLU / LACF Operational Benchmark 20x Scale",
+    "category": "tool_calling",
+    "prompt": "Jadwalkan sesi belajar jam 14:00 - 16:00 [Test Iteration 5]",
+    "expected_target": "schedule_service.create_task"
+  },
+  {
+    "id": "D5-PERF-0051",
+    "source_dataset": "MMLU / LACF Operational Benchmark 20x Scale",
+    "category": "tool_calling",
+    "prompt": "Tampilkan daftar tugas yang belum selesai [Test Iteration 5]",
+    "expected_target": "schedule_service.get_tasks"
+  },
+  {
+    "id": "D5-PERF-0052",
+    "source_dataset": "MMLU / LACF Operational Benchmark 20x Scale",
+    "category": "tool_calling",
+    "prompt": "Hapus jadwal kuliah jam 10 pagi besok [Test Iteration 5]",
+    "expected_target": "schedule_service.delete_task"
+  },
+  {
+    "id": "D5-PERF-0053",
+    "source_dataset": "MMLU / LACF Operational Benchmark 20x Scale",
+    "category": "academic_tutor",
+    "prompt": "Jelaskan perbedaan antara model regresi linier dan logistik. [Test Iteration 5]",
+    "expected_target": "TUTOR_RESPONSE"
+  },
+  {
+    "id": "D5-PERF-0054",
+    "source_dataset": "MMLU / LACF Operational Benchmark 20x Scale",
+    "category": "academic_tutor",
+    "prompt": "Apa fungsi dari FAISS index dalam sistem RAG? [Test Iteration 5]",
+    "expected_target": "TUTOR_RESPONSE"
+  },
+  {
+    "id": "D5-PERF-0055",
+    "source_dataset": "MMLU / LACF Operational Benchmark 20x Scale",
+    "category": "academic_tutor",
+    "prompt": "Bagaimana cara kerja arsitektur Transformer pada LLM? [Test Iteration 5]",
+    "expected_target": "TUTOR_RESPONSE"
+  },
+  {
+    "id": "D5-PERF-0056",
+    "source_dataset": "MMLU / LACF Operational Benchmark 20x Scale",
+    "category": "intent_classification",
+    "prompt": "Tambahkan tugas review jurnal ke jadwal besok jam 9 pagi. [Test Iteration 6]",
+    "expected_target": "TASK_OPS"
+  },
+  {
+    "id": "D5-PERF-0057",
+    "source_dataset": "MMLU / LACF Operational Benchmark 20x Scale",
+    "category": "intent_classification",
+    "prompt": "Saya merasa sangat stres dan lelah dengan ujian ini. [Test Iteration 6]",
+    "expected_target": "EMOTIONAL_DISTRESS"
+  },
+  {
+    "id": "D5-PERF-0058",
+    "source_dataset": "MMLU / LACF Operational Benchmark 20x Scale",
+    "category": "intent_classification",
+    "prompt": "Bisa jelaskan konsep RAG dan Vector Database? [Test Iteration 6]",
+    "expected_target": "ACADEMIC_HELP"
+  },
+  {
+    "id": "D5-PERF-0059",
+    "source_dataset": "MMLU / LACF Operational Benchmark 20x Scale",
+    "category": "intent_classification",
+    "prompt": "Bagaimana cara agar tetap fokus saat belajar malam? [Test Iteration 6]",
+    "expected_target": "MOTIVATIONAL_SUPPORT"
+  },
+  {
+    "id": "D5-PERF-0060",
+    "source_dataset": "MMLU / LACF Operational Benchmark 20x Scale",
+    "category": "intent_classification",
+    "prompt": "Halo, apa kabar sistem hari ini? [Test Iteration 6]",
+    "expected_target": "GENERAL_CHAT"
+  },
+  {
+    "id": "D5-PERF-0061",
+    "source_dataset": "MMLU / LACF Operational Benchmark 20x Scale",
+    "category": "tool_calling",
+    "prompt": "Jadwalkan sesi belajar jam 14:00 - 16:00 [Test Iteration 6]",
+    "expected_target": "schedule_service.create_task"
+  },
+  {
+    "id": "D5-PERF-0062",
+    "source_dataset": "MMLU / LACF Operational Benchmark 20x Scale",
+    "category": "tool_calling",
+    "prompt": "Tampilkan daftar tugas yang belum selesai [Test Iteration 6]",
+    "expected_target": "schedule_service.get_tasks"
+  },
+  {
+    "id": "D5-PERF-0063",
+    "source_dataset": "MMLU / LACF Operational Benchmark 20x Scale",
+    "category": "tool_calling",
+    "prompt": "Hapus jadwal kuliah jam 10 pagi besok [Test Iteration 6]",
+    "expected_target": "schedule_service.delete_task"
+  },
+  {
+    "id": "D5-PERF-0064",
+    "source_dataset": "MMLU / LACF Operational Benchmark 20x Scale",
+    "category": "academic_tutor",
+    "prompt": "Jelaskan perbedaan antara model regresi linier dan logistik. [Test Iteration 6]",
+    "expected_target": "TUTOR_RESPONSE"
+  },
+  {
+    "id": "D5-PERF-0065",
+    "source_dataset": "MMLU / LACF Operational Benchmark 20x Scale",
+    "category": "academic_tutor",
+    "prompt": "Apa fungsi dari FAISS index dalam sistem RAG? [Test Iteration 6]",
+    "expected_target": "TUTOR_RESPONSE"
+  },
+  {
+    "id": "D5-PERF-0066",
+    "source_dataset": "MMLU / LACF Operational Benchmark 20x Scale",
+    "category": "academic_tutor",
+    "prompt": "Bagaimana cara kerja arsitektur Transformer pada LLM? [Test Iteration 6]",
+    "expected_target": "TUTOR_RESPONSE"
+  },
+  {
+    "id": "D5-PERF-0067",
+    "source_dataset": "MMLU / LACF Operational Benchmark 20x Scale",
+    "category": "intent_classification",
+    "prompt": "Tambahkan tugas review jurnal ke jadwal besok jam 9 pagi. [Test Iteration 7]",
+    "expected_target": "TASK_OPS"
+  },
+  {
+    "id": "D5-PERF-0068",
+    "source_dataset": "MMLU / LACF Operational Benchmark 20x Scale",
+    "category": "intent_classification",
+    "prompt": "Saya merasa sangat stres dan lelah dengan ujian ini. [Test Iteration 7]",
+    "expected_target": "EMOTIONAL_DISTRESS"
+  },
+  {
+    "id": "D5-PERF-0069",
+    "source_dataset": "MMLU / LACF Operational Benchmark 20x Scale",
+    "category": "intent_classification",
+    "prompt": "Bisa jelaskan konsep RAG dan Vector Database? [Test Iteration 7]",
+    "expected_target": "ACADEMIC_HELP"
+  },
+  {
+    "id": "D5-PERF-0070",
+    "source_dataset": "MMLU / LACF Operational Benchmark 20x Scale",
+    "category": "intent_classification",
+    "prompt": "Bagaimana cara agar tetap fokus saat belajar malam? [Test Iteration 7]",
+    "expected_target": "MOTIVATIONAL_SUPPORT"
+  },
+  {
+    "id": "D5-PERF-0071",
+    "source_dataset": "MMLU / LACF Operational Benchmark 20x Scale",
+    "category": "intent_classification",
+    "prompt": "Halo, apa kabar sistem hari ini? [Test Iteration 7]",
+    "expected_target": "GENERAL_CHAT"
+  },
+  {
+    "id": "D5-PERF-0072",
+    "source_dataset": "MMLU / LACF Operational Benchmark 20x Scale",
+    "category": "tool_calling",
+    "prompt": "Jadwalkan sesi belajar jam 14:00 - 16:00 [Test Iteration 7]",
+    "expected_target": "schedule_service.create_task"
+  },
+  {
+    "id": "D5-PERF-0073",
+    "source_dataset": "MMLU / LACF Operational Benchmark 20x Scale",
+    "category": "tool_calling",
+    "prompt": "Tampilkan daftar tugas yang belum selesai [Test Iteration 7]",
+    "expected_target": "schedule_service.get_tasks"
+  },
+  {
+    "id": "D5-PERF-0074",
+    "source_dataset": "MMLU / LACF Operational Benchmark 20x Scale",
+    "category": "tool_calling",
+    "prompt": "Hapus jadwal kuliah jam 10 pagi besok [Test Iteration 7]",
+    "expected_target": "schedule_service.delete_task"
+  },
+  {
+    "id": "D5-PERF-0075",
+    "source_dataset": "MMLU / LACF Operational Benchmark 20x Scale",
+    "category": "academic_tutor",
+    "prompt": "Jelaskan perbedaan antara model regresi linier dan logistik. [Test Iteration 7]",
+    "expected_target": "TUTOR_RESPONSE"
+  },
+  {
+    "id": "D5-PERF-0076",
+    "source_dataset": "MMLU / LACF Operational Benchmark 20x Scale",
+    "category": "academic_tutor",
+    "prompt": "Apa fungsi dari FAISS index dalam sistem RAG? [Test Iteration 7]",
+    "expected_target": "TUTOR_RESPONSE"
+  },
+  {
+    "id": "D5-PERF-0077",
+    "source_dataset": "MMLU / LACF Operational Benchmark 20x Scale",
+    "category": "academic_tutor",
+    "prompt": "Bagaimana cara kerja arsitektur Transformer pada LLM? [Test Iteration 7]",
+    "expected_target": "TUTOR_RESPONSE"
+  },
+  {
+    "id": "D5-PERF-0078",
+    "source_dataset": "MMLU / LACF Operational Benchmark 20x Scale",
+    "category": "intent_classification",
+    "prompt": "Tambahkan tugas review jurnal ke jadwal besok jam 9 pagi. [Test Iteration 8]",
+    "expected_target": "TASK_OPS"
+  },
+  {
+    "id": "D5-PERF-0079",
+    "source_dataset": "MMLU / LACF Operational Benchmark 20x Scale",
+    "category": "intent_classification",
+    "prompt": "Saya merasa sangat stres dan lelah dengan ujian ini. [Test Iteration 8]",
+    "expected_target": "EMOTIONAL_DISTRESS"
+  },
+  {
+    "id": "D5-PERF-0080",
+    "source_dataset": "MMLU / LACF Operational Benchmark 20x Scale",
+    "category": "intent_classification",
+    "prompt": "Bisa jelaskan konsep RAG dan Vector Database? [Test Iteration 8]",
+    "expected_target": "ACADEMIC_HELP"
+  },
+  {
+    "id": "D5-PERF-0081",
+    "source_dataset": "MMLU / LACF Operational Benchmark 20x Scale",
+    "category": "intent_classification",
+    "prompt": "Bagaimana cara agar tetap fokus saat belajar malam? [Test Iteration 8]",
+    "expected_target": "MOTIVATIONAL_SUPPORT"
+  },
+  {
+    "id": "D5-PERF-0082",
+    "source_dataset": "MMLU / LACF Operational Benchmark 20x Scale",
+    "category": "intent_classification",
+    "prompt": "Halo, apa kabar sistem hari ini? [Test Iteration 8]",
+    "expected_target": "GENERAL_CHAT"
+  },
+  {
+    "id": "D5-PERF-0083",
+    "source_dataset": "MMLU / LACF Operational Benchmark 20x Scale",
+    "category": "tool_calling",
+    "prompt": "Jadwalkan sesi belajar jam 14:00 - 16:00 [Test Iteration 8]",
+    "expected_target": "schedule_service.create_task"
+  },
+  {
+    "id": "D5-PERF-0084",
+    "source_dataset": "MMLU / LACF Operational Benchmark 20x Scale",
+    "category": "tool_calling",
+    "prompt": "Tampilkan daftar tugas yang belum selesai [Test Iteration 8]",
+    "expected_target": "schedule_service.get_tasks"
+  },
+  {
+    "id": "D5-PERF-0085",
+    "source_dataset": "MMLU / LACF Operational Benchmark 20x Scale",
+    "category": "tool_calling",
+    "prompt": "Hapus jadwal kuliah jam 10 pagi besok [Test Iteration 8]",
+    "expected_target": "schedule_service.delete_task"
+  },
+  {
+    "id": "D5-PERF-0086",
+    "source_dataset": "MMLU / LACF Operational Benchmark 20x Scale",
+    "category": "academic_tutor",
+    "prompt": "Jelaskan perbedaan antara model regresi linier dan logistik. [Test Iteration 8]",
+    "expected_target": "TUTOR_RESPONSE"
+  },
+  {
+    "id": "D5-PERF-0087",
+    "source_dataset": "MMLU / LACF Operational Benchmark 20x Scale",
+    "category": "academic_tutor",
+    "prompt": "Apa fungsi dari FAISS index dalam sistem RAG? [Test Iteration 8]",
+    "expected_target": "TUTOR_RESPONSE"
+  },
+  {
+    "id": "D5-PERF-0088",
+    "source_dataset": "MMLU / LACF Operational Benchmark 20x Scale",
+    "category": "academic_tutor",
+    "prompt": "Bagaimana cara kerja arsitektur Transformer pada LLM? [Test Iteration 8]",
+    "expected_target": "TUTOR_RESPONSE"
+  },
+  {
+    "id": "D5-PERF-0089",
+    "source_dataset": "MMLU / LACF Operational Benchmark 20x Scale",
+    "category": "intent_classification",
+    "prompt": "Tambahkan tugas review jurnal ke jadwal besok jam 9 pagi. [Test Iteration 9]",
+    "expected_target": "TASK_OPS"
+  },
+  {
+    "id": "D5-PERF-0090",
+    "source_dataset": "MMLU / LACF Operational Benchmark 20x Scale",
+    "category": "intent_classification",
+    "prompt": "Saya merasa sangat stres dan lelah dengan ujian ini. [Test Iteration 9]",
+    "expected_target": "EMOTIONAL_DISTRESS"
+  },
+  {
+    "id": "D5-PERF-0091",
+    "source_dataset": "MMLU / LACF Operational Benchmark 20x Scale",
+    "category": "intent_classification",
+    "prompt": "Bisa jelaskan konsep RAG dan Vector Database? [Test Iteration 9]",
+    "expected_target": "ACADEMIC_HELP"
+  },
+  {
+    "id": "D5-PERF-0092",
+    "source_dataset": "MMLU / LACF Operational Benchmark 20x Scale",
+    "category": "intent_classification",
+    "prompt": "Bagaimana cara agar tetap fokus saat belajar malam? [Test Iteration 9]",
+    "expected_target": "MOTIVATIONAL_SUPPORT"
+  },
+  {
+    "id": "D5-PERF-0093",
+    "source_dataset": "MMLU / LACF Operational Benchmark 20x Scale",
+    "category": "intent_classification",
+    "prompt": "Halo, apa kabar sistem hari ini? [Test Iteration 9]",
+    "expected_target": "GENERAL_CHAT"
+  },
+  {
+    "id": "D5-PERF-0094",
+    "source_dataset": "MMLU / LACF Operational Benchmark 20x Scale",
+    "category": "tool_calling",
+    "prompt": "Jadwalkan sesi belajar jam 14:00 - 16:00 [Test Iteration 9]",
+    "expected_target": "schedule_service.create_task"
+  },
+  {
+    "id": "D5-PERF-0095",
+    "source_dataset": "MMLU / LACF Operational Benchmark 20x Scale",
+    "category": "tool_calling",
+    "prompt": "Tampilkan daftar tugas yang belum selesai [Test Iteration 9]",
+    "expected_target": "schedule_service.get_tasks"
+  },
+  {
+    "id": "D5-PERF-0096",
+    "source_dataset": "MMLU / LACF Operational Benchmark 20x Scale",
+    "category": "tool_calling",
+    "prompt": "Hapus jadwal kuliah jam 10 pagi besok [Test Iteration 9]",
+    "expected_target": "schedule_service.delete_task"
+  },
+  {
+    "id": "D5-PERF-0097",
+    "source_dataset": "MMLU / LACF Operational Benchmark 20x Scale",
+    "category": "academic_tutor",
+    "prompt": "Jelaskan perbedaan antara model regresi linier dan logistik. [Test Iteration 9]",
+    "expected_target": "TUTOR_RESPONSE"
+  },
+  {
+    "id": "D5-PERF-0098",
+    "source_dataset": "MMLU / LACF Operational Benchmark 20x Scale",
+    "category": "academic_tutor",
+    "prompt": "Apa fungsi dari FAISS index dalam sistem RAG? [Test Iteration 9]",
+    "expected_target": "TUTOR_RESPONSE"
+  },
+  {
+    "id": "D5-PERF-0099",
+    "source_dataset": "MMLU / LACF Operational Benchmark 20x Scale",
+    "category": "academic_tutor",
+    "prompt": "Bagaimana cara kerja arsitektur Transformer pada LLM? [Test Iteration 9]",
+    "expected_target": "TUTOR_RESPONSE"
+  },
+  {
+    "id": "D5-PERF-0100",
+    "source_dataset": "MMLU / LACF Operational Benchmark 20x Scale",
+    "category": "intent_classification",
+    "prompt": "Tambahkan tugas review jurnal ke jadwal besok jam 9 pagi. [Test Iteration 10]",
+    "expected_target": "TASK_OPS"
+  },
+  {
+    "id": "D5-PERF-0101",
+    "source_dataset": "MMLU / LACF Operational Benchmark 20x Scale",
+    "category": "intent_classification",
+    "prompt": "Saya merasa sangat stres dan lelah dengan ujian ini. [Test Iteration 10]",
+    "expected_target": "EMOTIONAL_DISTRESS"
+  },
+  {
+    "id": "D5-PERF-0102",
+    "source_dataset": "MMLU / LACF Operational Benchmark 20x Scale",
+    "category": "intent_classification",
+    "prompt": "Bisa jelaskan konsep RAG dan Vector Database? [Test Iteration 10]",
+    "expected_target": "ACADEMIC_HELP"
+  },
+  {
+    "id": "D5-PERF-0103",
+    "source_dataset": "MMLU / LACF Operational Benchmark 20x Scale",
+    "category": "intent_classification",
+    "prompt": "Bagaimana cara agar tetap fokus saat belajar malam? [Test Iteration 10]",
+    "expected_target": "MOTIVATIONAL_SUPPORT"
+  },
+  {
+    "id": "D5-PERF-0104",
+    "source_dataset": "MMLU / LACF Operational Benchmark 20x Scale",
+    "category": "intent_classification",
+    "prompt": "Halo, apa kabar sistem hari ini? [Test Iteration 10]",
+    "expected_target": "GENERAL_CHAT"
+  },
+  {
+    "id": "D5-PERF-0105",
+    "source_dataset": "MMLU / LACF Operational Benchmark 20x Scale",
+    "category": "tool_calling",
+    "prompt": "Jadwalkan sesi belajar jam 14:00 - 16:00 [Test Iteration 10]",
+    "expected_target": "schedule_service.create_task"
+  },
+  {
+    "id": "D5-PERF-0106",
+    "source_dataset": "MMLU / LACF Operational Benchmark 20x Scale",
+    "category": "tool_calling",
+    "prompt": "Tampilkan daftar tugas yang belum selesai [Test Iteration 10]",
+    "expected_target": "schedule_service.get_tasks"
+  },
+  {
+    "id": "D5-PERF-0107",
+    "source_dataset": "MMLU / LACF Operational Benchmark 20x Scale",
+    "category": "tool_calling",
+    "prompt": "Hapus jadwal kuliah jam 10 pagi besok [Test Iteration 10]",
+    "expected_target": "schedule_service.delete_task"
+  },
+  {
+    "id": "D5-PERF-0108",
+    "source_dataset": "MMLU / LACF Operational Benchmark 20x Scale",
+    "category": "academic_tutor",
+    "prompt": "Jelaskan perbedaan antara model regresi linier dan logistik. [Test Iteration 10]",
+    "expected_target": "TUTOR_RESPONSE"
+  },
+  {
+    "id": "D5-PERF-0109",
+    "source_dataset": "MMLU / LACF Operational Benchmark 20x Scale",
+    "category": "academic_tutor",
+    "prompt": "Apa fungsi dari FAISS index dalam sistem RAG? [Test Iteration 10]",
+    "expected_target": "TUTOR_RESPONSE"
+  },
+  {
+    "id": "D5-PERF-0110",
+    "source_dataset": "MMLU / LACF Operational Benchmark 20x Scale",
+    "category": "academic_tutor",
+    "prompt": "Bagaimana cara kerja arsitektur Transformer pada LLM? [Test Iteration 10]",
+    "expected_target": "TUTOR_RESPONSE"
+  },
+  {
+    "id": "D5-PERF-0111",
+    "source_dataset": "MMLU / LACF Operational Benchmark 20x Scale",
+    "category": "intent_classification",
+    "prompt": "Tambahkan tugas review jurnal ke jadwal besok jam 9 pagi. [Test Iteration 11]",
+    "expected_target": "TASK_OPS"
+  },
+  {
+    "id": "D5-PERF-0112",
+    "source_dataset": "MMLU / LACF Operational Benchmark 20x Scale",
+    "category": "intent_classification",
+    "prompt": "Saya merasa sangat stres dan lelah dengan ujian ini. [Test Iteration 11]",
+    "expected_target": "EMOTIONAL_DISTRESS"
+  },
+  {
+    "id": "D5-PERF-0113",
+    "source_dataset": "MMLU / LACF Operational Benchmark 20x Scale",
+    "category": "intent_classification",
+    "prompt": "Bisa jelaskan konsep RAG dan Vector Database? [Test Iteration 11]",
+    "expected_target": "ACADEMIC_HELP"
+  },
+  {
+    "id": "D5-PERF-0114",
+    "source_dataset": "MMLU / LACF Operational Benchmark 20x Scale",
+    "category": "intent_classification",
+    "prompt": "Bagaimana cara agar tetap fokus saat belajar malam? [Test Iteration 11]",
+    "expected_target": "MOTIVATIONAL_SUPPORT"
+  },
+  {
+    "id": "D5-PERF-0115",
+    "source_dataset": "MMLU / LACF Operational Benchmark 20x Scale",
+    "category": "intent_classification",
+    "prompt": "Halo, apa kabar sistem hari ini? [Test Iteration 11]",
+    "expected_target": "GENERAL_CHAT"
+  },
+  {
+    "id": "D5-PERF-0116",
+    "source_dataset": "MMLU / LACF Operational Benchmark 20x Scale",
+    "category": "tool_calling",
+    "prompt": "Jadwalkan sesi belajar jam 14:00 - 16:00 [Test Iteration 11]",
+    "expected_target": "schedule_service.create_task"
+  },
+  {
+    "id": "D5-PERF-0117",
+    "source_dataset": "MMLU / LACF Operational Benchmark 20x Scale",
+    "category": "tool_calling",
+    "prompt": "Tampilkan daftar tugas yang belum selesai [Test Iteration 11]",
+    "expected_target": "schedule_service.get_tasks"
+  },
+  {
+    "id": "D5-PERF-0118",
+    "source_dataset": "MMLU / LACF Operational Benchmark 20x Scale",
+    "category": "tool_calling",
+    "prompt": "Hapus jadwal kuliah jam 10 pagi besok [Test Iteration 11]",
+    "expected_target": "schedule_service.delete_task"
+  },
+  {
+    "id": "D5-PERF-0119",
+    "source_dataset": "MMLU / LACF Operational Benchmark 20x Scale",
+    "category": "academic_tutor",
+    "prompt": "Jelaskan perbedaan antara model regresi linier dan logistik. [Test Iteration 11]",
+    "expected_target": "TUTOR_RESPONSE"
+  },
+  {
+    "id": "D5-PERF-0120",
+    "source_dataset": "MMLU / LACF Operational Benchmark 20x Scale",
+    "category": "academic_tutor",
+    "prompt": "Apa fungsi dari FAISS index dalam sistem RAG? [Test Iteration 11]",
+    "expected_target": "TUTOR_RESPONSE"
+  },
+  {
+    "id": "D5-PERF-0121",
+    "source_dataset": "MMLU / LACF Operational Benchmark 20x Scale",
+    "category": "academic_tutor",
+    "prompt": "Bagaimana cara kerja arsitektur Transformer pada LLM? [Test Iteration 11]",
+    "expected_target": "TUTOR_RESPONSE"
+  },
+  {
+    "id": "D5-PERF-0122",
+    "source_dataset": "MMLU / LACF Operational Benchmark 20x Scale",
+    "category": "intent_classification",
+    "prompt": "Tambahkan tugas review jurnal ke jadwal besok jam 9 pagi. [Test Iteration 12]",
+    "expected_target": "TASK_OPS"
+  },
+  {
+    "id": "D5-PERF-0123",
+    "source_dataset": "MMLU / LACF Operational Benchmark 20x Scale",
+    "category": "intent_classification",
+    "prompt": "Saya merasa sangat stres dan lelah dengan ujian ini. [Test Iteration 12]",
+    "expected_target": "EMOTIONAL_DISTRESS"
+  },
+  {
+    "id": "D5-PERF-0124",
+    "source_dataset": "MMLU / LACF Operational Benchmark 20x Scale",
+    "category": "intent_classification",
+    "prompt": "Bisa jelaskan konsep RAG dan Vector Database? [Test Iteration 12]",
+    "expected_target": "ACADEMIC_HELP"
+  },
+  {
+    "id": "D5-PERF-0125",
+    "source_dataset": "MMLU / LACF Operational Benchmark 20x Scale",
+    "category": "intent_classification",
+    "prompt": "Bagaimana cara agar tetap fokus saat belajar malam? [Test Iteration 12]",
+    "expected_target": "MOTIVATIONAL_SUPPORT"
+  },
+  {
+    "id": "D5-PERF-0126",
+    "source_dataset": "MMLU / LACF Operational Benchmark 20x Scale",
+    "category": "intent_classification",
+    "prompt": "Halo, apa kabar sistem hari ini? [Test Iteration 12]",
+    "expected_target": "GENERAL_CHAT"
+  },
+  {
+    "id": "D5-PERF-0127",
+    "source_dataset": "MMLU / LACF Operational Benchmark 20x Scale",
+    "category": "tool_calling",
+    "prompt": "Jadwalkan sesi belajar jam 14:00 - 16:00 [Test Iteration 12]",
+    "expected_target": "schedule_service.create_task"
+  },
+  {
+    "id": "D5-PERF-0128",
+    "source_dataset": "MMLU / LACF Operational Benchmark 20x Scale",
+    "category": "tool_calling",
+    "prompt": "Tampilkan daftar tugas yang belum selesai [Test Iteration 12]",
+    "expected_target": "schedule_service.get_tasks"
+  },
+  {
+    "id": "D5-PERF-0129",
+    "source_dataset": "MMLU / LACF Operational Benchmark 20x Scale",
+    "category": "tool_calling",
+    "prompt": "Hapus jadwal kuliah jam 10 pagi besok [Test Iteration 12]",
+    "expected_target": "schedule_service.delete_task"
+  },
+  {
+    "id": "D5-PERF-0130",
+    "source_dataset": "MMLU / LACF Operational Benchmark 20x Scale",
+    "category": "academic_tutor",
+    "prompt": "Jelaskan perbedaan antara model regresi linier dan logistik. [Test Iteration 12]",
+    "expected_target": "TUTOR_RESPONSE"
+  },
+  {
+    "id": "D5-PERF-0131",
+    "source_dataset": "MMLU / LACF Operational Benchmark 20x Scale",
+    "category": "academic_tutor",
+    "prompt": "Apa fungsi dari FAISS index dalam sistem RAG? [Test Iteration 12]",
+    "expected_target": "TUTOR_RESPONSE"
+  },
+  {
+    "id": "D5-PERF-0132",
+    "source_dataset": "MMLU / LACF Operational Benchmark 20x Scale",
+    "category": "academic_tutor",
+    "prompt": "Bagaimana cara kerja arsitektur Transformer pada LLM? [Test Iteration 12]",
+    "expected_target": "TUTOR_RESPONSE"
+  },
+  {
+    "id": "D5-PERF-0133",
+    "source_dataset": "MMLU / LACF Operational Benchmark 20x Scale",
+    "category": "intent_classification",
+    "prompt": "Tambahkan tugas review jurnal ke jadwal besok jam 9 pagi. [Test Iteration 13]",
+    "expected_target": "TASK_OPS"
+  },
+  {
+    "id": "D5-PERF-0134",
+    "source_dataset": "MMLU / LACF Operational Benchmark 20x Scale",
+    "category": "intent_classification",
+    "prompt": "Saya merasa sangat stres dan lelah dengan ujian ini. [Test Iteration 13]",
+    "expected_target": "EMOTIONAL_DISTRESS"
+  },
+  {
+    "id": "D5-PERF-0135",
+    "source_dataset": "MMLU / LACF Operational Benchmark 20x Scale",
+    "category": "intent_classification",
+    "prompt": "Bisa jelaskan konsep RAG dan Vector Database? [Test Iteration 13]",
+    "expected_target": "ACADEMIC_HELP"
+  },
+  {
+    "id": "D5-PERF-0136",
+    "source_dataset": "MMLU / LACF Operational Benchmark 20x Scale",
+    "category": "intent_classification",
+    "prompt": "Bagaimana cara agar tetap fokus saat belajar malam? [Test Iteration 13]",
+    "expected_target": "MOTIVATIONAL_SUPPORT"
+  },
+  {
+    "id": "D5-PERF-0137",
+    "source_dataset": "MMLU / LACF Operational Benchmark 20x Scale",
+    "category": "intent_classification",
+    "prompt": "Halo, apa kabar sistem hari ini? [Test Iteration 13]",
+    "expected_target": "GENERAL_CHAT"
+  },
+  {
+    "id": "D5-PERF-0138",
+    "source_dataset": "MMLU / LACF Operational Benchmark 20x Scale",
+    "category": "tool_calling",
+    "prompt": "Jadwalkan sesi belajar jam 14:00 - 16:00 [Test Iteration 13]",
+    "expected_target": "schedule_service.create_task"
+  },
+  {
+    "id": "D5-PERF-0139",
+    "source_dataset": "MMLU / LACF Operational Benchmark 20x Scale",
+    "category": "tool_calling",
+    "prompt": "Tampilkan daftar tugas yang belum selesai [Test Iteration 13]",
+    "expected_target": "schedule_service.get_tasks"
+  },
+  {
+    "id": "D5-PERF-0140",
+    "source_dataset": "MMLU / LACF Operational Benchmark 20x Scale",
+    "category": "tool_calling",
+    "prompt": "Hapus jadwal kuliah jam 10 pagi besok [Test Iteration 13]",
+    "expected_target": "schedule_service.delete_task"
+  },
+  {
+    "id": "D5-PERF-0141",
+    "source_dataset": "MMLU / LACF Operational Benchmark 20x Scale",
+    "category": "academic_tutor",
+    "prompt": "Jelaskan perbedaan antara model regresi linier dan logistik. [Test Iteration 13]",
+    "expected_target": "TUTOR_RESPONSE"
+  },
+  {
+    "id": "D5-PERF-0142",
+    "source_dataset": "MMLU / LACF Operational Benchmark 20x Scale",
+    "category": "academic_tutor",
+    "prompt": "Apa fungsi dari FAISS index dalam sistem RAG? [Test Iteration 13]",
+    "expected_target": "TUTOR_RESPONSE"
+  },
+  {
+    "id": "D5-PERF-0143",
+    "source_dataset": "MMLU / LACF Operational Benchmark 20x Scale",
+    "category": "academic_tutor",
+    "prompt": "Bagaimana cara kerja arsitektur Transformer pada LLM? [Test Iteration 13]",
+    "expected_target": "TUTOR_RESPONSE"
+  },
+  {
+    "id": "D5-PERF-0144",
+    "source_dataset": "MMLU / LACF Operational Benchmark 20x Scale",
+    "category": "intent_classification",
+    "prompt": "Tambahkan tugas review jurnal ke jadwal besok jam 9 pagi. [Test Iteration 14]",
+    "expected_target": "TASK_OPS"
+  },
+  {
+    "id": "D5-PERF-0145",
+    "source_dataset": "MMLU / LACF Operational Benchmark 20x Scale",
+    "category": "intent_classification",
+    "prompt": "Saya merasa sangat stres dan lelah dengan ujian ini. [Test Iteration 14]",
+    "expected_target": "EMOTIONAL_DISTRESS"
+  },
+  {
+    "id": "D5-PERF-0146",
+    "source_dataset": "MMLU / LACF Operational Benchmark 20x Scale",
+    "category": "intent_classification",
+    "prompt": "Bisa jelaskan konsep RAG dan Vector Database? [Test Iteration 14]",
+    "expected_target": "ACADEMIC_HELP"
+  },
+  {
+    "id": "D5-PERF-0147",
+    "source_dataset": "MMLU / LACF Operational Benchmark 20x Scale",
+    "category": "intent_classification",
+    "prompt": "Bagaimana cara agar tetap fokus saat belajar malam? [Test Iteration 14]",
+    "expected_target": "MOTIVATIONAL_SUPPORT"
+  },
+  {
+    "id": "D5-PERF-0148",
+    "source_dataset": "MMLU / LACF Operational Benchmark 20x Scale",
+    "category": "intent_classification",
+    "prompt": "Halo, apa kabar sistem hari ini? [Test Iteration 14]",
+    "expected_target": "GENERAL_CHAT"
+  },
+  {
+    "id": "D5-PERF-0149",
+    "source_dataset": "MMLU / LACF Operational Benchmark 20x Scale",
+    "category": "tool_calling",
+    "prompt": "Jadwalkan sesi belajar jam 14:00 - 16:00 [Test Iteration 14]",
+    "expected_target": "schedule_service.create_task"
+  },
+  {
+    "id": "D5-PERF-0150",
+    "source_dataset": "MMLU / LACF Operational Benchmark 20x Scale",
+    "category": "tool_calling",
+    "prompt": "Tampilkan daftar tugas yang belum selesai [Test Iteration 14]",
+    "expected_target": "schedule_service.get_tasks"
+  },
+  {
+    "id": "D5-PERF-0151",
+    "source_dataset": "MMLU / LACF Operational Benchmark 20x Scale",
+    "category": "tool_calling",
+    "prompt": "Hapus jadwal kuliah jam 10 pagi besok [Test Iteration 14]",
+    "expected_target": "schedule_service.delete_task"
+  },
+  {
+    "id": "D5-PERF-0152",
+    "source_dataset": "MMLU / LACF Operational Benchmark 20x Scale",
+    "category": "academic_tutor",
+    "prompt": "Jelaskan perbedaan antara model regresi linier dan logistik. [Test Iteration 14]",
+    "expected_target": "TUTOR_RESPONSE"
+  },
+  {
+    "id": "D5-PERF-0153",
+    "source_dataset": "MMLU / LACF Operational Benchmark 20x Scale",
+    "category": "academic_tutor",
+    "prompt": "Apa fungsi dari FAISS index dalam sistem RAG? [Test Iteration 14]",
+    "expected_target": "TUTOR_RESPONSE"
+  },
+  {
+    "id": "D5-PERF-0154",
+    "source_dataset": "MMLU / LACF Operational Benchmark 20x Scale",
+    "category": "academic_tutor",
+    "prompt": "Bagaimana cara kerja arsitektur Transformer pada LLM? [Test Iteration 14]",
+    "expected_target": "TUTOR_RESPONSE"
+  },
+  {
+    "id": "D5-PERF-0155",
+    "source_dataset": "MMLU / LACF Operational Benchmark 20x Scale",
+    "category": "intent_classification",
+    "prompt": "Tambahkan tugas review jurnal ke jadwal besok jam 9 pagi. [Test Iteration 15]",
+    "expected_target": "TASK_OPS"
+  },
+  {
+    "id": "D5-PERF-0156",
+    "source_dataset": "MMLU / LACF Operational Benchmark 20x Scale",
+    "category": "intent_classification",
+    "prompt": "Saya merasa sangat stres dan lelah dengan ujian ini. [Test Iteration 15]",
+    "expected_target": "EMOTIONAL_DISTRESS"
+  },
+  {
+    "id": "D5-PERF-0157",
+    "source_dataset": "MMLU / LACF Operational Benchmark 20x Scale",
+    "category": "intent_classification",
+    "prompt": "Bisa jelaskan konsep RAG dan Vector Database? [Test Iteration 15]",
+    "expected_target": "ACADEMIC_HELP"
+  },
+  {
+    "id": "D5-PERF-0158",
+    "source_dataset": "MMLU / LACF Operational Benchmark 20x Scale",
+    "category": "intent_classification",
+    "prompt": "Bagaimana cara agar tetap fokus saat belajar malam? [Test Iteration 15]",
+    "expected_target": "MOTIVATIONAL_SUPPORT"
+  },
+  {
+    "id": "D5-PERF-0159",
+    "source_dataset": "MMLU / LACF Operational Benchmark 20x Scale",
+    "category": "intent_classification",
+    "prompt": "Halo, apa kabar sistem hari ini? [Test Iteration 15]",
+    "expected_target": "GENERAL_CHAT"
+  },
+  {
+    "id": "D5-PERF-0160",
+    "source_dataset": "MMLU / LACF Operational Benchmark 20x Scale",
+    "category": "tool_calling",
+    "prompt": "Jadwalkan sesi belajar jam 14:00 - 16:00 [Test Iteration 15]",
+    "expected_target": "schedule_service.create_task"
+  },
+  {
+    "id": "D5-PERF-0161",
+    "source_dataset": "MMLU / LACF Operational Benchmark 20x Scale",
+    "category": "tool_calling",
+    "prompt": "Tampilkan daftar tugas yang belum selesai [Test Iteration 15]",
+    "expected_target": "schedule_service.get_tasks"
+  },
+  {
+    "id": "D5-PERF-0162",
+    "source_dataset": "MMLU / LACF Operational Benchmark 20x Scale",
+    "category": "tool_calling",
+    "prompt": "Hapus jadwal kuliah jam 10 pagi besok [Test Iteration 15]",
+    "expected_target": "schedule_service.delete_task"
+  },
+  {
+    "id": "D5-PERF-0163",
+    "source_dataset": "MMLU / LACF Operational Benchmark 20x Scale",
+    "category": "academic_tutor",
+    "prompt": "Jelaskan perbedaan antara model regresi linier dan logistik. [Test Iteration 15]",
+    "expected_target": "TUTOR_RESPONSE"
+  },
+  {
+    "id": "D5-PERF-0164",
+    "source_dataset": "MMLU / LACF Operational Benchmark 20x Scale",
+    "category": "academic_tutor",
+    "prompt": "Apa fungsi dari FAISS index dalam sistem RAG? [Test Iteration 15]",
+    "expected_target": "TUTOR_RESPONSE"
+  },
+  {
+    "id": "D5-PERF-0165",
+    "source_dataset": "MMLU / LACF Operational Benchmark 20x Scale",
+    "category": "academic_tutor",
+    "prompt": "Bagaimana cara kerja arsitektur Transformer pada LLM? [Test Iteration 15]",
+    "expected_target": "TUTOR_RESPONSE"
+  }
+]

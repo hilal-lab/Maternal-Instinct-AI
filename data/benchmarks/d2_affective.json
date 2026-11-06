@@ -1,0 +1,1682 @@
+[
+  {
+    "id": "D2-EXP-0001",
+    "source_dataset": "GoEmotions / Dreaddit Expanded Benchmark (20x Scale)",
+    "text": "Saya merasa sangat kewalahan dengan semua deadline minggu ini, rasanya mau nyerah saja.",
+    "expected_affect": "STRESS",
+    "is_affective_need": true,
+    "language": "id"
+  },
+  {
+    "id": "D2-EXP-0002",
+    "source_dataset": "GoEmotions / Dreaddit Expanded Benchmark (20x Scale)",
+    "text": "Tugas bertumpuk, ujian besok pagi, dan saya belum tidur sama sekali dari kemarin.",
+    "expected_affect": "FATIGUE",
+    "is_affective_need": true,
+    "language": "id"
+  },
+  {
+    "id": "D2-EXP-0003",
+    "source_dataset": "GoEmotions / Dreaddit Expanded Benchmark (20x Scale)",
+    "text": "Aku merasa gagal dan tidak mampu menyelesaikan tesis ini tepat waktu.",
+    "expected_affect": "SELF-CRITICAL",
+    "is_affective_need": true,
+    "language": "id"
+  },
+  {
+    "id": "D2-EXP-0004",
+    "source_dataset": "GoEmotions / Dreaddit Expanded Benchmark (20x Scale)",
+    "text": "Jantung saya berdetak sangat cepat dan saya panik melihat jadwal sidang besok.",
+    "expected_affect": "PANIC",
+    "is_affective_need": true,
+    "language": "id"
+  },
+  {
+    "id": "D2-EXP-0005",
+    "source_dataset": "GoEmotions / Dreaddit Expanded Benchmark (20x Scale)",
+    "text": "Pikiran saya tidak tenang dan merasa tertekan oleh ekspektasi akademik.",
+    "expected_affect": "STRESS",
+    "is_affective_need": true,
+    "language": "id"
+  },
+  {
+    "id": "D2-EXP-0006",
+    "source_dataset": "GoEmotions / Dreaddit Expanded Benchmark (20x Scale)",
+    "text": "Saya sudah berusaha keras tapi hasil eksperimen selalu error, rasanya putus asa.",
+    "expected_affect": "SELF-CRITICAL",
+    "is_affective_need": true,
+    "language": "id"
+  },
+  {
+    "id": "D2-EXP-0007",
+    "source_dataset": "GoEmotions / Dreaddit Expanded Benchmark (20x Scale)",
+    "text": "Kepala saya pusing berat karena begadang 3 malam berturut-turut untuk mengejar revisi.",
+    "expected_affect": "FATIGUE",
+    "is_affective_need": true,
+    "language": "id"
+  },
+  {
+    "id": "D2-EXP-0008",
+    "source_dataset": "GoEmotions / Dreaddit Expanded Benchmark (20x Scale)",
+    "text": "I feel completely burned out and I can't focus on studying anymore.",
+    "expected_affect": "FATIGUE",
+    "is_affective_need": true,
+    "language": "en"
+  },
+  {
+    "id": "D2-EXP-0009",
+    "source_dataset": "GoEmotions / Dreaddit Expanded Benchmark (20x Scale)",
+    "text": "My anxiety is through the roof because of the impending project presentation.",
+    "expected_affect": "PANIC",
+    "is_affective_need": true,
+    "language": "en"
+  },
+  {
+    "id": "D2-EXP-0010",
+    "source_dataset": "GoEmotions / Dreaddit Expanded Benchmark (20x Scale)",
+    "text": "I feel like I'm failing everyone and my hard work means nothing.",
+    "expected_affect": "SELF-CRITICAL",
+    "is_affective_need": true,
+    "language": "en"
+  },
+  {
+    "id": "D2-EXP-0011",
+    "source_dataset": "GoEmotions / Dreaddit Expanded Benchmark (20x Scale)",
+    "text": "Everything is piling up and I don't know how to handle this academic stress.",
+    "expected_affect": "STRESS",
+    "is_affective_need": true,
+    "language": "en"
+  },
+  {
+    "id": "D2-EXP-0012",
+    "source_dataset": "GoEmotions / Dreaddit Expanded Benchmark (20x Scale)",
+    "text": "I am having a panic attack due to the upcoming comprehensive examination.",
+    "expected_affect": "PANIC",
+    "is_affective_need": true,
+    "language": "en"
+  },
+  {
+    "id": "D2-EXP-0013",
+    "source_dataset": "GoEmotions / Dreaddit Expanded Benchmark (20x Scale)",
+    "text": "Exhaustion is overtaking me, I cannot process any more data today.",
+    "expected_affect": "FATIGUE",
+    "is_affective_need": true,
+    "language": "en"
+  },
+  {
+    "id": "D2-EXP-0014",
+    "source_dataset": "GoEmotions / Dreaddit Expanded Benchmark (20x Scale)",
+    "text": "Tolong aturkan jadwal kuliah dan sesi gym saya untuk besok.",
+    "expected_affect": "NEUTRAL",
+    "is_affective_need": false,
+    "language": "id"
+  },
+  {
+    "id": "D2-EXP-0015",
+    "source_dataset": "GoEmotions / Dreaddit Expanded Benchmark (20x Scale)",
+    "text": "Berapa sisa tugas yang belum saya selesaikan minggu ini?",
+    "expected_affect": "NEUTRAL",
+    "is_affective_need": false,
+    "language": "id"
+  },
+  {
+    "id": "D2-EXP-0016",
+    "source_dataset": "GoEmotions / Dreaddit Expanded Benchmark (20x Scale)",
+    "text": "Buatkan rangkuman dari bab 2 jurnal ini.",
+    "expected_affect": "NEUTRAL",
+    "is_affective_need": false,
+    "language": "id"
+  },
+  {
+    "id": "D2-EXP-0017",
+    "source_dataset": "GoEmotions / Dreaddit Expanded Benchmark (20x Scale)",
+    "text": "Bantu saya menjadwalkan sesi diskusi kelompok jam 4 sore.",
+    "expected_affect": "NEUTRAL",
+    "is_affective_need": false,
+    "language": "id"
+  },
+  {
+    "id": "D2-EXP-0018",
+    "source_dataset": "GoEmotions / Dreaddit Expanded Benchmark (20x Scale)",
+    "text": "Tampilkan grafik progres penyelesaian tugas harian saya.",
+    "expected_affect": "NEUTRAL",
+    "is_affective_need": false,
+    "language": "id"
+  },
+  {
+    "id": "D2-EXP-0019",
+    "source_dataset": "GoEmotions / Dreaddit Expanded Benchmark (20x Scale)",
+    "text": "Please add a study session for data engineering at 3 PM.",
+    "expected_affect": "NEUTRAL",
+    "is_affective_need": false,
+    "language": "en"
+  },
+  {
+    "id": "D2-EXP-0020",
+    "source_dataset": "GoEmotions / Dreaddit Expanded Benchmark (20x Scale)",
+    "text": "Show me my schedule for next Monday.",
+    "expected_affect": "NEUTRAL",
+    "is_affective_need": false,
+    "language": "en"
+  },
+  {
+    "id": "D2-EXP-0021",
+    "source_dataset": "GoEmotions / Dreaddit Expanded Benchmark (20x Scale)",
+    "text": "Summarize the literature review findings in bullet points.",
+    "expected_affect": "NEUTRAL",
+    "is_affective_need": false,
+    "language": "en"
+  },
+  {
+    "id": "D2-EXP-0022",
+    "source_dataset": "GoEmotions / Dreaddit Expanded Benchmark (20x Scale)",
+    "text": "[Variation 2] Saya merasa sangat kewalahan dengan semua deadline minggu ini, rasanya mau nyerah saja.",
+    "expected_affect": "STRESS",
+    "is_affective_need": true,
+    "language": "id"
+  },
+  {
+    "id": "D2-EXP-0023",
+    "source_dataset": "GoEmotions / Dreaddit Expanded Benchmark (20x Scale)",
+    "text": "[Variation 2] Tugas bertumpuk, ujian besok pagi, dan saya belum tidur sama sekali dari kemarin.",
+    "expected_affect": "FATIGUE",
+    "is_affective_need": true,
+    "language": "id"
+  },
+  {
+    "id": "D2-EXP-0024",
+    "source_dataset": "GoEmotions / Dreaddit Expanded Benchmark (20x Scale)",
+    "text": "[Variation 2] Aku merasa gagal dan tidak mampu menyelesaikan tesis ini tepat waktu.",
+    "expected_affect": "SELF-CRITICAL",
+    "is_affective_need": true,
+    "language": "id"
+  },
+  {
+    "id": "D2-EXP-0025",
+    "source_dataset": "GoEmotions / Dreaddit Expanded Benchmark (20x Scale)",
+    "text": "[Variation 2] Jantung saya berdetak sangat cepat dan saya panik melihat jadwal sidang besok.",
+    "expected_affect": "PANIC",
+    "is_affective_need": true,
+    "language": "id"
+  },
+  {
+    "id": "D2-EXP-0026",
+    "source_dataset": "GoEmotions / Dreaddit Expanded Benchmark (20x Scale)",
+    "text": "[Variation 2] Pikiran saya tidak tenang dan merasa tertekan oleh ekspektasi akademik.",
+    "expected_affect": "STRESS",
+    "is_affective_need": true,
+    "language": "id"
+  },
+  {
+    "id": "D2-EXP-0027",
+    "source_dataset": "GoEmotions / Dreaddit Expanded Benchmark (20x Scale)",
+    "text": "[Variation 2] Saya sudah berusaha keras tapi hasil eksperimen selalu error, rasanya putus asa.",
+    "expected_affect": "SELF-CRITICAL",
+    "is_affective_need": true,
+    "language": "id"
+  },
+  {
+    "id": "D2-EXP-0028",
+    "source_dataset": "GoEmotions / Dreaddit Expanded Benchmark (20x Scale)",
+    "text": "[Variation 2] Kepala saya pusing berat karena begadang 3 malam berturut-turut untuk mengejar revisi.",
+    "expected_affect": "FATIGUE",
+    "is_affective_need": true,
+    "language": "id"
+  },
+  {
+    "id": "D2-EXP-0029",
+    "source_dataset": "GoEmotions / Dreaddit Expanded Benchmark (20x Scale)",
+    "text": "[Variation 2] I feel completely burned out and I can't focus on studying anymore.",
+    "expected_affect": "FATIGUE",
+    "is_affective_need": true,
+    "language": "en"
+  },
+  {
+    "id": "D2-EXP-0030",
+    "source_dataset": "GoEmotions / Dreaddit Expanded Benchmark (20x Scale)",
+    "text": "[Variation 2] My anxiety is through the roof because of the impending project presentation.",
+    "expected_affect": "PANIC",
+    "is_affective_need": true,
+    "language": "en"
+  },
+  {
+    "id": "D2-EXP-0031",
+    "source_dataset": "GoEmotions / Dreaddit Expanded Benchmark (20x Scale)",
+    "text": "[Variation 2] I feel like I'm failing everyone and my hard work means nothing.",
+    "expected_affect": "SELF-CRITICAL",
+    "is_affective_need": true,
+    "language": "en"
+  },
+  {
+    "id": "D2-EXP-0032",
+    "source_dataset": "GoEmotions / Dreaddit Expanded Benchmark (20x Scale)",
+    "text": "[Variation 2] Everything is piling up and I don't know how to handle this academic stress.",
+    "expected_affect": "STRESS",
+    "is_affective_need": true,
+    "language": "en"
+  },
+  {
+    "id": "D2-EXP-0033",
+    "source_dataset": "GoEmotions / Dreaddit Expanded Benchmark (20x Scale)",
+    "text": "[Variation 2] I am having a panic attack due to the upcoming comprehensive examination.",
+    "expected_affect": "PANIC",
+    "is_affective_need": true,
+    "language": "en"
+  },
+  {
+    "id": "D2-EXP-0034",
+    "source_dataset": "GoEmotions / Dreaddit Expanded Benchmark (20x Scale)",
+    "text": "[Variation 2] Exhaustion is overtaking me, I cannot process any more data today.",
+    "expected_affect": "FATIGUE",
+    "is_affective_need": true,
+    "language": "en"
+  },
+  {
+    "id": "D2-EXP-0035",
+    "source_dataset": "GoEmotions / Dreaddit Expanded Benchmark (20x Scale)",
+    "text": "[Variation 2] Tolong aturkan jadwal kuliah dan sesi gym saya untuk besok.",
+    "expected_affect": "NEUTRAL",
+    "is_affective_need": false,
+    "language": "id"
+  },
+  {
+    "id": "D2-EXP-0036",
+    "source_dataset": "GoEmotions / Dreaddit Expanded Benchmark (20x Scale)",
+    "text": "[Variation 2] Berapa sisa tugas yang belum saya selesaikan minggu ini?",
+    "expected_affect": "NEUTRAL",
+    "is_affective_need": false,
+    "language": "id"
+  },
+  {
+    "id": "D2-EXP-0037",
+    "source_dataset": "GoEmotions / Dreaddit Expanded Benchmark (20x Scale)",
+    "text": "[Variation 2] Buatkan rangkuman dari bab 2 jurnal ini.",
+    "expected_affect": "NEUTRAL",
+    "is_affective_need": false,
+    "language": "id"
+  },
+  {
+    "id": "D2-EXP-0038",
+    "source_dataset": "GoEmotions / Dreaddit Expanded Benchmark (20x Scale)",
+    "text": "[Variation 2] Bantu saya menjadwalkan sesi diskusi kelompok jam 4 sore.",
+    "expected_affect": "NEUTRAL",
+    "is_affective_need": false,
+    "language": "id"
+  },
+  {
+    "id": "D2-EXP-0039",
+    "source_dataset": "GoEmotions / Dreaddit Expanded Benchmark (20x Scale)",
+    "text": "[Variation 2] Tampilkan grafik progres penyelesaian tugas harian saya.",
+    "expected_affect": "NEUTRAL",
+    "is_affective_need": false,
+    "language": "id"
+  },
+  {
+    "id": "D2-EXP-0040",
+    "source_dataset": "GoEmotions / Dreaddit Expanded Benchmark (20x Scale)",
+    "text": "[Variation 2] Please add a study session for data engineering at 3 PM.",
+    "expected_affect": "NEUTRAL",
+    "is_affective_need": false,
+    "language": "en"
+  },
+  {
+    "id": "D2-EXP-0041",
+    "source_dataset": "GoEmotions / Dreaddit Expanded Benchmark (20x Scale)",
+    "text": "[Variation 2] Show me my schedule for next Monday.",
+    "expected_affect": "NEUTRAL",
+    "is_affective_need": false,
+    "language": "en"
+  },
+  {
+    "id": "D2-EXP-0042",
+    "source_dataset": "GoEmotions / Dreaddit Expanded Benchmark (20x Scale)",
+    "text": "[Variation 2] Summarize the literature review findings in bullet points.",
+    "expected_affect": "NEUTRAL",
+    "is_affective_need": false,
+    "language": "en"
+  },
+  {
+    "id": "D2-EXP-0043",
+    "source_dataset": "GoEmotions / Dreaddit Expanded Benchmark (20x Scale)",
+    "text": "[Variation 3] Saya merasa sangat kewalahan dengan semua deadline minggu ini, rasanya mau nyerah saja.",
+    "expected_affect": "STRESS",
+    "is_affective_need": true,
+    "language": "id"
+  },
+  {
+    "id": "D2-EXP-0044",
+    "source_dataset": "GoEmotions / Dreaddit Expanded Benchmark (20x Scale)",
+    "text": "[Variation 3] Tugas bertumpuk, ujian besok pagi, dan saya belum tidur sama sekali dari kemarin.",
+    "expected_affect": "FATIGUE",
+    "is_affective_need": true,
+    "language": "id"
+  },
+  {
+    "id": "D2-EXP-0045",
+    "source_dataset": "GoEmotions / Dreaddit Expanded Benchmark (20x Scale)",
+    "text": "[Variation 3] Aku merasa gagal dan tidak mampu menyelesaikan tesis ini tepat waktu.",
+    "expected_affect": "SELF-CRITICAL",
+    "is_affective_need": true,
+    "language": "id"
+  },
+  {
+    "id": "D2-EXP-0046",
+    "source_dataset": "GoEmotions / Dreaddit Expanded Benchmark (20x Scale)",
+    "text": "[Variation 3] Jantung saya berdetak sangat cepat dan saya panik melihat jadwal sidang besok.",
+    "expected_affect": "PANIC",
+    "is_affective_need": true,
+    "language": "id"
+  },
+  {
+    "id": "D2-EXP-0047",
+    "source_dataset": "GoEmotions / Dreaddit Expanded Benchmark (20x Scale)",
+    "text": "[Variation 3] Pikiran saya tidak tenang dan merasa tertekan oleh ekspektasi akademik.",
+    "expected_affect": "STRESS",
+    "is_affective_need": true,
+    "language": "id"
+  },
+  {
+    "id": "D2-EXP-0048",
+    "source_dataset": "GoEmotions / Dreaddit Expanded Benchmark (20x Scale)",
+    "text": "[Variation 3] Saya sudah berusaha keras tapi hasil eksperimen selalu error, rasanya putus asa.",
+    "expected_affect": "SELF-CRITICAL",
+    "is_affective_need": true,
+    "language": "id"
+  },
+  {
+    "id": "D2-EXP-0049",
+    "source_dataset": "GoEmotions / Dreaddit Expanded Benchmark (20x Scale)",
+    "text": "[Variation 3] Kepala saya pusing berat karena begadang 3 malam berturut-turut untuk mengejar revisi.",
+    "expected_affect": "FATIGUE",
+    "is_affective_need": true,
+    "language": "id"
+  },
+  {
+    "id": "D2-EXP-0050",
+    "source_dataset": "GoEmotions / Dreaddit Expanded Benchmark (20x Scale)",
+    "text": "[Variation 3] I feel completely burned out and I can't focus on studying anymore.",
+    "expected_affect": "FATIGUE",
+    "is_affective_need": true,
+    "language": "en"
+  },
+  {
+    "id": "D2-EXP-0051",
+    "source_dataset": "GoEmotions / Dreaddit Expanded Benchmark (20x Scale)",
+    "text": "[Variation 3] My anxiety is through the roof because of the impending project presentation.",
+    "expected_affect": "PANIC",
+    "is_affective_need": true,
+    "language": "en"
+  },
+  {
+    "id": "D2-EXP-0052",
+    "source_dataset": "GoEmotions / Dreaddit Expanded Benchmark (20x Scale)",
+    "text": "[Variation 3] I feel like I'm failing everyone and my hard work means nothing.",
+    "expected_affect": "SELF-CRITICAL",
+    "is_affective_need": true,
+    "language": "en"
+  },
+  {
+    "id": "D2-EXP-0053",
+    "source_dataset": "GoEmotions / Dreaddit Expanded Benchmark (20x Scale)",
+    "text": "[Variation 3] Everything is piling up and I don't know how to handle this academic stress.",
+    "expected_affect": "STRESS",
+    "is_affective_need": true,
+    "language": "en"
+  },
+  {
+    "id": "D2-EXP-0054",
+    "source_dataset": "GoEmotions / Dreaddit Expanded Benchmark (20x Scale)",
+    "text": "[Variation 3] I am having a panic attack due to the upcoming comprehensive examination.",
+    "expected_affect": "PANIC",
+    "is_affective_need": true,
+    "language": "en"
+  },
+  {
+    "id": "D2-EXP-0055",
+    "source_dataset": "GoEmotions / Dreaddit Expanded Benchmark (20x Scale)",
+    "text": "[Variation 3] Exhaustion is overtaking me, I cannot process any more data today.",
+    "expected_affect": "FATIGUE",
+    "is_affective_need": true,
+    "language": "en"
+  },
+  {
+    "id": "D2-EXP-0056",
+    "source_dataset": "GoEmotions / Dreaddit Expanded Benchmark (20x Scale)",
+    "text": "[Variation 3] Tolong aturkan jadwal kuliah dan sesi gym saya untuk besok.",
+    "expected_affect": "NEUTRAL",
+    "is_affective_need": false,
+    "language": "id"
+  },
+  {
+    "id": "D2-EXP-0057",
+    "source_dataset": "GoEmotions / Dreaddit Expanded Benchmark (20x Scale)",
+    "text": "[Variation 3] Berapa sisa tugas yang belum saya selesaikan minggu ini?",
+    "expected_affect": "NEUTRAL",
+    "is_affective_need": false,
+    "language": "id"
+  },
+  {
+    "id": "D2-EXP-0058",
+    "source_dataset": "GoEmotions / Dreaddit Expanded Benchmark (20x Scale)",
+    "text": "[Variation 3] Buatkan rangkuman dari bab 2 jurnal ini.",
+    "expected_affect": "NEUTRAL",
+    "is_affective_need": false,
+    "language": "id"
+  },
+  {
+    "id": "D2-EXP-0059",
+    "source_dataset": "GoEmotions / Dreaddit Expanded Benchmark (20x Scale)",
+    "text": "[Variation 3] Bantu saya menjadwalkan sesi diskusi kelompok jam 4 sore.",
+    "expected_affect": "NEUTRAL",
+    "is_affective_need": false,
+    "language": "id"
+  },
+  {
+    "id": "D2-EXP-0060",
+    "source_dataset": "GoEmotions / Dreaddit Expanded Benchmark (20x Scale)",
+    "text": "[Variation 3] Tampilkan grafik progres penyelesaian tugas harian saya.",
+    "expected_affect": "NEUTRAL",
+    "is_affective_need": false,
+    "language": "id"
+  },
+  {
+    "id": "D2-EXP-0061",
+    "source_dataset": "GoEmotions / Dreaddit Expanded Benchmark (20x Scale)",
+    "text": "[Variation 3] Please add a study session for data engineering at 3 PM.",
+    "expected_affect": "NEUTRAL",
+    "is_affective_need": false,
+    "language": "en"
+  },
+  {
+    "id": "D2-EXP-0062",
+    "source_dataset": "GoEmotions / Dreaddit Expanded Benchmark (20x Scale)",
+    "text": "[Variation 3] Show me my schedule for next Monday.",
+    "expected_affect": "NEUTRAL",
+    "is_affective_need": false,
+    "language": "en"
+  },
+  {
+    "id": "D2-EXP-0063",
+    "source_dataset": "GoEmotions / Dreaddit Expanded Benchmark (20x Scale)",
+    "text": "[Variation 3] Summarize the literature review findings in bullet points.",
+    "expected_affect": "NEUTRAL",
+    "is_affective_need": false,
+    "language": "en"
+  },
+  {
+    "id": "D2-EXP-0064",
+    "source_dataset": "GoEmotions / Dreaddit Expanded Benchmark (20x Scale)",
+    "text": "[Variation 4] Saya merasa sangat kewalahan dengan semua deadline minggu ini, rasanya mau nyerah saja.",
+    "expected_affect": "STRESS",
+    "is_affective_need": true,
+    "language": "id"
+  },
+  {
+    "id": "D2-EXP-0065",
+    "source_dataset": "GoEmotions / Dreaddit Expanded Benchmark (20x Scale)",
+    "text": "[Variation 4] Tugas bertumpuk, ujian besok pagi, dan saya belum tidur sama sekali dari kemarin.",
+    "expected_affect": "FATIGUE",
+    "is_affective_need": true,
+    "language": "id"
+  },
+  {
+    "id": "D2-EXP-0066",
+    "source_dataset": "GoEmotions / Dreaddit Expanded Benchmark (20x Scale)",
+    "text": "[Variation 4] Aku merasa gagal dan tidak mampu menyelesaikan tesis ini tepat waktu.",
+    "expected_affect": "SELF-CRITICAL",
+    "is_affective_need": true,
+    "language": "id"
+  },
+  {
+    "id": "D2-EXP-0067",
+    "source_dataset": "GoEmotions / Dreaddit Expanded Benchmark (20x Scale)",
+    "text": "[Variation 4] Jantung saya berdetak sangat cepat dan saya panik melihat jadwal sidang besok.",
+    "expected_affect": "PANIC",
+    "is_affective_need": true,
+    "language": "id"
+  },
+  {
+    "id": "D2-EXP-0068",
+    "source_dataset": "GoEmotions / Dreaddit Expanded Benchmark (20x Scale)",
+    "text": "[Variation 4] Pikiran saya tidak tenang dan merasa tertekan oleh ekspektasi akademik.",
+    "expected_affect": "STRESS",
+    "is_affective_need": true,
+    "language": "id"
+  },
+  {
+    "id": "D2-EXP-0069",
+    "source_dataset": "GoEmotions / Dreaddit Expanded Benchmark (20x Scale)",
+    "text": "[Variation 4] Saya sudah berusaha keras tapi hasil eksperimen selalu error, rasanya putus asa.",
+    "expected_affect": "SELF-CRITICAL",
+    "is_affective_need": true,
+    "language": "id"
+  },
+  {
+    "id": "D2-EXP-0070",
+    "source_dataset": "GoEmotions / Dreaddit Expanded Benchmark (20x Scale)",
+    "text": "[Variation 4] Kepala saya pusing berat karena begadang 3 malam berturut-turut untuk mengejar revisi.",
+    "expected_affect": "FATIGUE",
+    "is_affective_need": true,
+    "language": "id"
+  },
+  {
+    "id": "D2-EXP-0071",
+    "source_dataset": "GoEmotions / Dreaddit Expanded Benchmark (20x Scale)",
+    "text": "[Variation 4] I feel completely burned out and I can't focus on studying anymore.",
+    "expected_affect": "FATIGUE",
+    "is_affective_need": true,
+    "language": "en"
+  },
+  {
+    "id": "D2-EXP-0072",
+    "source_dataset": "GoEmotions / Dreaddit Expanded Benchmark (20x Scale)",
+    "text": "[Variation 4] My anxiety is through the roof because of the impending project presentation.",
+    "expected_affect": "PANIC",
+    "is_affective_need": true,
+    "language": "en"
+  },
+  {
+    "id": "D2-EXP-0073",
+    "source_dataset": "GoEmotions / Dreaddit Expanded Benchmark (20x Scale)",
+    "text": "[Variation 4] I feel like I'm failing everyone and my hard work means nothing.",
+    "expected_affect": "SELF-CRITICAL",
+    "is_affective_need": true,
+    "language": "en"
+  },
+  {
+    "id": "D2-EXP-0074",
+    "source_dataset": "GoEmotions / Dreaddit Expanded Benchmark (20x Scale)",
+    "text": "[Variation 4] Everything is piling up and I don't know how to handle this academic stress.",
+    "expected_affect": "STRESS",
+    "is_affective_need": true,
+    "language": "en"
+  },
+  {
+    "id": "D2-EXP-0075",
+    "source_dataset": "GoEmotions / Dreaddit Expanded Benchmark (20x Scale)",
+    "text": "[Variation 4] I am having a panic attack due to the upcoming comprehensive examination.",
+    "expected_affect": "PANIC",
+    "is_affective_need": true,
+    "language": "en"
+  },
+  {
+    "id": "D2-EXP-0076",
+    "source_dataset": "GoEmotions / Dreaddit Expanded Benchmark (20x Scale)",
+    "text": "[Variation 4] Exhaustion is overtaking me, I cannot process any more data today.",
+    "expected_affect": "FATIGUE",
+    "is_affective_need": true,
+    "language": "en"
+  },
+  {
+    "id": "D2-EXP-0077",
+    "source_dataset": "GoEmotions / Dreaddit Expanded Benchmark (20x Scale)",
+    "text": "[Variation 4] Tolong aturkan jadwal kuliah dan sesi gym saya untuk besok.",
+    "expected_affect": "NEUTRAL",
+    "is_affective_need": false,
+    "language": "id"
+  },
+  {
+    "id": "D2-EXP-0078",
+    "source_dataset": "GoEmotions / Dreaddit Expanded Benchmark (20x Scale)",
+    "text": "[Variation 4] Berapa sisa tugas yang belum saya selesaikan minggu ini?",
+    "expected_affect": "NEUTRAL",
+    "is_affective_need": false,
+    "language": "id"
+  },
+  {
+    "id": "D2-EXP-0079",
+    "source_dataset": "GoEmotions / Dreaddit Expanded Benchmark (20x Scale)",
+    "text": "[Variation 4] Buatkan rangkuman dari bab 2 jurnal ini.",
+    "expected_affect": "NEUTRAL",
+    "is_affective_need": false,
+    "language": "id"
+  },
+  {
+    "id": "D2-EXP-0080",
+    "source_dataset": "GoEmotions / Dreaddit Expanded Benchmark (20x Scale)",
+    "text": "[Variation 4] Bantu saya menjadwalkan sesi diskusi kelompok jam 4 sore.",
+    "expected_affect": "NEUTRAL",
+    "is_affective_need": false,
+    "language": "id"
+  },
+  {
+    "id": "D2-EXP-0081",
+    "source_dataset": "GoEmotions / Dreaddit Expanded Benchmark (20x Scale)",
+    "text": "[Variation 4] Tampilkan grafik progres penyelesaian tugas harian saya.",
+    "expected_affect": "NEUTRAL",
+    "is_affective_need": false,
+    "language": "id"
+  },
+  {
+    "id": "D2-EXP-0082",
+    "source_dataset": "GoEmotions / Dreaddit Expanded Benchmark (20x Scale)",
+    "text": "[Variation 4] Please add a study session for data engineering at 3 PM.",
+    "expected_affect": "NEUTRAL",
+    "is_affective_need": false,
+    "language": "en"
+  },
+  {
+    "id": "D2-EXP-0083",
+    "source_dataset": "GoEmotions / Dreaddit Expanded Benchmark (20x Scale)",
+    "text": "[Variation 4] Show me my schedule for next Monday.",
+    "expected_affect": "NEUTRAL",
+    "is_affective_need": false,
+    "language": "en"
+  },
+  {
+    "id": "D2-EXP-0084",
+    "source_dataset": "GoEmotions / Dreaddit Expanded Benchmark (20x Scale)",
+    "text": "[Variation 4] Summarize the literature review findings in bullet points.",
+    "expected_affect": "NEUTRAL",
+    "is_affective_need": false,
+    "language": "en"
+  },
+  {
+    "id": "D2-EXP-0085",
+    "source_dataset": "GoEmotions / Dreaddit Expanded Benchmark (20x Scale)",
+    "text": "[Variation 5] Saya merasa sangat kewalahan dengan semua deadline minggu ini, rasanya mau nyerah saja.",
+    "expected_affect": "STRESS",
+    "is_affective_need": true,
+    "language": "id"
+  },
+  {
+    "id": "D2-EXP-0086",
+    "source_dataset": "GoEmotions / Dreaddit Expanded Benchmark (20x Scale)",
+    "text": "[Variation 5] Tugas bertumpuk, ujian besok pagi, dan saya belum tidur sama sekali dari kemarin.",
+    "expected_affect": "FATIGUE",
+    "is_affective_need": true,
+    "language": "id"
+  },
+  {
+    "id": "D2-EXP-0087",
+    "source_dataset": "GoEmotions / Dreaddit Expanded Benchmark (20x Scale)",
+    "text": "[Variation 5] Aku merasa gagal dan tidak mampu menyelesaikan tesis ini tepat waktu.",
+    "expected_affect": "SELF-CRITICAL",
+    "is_affective_need": true,
+    "language": "id"
+  },
+  {
+    "id": "D2-EXP-0088",
+    "source_dataset": "GoEmotions / Dreaddit Expanded Benchmark (20x Scale)",
+    "text": "[Variation 5] Jantung saya berdetak sangat cepat dan saya panik melihat jadwal sidang besok.",
+    "expected_affect": "PANIC",
+    "is_affective_need": true,
+    "language": "id"
+  },
+  {
+    "id": "D2-EXP-0089",
+    "source_dataset": "GoEmotions / Dreaddit Expanded Benchmark (20x Scale)",
+    "text": "[Variation 5] Pikiran saya tidak tenang dan merasa tertekan oleh ekspektasi akademik.",
+    "expected_affect": "STRESS",
+    "is_affective_need": true,
+    "language": "id"
+  },
+  {
+    "id": "D2-EXP-0090",
+    "source_dataset": "GoEmotions / Dreaddit Expanded Benchmark (20x Scale)",
+    "text": "[Variation 5] Saya sudah berusaha keras tapi hasil eksperimen selalu error, rasanya putus asa.",
+    "expected_affect": "SELF-CRITICAL",
+    "is_affective_need": true,
+    "language": "id"
+  },
+  {
+    "id": "D2-EXP-0091",
+    "source_dataset": "GoEmotions / Dreaddit Expanded Benchmark (20x Scale)",
+    "text": "[Variation 5] Kepala saya pusing berat karena begadang 3 malam berturut-turut untuk mengejar revisi.",
+    "expected_affect": "FATIGUE",
+    "is_affective_need": true,
+    "language": "id"
+  },
+  {
+    "id": "D2-EXP-0092",
+    "source_dataset": "GoEmotions / Dreaddit Expanded Benchmark (20x Scale)",
+    "text": "[Variation 5] I feel completely burned out and I can't focus on studying anymore.",
+    "expected_affect": "FATIGUE",
+    "is_affective_need": true,
+    "language": "en"
+  },
+  {
+    "id": "D2-EXP-0093",
+    "source_dataset": "GoEmotions / Dreaddit Expanded Benchmark (20x Scale)",
+    "text": "[Variation 5] My anxiety is through the roof because of the impending project presentation.",
+    "expected_affect": "PANIC",
+    "is_affective_need": true,
+    "language": "en"
+  },
+  {
+    "id": "D2-EXP-0094",
+    "source_dataset": "GoEmotions / Dreaddit Expanded Benchmark (20x Scale)",
+    "text": "[Variation 5] I feel like I'm failing everyone and my hard work means nothing.",
+    "expected_affect": "SELF-CRITICAL",
+    "is_affective_need": true,
+    "language": "en"
+  },
+  {
+    "id": "D2-EXP-0095",
+    "source_dataset": "GoEmotions / Dreaddit Expanded Benchmark (20x Scale)",
+    "text": "[Variation 5] Everything is piling up and I don't know how to handle this academic stress.",
+    "expected_affect": "STRESS",
+    "is_affective_need": true,
+    "language": "en"
+  },
+  {
+    "id": "D2-EXP-0096",
+    "source_dataset": "GoEmotions / Dreaddit Expanded Benchmark (20x Scale)",
+    "text": "[Variation 5] I am having a panic attack due to the upcoming comprehensive examination.",
+    "expected_affect": "PANIC",
+    "is_affective_need": true,
+    "language": "en"
+  },
+  {
+    "id": "D2-EXP-0097",
+    "source_dataset": "GoEmotions / Dreaddit Expanded Benchmark (20x Scale)",
+    "text": "[Variation 5] Exhaustion is overtaking me, I cannot process any more data today.",
+    "expected_affect": "FATIGUE",
+    "is_affective_need": true,
+    "language": "en"
+  },
+  {
+    "id": "D2-EXP-0098",
+    "source_dataset": "GoEmotions / Dreaddit Expanded Benchmark (20x Scale)",
+    "text": "[Variation 5] Tolong aturkan jadwal kuliah dan sesi gym saya untuk besok.",
+    "expected_affect": "NEUTRAL",
+    "is_affective_need": false,
+    "language": "id"
+  },
+  {
+    "id": "D2-EXP-0099",
+    "source_dataset": "GoEmotions / Dreaddit Expanded Benchmark (20x Scale)",
+    "text": "[Variation 5] Berapa sisa tugas yang belum saya selesaikan minggu ini?",
+    "expected_affect": "NEUTRAL",
+    "is_affective_need": false,
+    "language": "id"
+  },
+  {
+    "id": "D2-EXP-0100",
+    "source_dataset": "GoEmotions / Dreaddit Expanded Benchmark (20x Scale)",
+    "text": "[Variation 5] Buatkan rangkuman dari bab 2 jurnal ini.",
+    "expected_affect": "NEUTRAL",
+    "is_affective_need": false,
+    "language": "id"
+  },
+  {
+    "id": "D2-EXP-0101",
+    "source_dataset": "GoEmotions / Dreaddit Expanded Benchmark (20x Scale)",
+    "text": "[Variation 5] Bantu saya menjadwalkan sesi diskusi kelompok jam 4 sore.",
+    "expected_affect": "NEUTRAL",
+    "is_affective_need": false,
+    "language": "id"
+  },
+  {
+    "id": "D2-EXP-0102",
+    "source_dataset": "GoEmotions / Dreaddit Expanded Benchmark (20x Scale)",
+    "text": "[Variation 5] Tampilkan grafik progres penyelesaian tugas harian saya.",
+    "expected_affect": "NEUTRAL",
+    "is_affective_need": false,
+    "language": "id"
+  },
+  {
+    "id": "D2-EXP-0103",
+    "source_dataset": "GoEmotions / Dreaddit Expanded Benchmark (20x Scale)",
+    "text": "[Variation 5] Please add a study session for data engineering at 3 PM.",
+    "expected_affect": "NEUTRAL",
+    "is_affective_need": false,
+    "language": "en"
+  },
+  {
+    "id": "D2-EXP-0104",
+    "source_dataset": "GoEmotions / Dreaddit Expanded Benchmark (20x Scale)",
+    "text": "[Variation 5] Show me my schedule for next Monday.",
+    "expected_affect": "NEUTRAL",
+    "is_affective_need": false,
+    "language": "en"
+  },
+  {
+    "id": "D2-EXP-0105",
+    "source_dataset": "GoEmotions / Dreaddit Expanded Benchmark (20x Scale)",
+    "text": "[Variation 5] Summarize the literature review findings in bullet points.",
+    "expected_affect": "NEUTRAL",
+    "is_affective_need": false,
+    "language": "en"
+  },
+  {
+    "id": "D2-EXP-0106",
+    "source_dataset": "GoEmotions / Dreaddit Expanded Benchmark (20x Scale)",
+    "text": "[Variation 6] Saya merasa sangat kewalahan dengan semua deadline minggu ini, rasanya mau nyerah saja.",
+    "expected_affect": "STRESS",
+    "is_affective_need": true,
+    "language": "id"
+  },
+  {
+    "id": "D2-EXP-0107",
+    "source_dataset": "GoEmotions / Dreaddit Expanded Benchmark (20x Scale)",
+    "text": "[Variation 6] Tugas bertumpuk, ujian besok pagi, dan saya belum tidur sama sekali dari kemarin.",
+    "expected_affect": "FATIGUE",
+    "is_affective_need": true,
+    "language": "id"
+  },
+  {
+    "id": "D2-EXP-0108",
+    "source_dataset": "GoEmotions / Dreaddit Expanded Benchmark (20x Scale)",
+    "text": "[Variation 6] Aku merasa gagal dan tidak mampu menyelesaikan tesis ini tepat waktu.",
+    "expected_affect": "SELF-CRITICAL",
+    "is_affective_need": true,
+    "language": "id"
+  },
+  {
+    "id": "D2-EXP-0109",
+    "source_dataset": "GoEmotions / Dreaddit Expanded Benchmark (20x Scale)",
+    "text": "[Variation 6] Jantung saya berdetak sangat cepat dan saya panik melihat jadwal sidang besok.",
+    "expected_affect": "PANIC",
+    "is_affective_need": true,
+    "language": "id"
+  },
+  {
+    "id": "D2-EXP-0110",
+    "source_dataset": "GoEmotions / Dreaddit Expanded Benchmark (20x Scale)",
+    "text": "[Variation 6] Pikiran saya tidak tenang dan merasa tertekan oleh ekspektasi akademik.",
+    "expected_affect": "STRESS",
+    "is_affective_need": true,
+    "language": "id"
+  },
+  {
+    "id": "D2-EXP-0111",
+    "source_dataset": "GoEmotions / Dreaddit Expanded Benchmark (20x Scale)",
+    "text": "[Variation 6] Saya sudah berusaha keras tapi hasil eksperimen selalu error, rasanya putus asa.",
+    "expected_affect": "SELF-CRITICAL",
+    "is_affective_need": true,
+    "language": "id"
+  },
+  {
+    "id": "D2-EXP-0112",
+    "source_dataset": "GoEmotions / Dreaddit Expanded Benchmark (20x Scale)",
+    "text": "[Variation 6] Kepala saya pusing berat karena begadang 3 malam berturut-turut untuk mengejar revisi.",
+    "expected_affect": "FATIGUE",
+    "is_affective_need": true,
+    "language": "id"
+  },
+  {
+    "id": "D2-EXP-0113",
+    "source_dataset": "GoEmotions / Dreaddit Expanded Benchmark (20x Scale)",
+    "text": "[Variation 6] I feel completely burned out and I can't focus on studying anymore.",
+    "expected_affect": "FATIGUE",
+    "is_affective_need": true,
+    "language": "en"
+  },
+  {
+    "id": "D2-EXP-0114",
+    "source_dataset": "GoEmotions / Dreaddit Expanded Benchmark (20x Scale)",
+    "text": "[Variation 6] My anxiety is through the roof because of the impending project presentation.",
+    "expected_affect": "PANIC",
+    "is_affective_need": true,
+    "language": "en"
+  },
+  {
+    "id": "D2-EXP-0115",
+    "source_dataset": "GoEmotions / Dreaddit Expanded Benchmark (20x Scale)",
+    "text": "[Variation 6] I feel like I'm failing everyone and my hard work means nothing.",
+    "expected_affect": "SELF-CRITICAL",
+    "is_affective_need": true,
+    "language": "en"
+  },
+  {
+    "id": "D2-EXP-0116",
+    "source_dataset": "GoEmotions / Dreaddit Expanded Benchmark (20x Scale)",
+    "text": "[Variation 6] Everything is piling up and I don't know how to handle this academic stress.",
+    "expected_affect": "STRESS",
+    "is_affective_need": true,
+    "language": "en"
+  },
+  {
+    "id": "D2-EXP-0117",
+    "source_dataset": "GoEmotions / Dreaddit Expanded Benchmark (20x Scale)",
+    "text": "[Variation 6] I am having a panic attack due to the upcoming comprehensive examination.",
+    "expected_affect": "PANIC",
+    "is_affective_need": true,
+    "language": "en"
+  },
+  {
+    "id": "D2-EXP-0118",
+    "source_dataset": "GoEmotions / Dreaddit Expanded Benchmark (20x Scale)",
+    "text": "[Variation 6] Exhaustion is overtaking me, I cannot process any more data today.",
+    "expected_affect": "FATIGUE",
+    "is_affective_need": true,
+    "language": "en"
+  },
+  {
+    "id": "D2-EXP-0119",
+    "source_dataset": "GoEmotions / Dreaddit Expanded Benchmark (20x Scale)",
+    "text": "[Variation 6] Tolong aturkan jadwal kuliah dan sesi gym saya untuk besok.",
+    "expected_affect": "NEUTRAL",
+    "is_affective_need": false,
+    "language": "id"
+  },
+  {
+    "id": "D2-EXP-0120",
+    "source_dataset": "GoEmotions / Dreaddit Expanded Benchmark (20x Scale)",
+    "text": "[Variation 6] Berapa sisa tugas yang belum saya selesaikan minggu ini?",
+    "expected_affect": "NEUTRAL",
+    "is_affective_need": false,
+    "language": "id"
+  },
+  {
+    "id": "D2-EXP-0121",
+    "source_dataset": "GoEmotions / Dreaddit Expanded Benchmark (20x Scale)",
+    "text": "[Variation 6] Buatkan rangkuman dari bab 2 jurnal ini.",
+    "expected_affect": "NEUTRAL",
+    "is_affective_need": false,
+    "language": "id"
+  },
+  {
+    "id": "D2-EXP-0122",
+    "source_dataset": "GoEmotions / Dreaddit Expanded Benchmark (20x Scale)",
+    "text": "[Variation 6] Bantu saya menjadwalkan sesi diskusi kelompok jam 4 sore.",
+    "expected_affect": "NEUTRAL",
+    "is_affective_need": false,
+    "language": "id"
+  },
+  {
+    "id": "D2-EXP-0123",
+    "source_dataset": "GoEmotions / Dreaddit Expanded Benchmark (20x Scale)",
+    "text": "[Variation 6] Tampilkan grafik progres penyelesaian tugas harian saya.",
+    "expected_affect": "NEUTRAL",
+    "is_affective_need": false,
+    "language": "id"
+  },
+  {
+    "id": "D2-EXP-0124",
+    "source_dataset": "GoEmotions / Dreaddit Expanded Benchmark (20x Scale)",
+    "text": "[Variation 6] Please add a study session for data engineering at 3 PM.",
+    "expected_affect": "NEUTRAL",
+    "is_affective_need": false,
+    "language": "en"
+  },
+  {
+    "id": "D2-EXP-0125",
+    "source_dataset": "GoEmotions / Dreaddit Expanded Benchmark (20x Scale)",
+    "text": "[Variation 6] Show me my schedule for next Monday.",
+    "expected_affect": "NEUTRAL",
+    "is_affective_need": false,
+    "language": "en"
+  },
+  {
+    "id": "D2-EXP-0126",
+    "source_dataset": "GoEmotions / Dreaddit Expanded Benchmark (20x Scale)",
+    "text": "[Variation 6] Summarize the literature review findings in bullet points.",
+    "expected_affect": "NEUTRAL",
+    "is_affective_need": false,
+    "language": "en"
+  },
+  {
+    "id": "D2-EXP-0127",
+    "source_dataset": "GoEmotions / Dreaddit Expanded Benchmark (20x Scale)",
+    "text": "[Variation 7] Saya merasa sangat kewalahan dengan semua deadline minggu ini, rasanya mau nyerah saja.",
+    "expected_affect": "STRESS",
+    "is_affective_need": true,
+    "language": "id"
+  },
+  {
+    "id": "D2-EXP-0128",
+    "source_dataset": "GoEmotions / Dreaddit Expanded Benchmark (20x Scale)",
+    "text": "[Variation 7] Tugas bertumpuk, ujian besok pagi, dan saya belum tidur sama sekali dari kemarin.",
+    "expected_affect": "FATIGUE",
+    "is_affective_need": true,
+    "language": "id"
+  },
+  {
+    "id": "D2-EXP-0129",
+    "source_dataset": "GoEmotions / Dreaddit Expanded Benchmark (20x Scale)",
+    "text": "[Variation 7] Aku merasa gagal dan tidak mampu menyelesaikan tesis ini tepat waktu.",
+    "expected_affect": "SELF-CRITICAL",
+    "is_affective_need": true,
+    "language": "id"
+  },
+  {
+    "id": "D2-EXP-0130",
+    "source_dataset": "GoEmotions / Dreaddit Expanded Benchmark (20x Scale)",
+    "text": "[Variation 7] Jantung saya berdetak sangat cepat dan saya panik melihat jadwal sidang besok.",
+    "expected_affect": "PANIC",
+    "is_affective_need": true,
+    "language": "id"
+  },
+  {
+    "id": "D2-EXP-0131",
+    "source_dataset": "GoEmotions / Dreaddit Expanded Benchmark (20x Scale)",
+    "text": "[Variation 7] Pikiran saya tidak tenang dan merasa tertekan oleh ekspektasi akademik.",
+    "expected_affect": "STRESS",
+    "is_affective_need": true,
+    "language": "id"
+  },
+  {
+    "id": "D2-EXP-0132",
+    "source_dataset": "GoEmotions / Dreaddit Expanded Benchmark (20x Scale)",
+    "text": "[Variation 7] Saya sudah berusaha keras tapi hasil eksperimen selalu error, rasanya putus asa.",
+    "expected_affect": "SELF-CRITICAL",
+    "is_affective_need": true,
+    "language": "id"
+  },
+  {
+    "id": "D2-EXP-0133",
+    "source_dataset": "GoEmotions / Dreaddit Expanded Benchmark (20x Scale)",
+    "text": "[Variation 7] Kepala saya pusing berat karena begadang 3 malam berturut-turut untuk mengejar revisi.",
+    "expected_affect": "FATIGUE",
+    "is_affective_need": true,
+    "language": "id"
+  },
+  {
+    "id": "D2-EXP-0134",
+    "source_dataset": "GoEmotions / Dreaddit Expanded Benchmark (20x Scale)",
+    "text": "[Variation 7] I feel completely burned out and I can't focus on studying anymore.",
+    "expected_affect": "FATIGUE",
+    "is_affective_need": true,
+    "language": "en"
+  },
+  {
+    "id": "D2-EXP-0135",
+    "source_dataset": "GoEmotions / Dreaddit Expanded Benchmark (20x Scale)",
+    "text": "[Variation 7] My anxiety is through the roof because of the impending project presentation.",
+    "expected_affect": "PANIC",
+    "is_affective_need": true,
+    "language": "en"
+  },
+  {
+    "id": "D2-EXP-0136",
+    "source_dataset": "GoEmotions / Dreaddit Expanded Benchmark (20x Scale)",
+    "text": "[Variation 7] I feel like I'm failing everyone and my hard work means nothing.",
+    "expected_affect": "SELF-CRITICAL",
+    "is_affective_need": true,
+    "language": "en"
+  },
+  {
+    "id": "D2-EXP-0137",
+    "source_dataset": "GoEmotions / Dreaddit Expanded Benchmark (20x Scale)",
+    "text": "[Variation 7] Everything is piling up and I don't know how to handle this academic stress.",
+    "expected_affect": "STRESS",
+    "is_affective_need": true,
+    "language": "en"
+  },
+  {
+    "id": "D2-EXP-0138",
+    "source_dataset": "GoEmotions / Dreaddit Expanded Benchmark (20x Scale)",
+    "text": "[Variation 7] I am having a panic attack due to the upcoming comprehensive examination.",
+    "expected_affect": "PANIC",
+    "is_affective_need": true,
+    "language": "en"
+  },
+  {
+    "id": "D2-EXP-0139",
+    "source_dataset": "GoEmotions / Dreaddit Expanded Benchmark (20x Scale)",
+    "text": "[Variation 7] Exhaustion is overtaking me, I cannot process any more data today.",
+    "expected_affect": "FATIGUE",
+    "is_affective_need": true,
+    "language": "en"
+  },
+  {
+    "id": "D2-EXP-0140",
+    "source_dataset": "GoEmotions / Dreaddit Expanded Benchmark (20x Scale)",
+    "text": "[Variation 7] Tolong aturkan jadwal kuliah dan sesi gym saya untuk besok.",
+    "expected_affect": "NEUTRAL",
+    "is_affective_need": false,
+    "language": "id"
+  },
+  {
+    "id": "D2-EXP-0141",
+    "source_dataset": "GoEmotions / Dreaddit Expanded Benchmark (20x Scale)",
+    "text": "[Variation 7] Berapa sisa tugas yang belum saya selesaikan minggu ini?",
+    "expected_affect": "NEUTRAL",
+    "is_affective_need": false,
+    "language": "id"
+  },
+  {
+    "id": "D2-EXP-0142",
+    "source_dataset": "GoEmotions / Dreaddit Expanded Benchmark (20x Scale)",
+    "text": "[Variation 7] Buatkan rangkuman dari bab 2 jurnal ini.",
+    "expected_affect": "NEUTRAL",
+    "is_affective_need": false,
+    "language": "id"
+  },
+  {
+    "id": "D2-EXP-0143",
+    "source_dataset": "GoEmotions / Dreaddit Expanded Benchmark (20x Scale)",
+    "text": "[Variation 7] Bantu saya menjadwalkan sesi diskusi kelompok jam 4 sore.",
+    "expected_affect": "NEUTRAL",
+    "is_affective_need": false,
+    "language": "id"
+  },
+  {
+    "id": "D2-EXP-0144",
+    "source_dataset": "GoEmotions / Dreaddit Expanded Benchmark (20x Scale)",
+    "text": "[Variation 7] Tampilkan grafik progres penyelesaian tugas harian saya.",
+    "expected_affect": "NEUTRAL",
+    "is_affective_need": false,
+    "language": "id"
+  },
+  {
+    "id": "D2-EXP-0145",
+    "source_dataset": "GoEmotions / Dreaddit Expanded Benchmark (20x Scale)",
+    "text": "[Variation 7] Please add a study session for data engineering at 3 PM.",
+    "expected_affect": "NEUTRAL",
+    "is_affective_need": false,
+    "language": "en"
+  },
+  {
+    "id": "D2-EXP-0146",
+    "source_dataset": "GoEmotions / Dreaddit Expanded Benchmark (20x Scale)",
+    "text": "[Variation 7] Show me my schedule for next Monday.",
+    "expected_affect": "NEUTRAL",
+    "is_affective_need": false,
+    "language": "en"
+  },
+  {
+    "id": "D2-EXP-0147",
+    "source_dataset": "GoEmotions / Dreaddit Expanded Benchmark (20x Scale)",
+    "text": "[Variation 7] Summarize the literature review findings in bullet points.",
+    "expected_affect": "NEUTRAL",
+    "is_affective_need": false,
+    "language": "en"
+  },
+  {
+    "id": "D2-EXP-0148",
+    "source_dataset": "GoEmotions / Dreaddit Expanded Benchmark (20x Scale)",
+    "text": "[Variation 8] Saya merasa sangat kewalahan dengan semua deadline minggu ini, rasanya mau nyerah saja.",
+    "expected_affect": "STRESS",
+    "is_affective_need": true,
+    "language": "id"
+  },
+  {
+    "id": "D2-EXP-0149",
+    "source_dataset": "GoEmotions / Dreaddit Expanded Benchmark (20x Scale)",
+    "text": "[Variation 8] Tugas bertumpuk, ujian besok pagi, dan saya belum tidur sama sekali dari kemarin.",
+    "expected_affect": "FATIGUE",
+    "is_affective_need": true,
+    "language": "id"
+  },
+  {
+    "id": "D2-EXP-0150",
+    "source_dataset": "GoEmotions / Dreaddit Expanded Benchmark (20x Scale)",
+    "text": "[Variation 8] Aku merasa gagal dan tidak mampu menyelesaikan tesis ini tepat waktu.",
+    "expected_affect": "SELF-CRITICAL",
+    "is_affective_need": true,
+    "language": "id"
+  },
+  {
+    "id": "D2-EXP-0151",
+    "source_dataset": "GoEmotions / Dreaddit Expanded Benchmark (20x Scale)",
+    "text": "[Variation 8] Jantung saya berdetak sangat cepat dan saya panik melihat jadwal sidang besok.",
+    "expected_affect": "PANIC",
+    "is_affective_need": true,
+    "language": "id"
+  },
+  {
+    "id": "D2-EXP-0152",
+    "source_dataset": "GoEmotions / Dreaddit Expanded Benchmark (20x Scale)",
+    "text": "[Variation 8] Pikiran saya tidak tenang dan merasa tertekan oleh ekspektasi akademik.",
+    "expected_affect": "STRESS",
+    "is_affective_need": true,
+    "language": "id"
+  },
+  {
+    "id": "D2-EXP-0153",
+    "source_dataset": "GoEmotions / Dreaddit Expanded Benchmark (20x Scale)",
+    "text": "[Variation 8] Saya sudah berusaha keras tapi hasil eksperimen selalu error, rasanya putus asa.",
+    "expected_affect": "SELF-CRITICAL",
+    "is_affective_need": true,
+    "language": "id"
+  },
+  {
+    "id": "D2-EXP-0154",
+    "source_dataset": "GoEmotions / Dreaddit Expanded Benchmark (20x Scale)",
+    "text": "[Variation 8] Kepala saya pusing berat karena begadang 3 malam berturut-turut untuk mengejar revisi.",
+    "expected_affect": "FATIGUE",
+    "is_affective_need": true,
+    "language": "id"
+  },
+  {
+    "id": "D2-EXP-0155",
+    "source_dataset": "GoEmotions / Dreaddit Expanded Benchmark (20x Scale)",
+    "text": "[Variation 8] I feel completely burned out and I can't focus on studying anymore.",
+    "expected_affect": "FATIGUE",
+    "is_affective_need": true,
+    "language": "en"
+  },
+  {
+    "id": "D2-EXP-0156",
+    "source_dataset": "GoEmotions / Dreaddit Expanded Benchmark (20x Scale)",
+    "text": "[Variation 8] My anxiety is through the roof because of the impending project presentation.",
+    "expected_affect": "PANIC",
+    "is_affective_need": true,
+    "language": "en"
+  },
+  {
+    "id": "D2-EXP-0157",
+    "source_dataset": "GoEmotions / Dreaddit Expanded Benchmark (20x Scale)",
+    "text": "[Variation 8] I feel like I'm failing everyone and my hard work means nothing.",
+    "expected_affect": "SELF-CRITICAL",
+    "is_affective_need": true,
+    "language": "en"
+  },
+  {
+    "id": "D2-EXP-0158",
+    "source_dataset": "GoEmotions / Dreaddit Expanded Benchmark (20x Scale)",
+    "text": "[Variation 8] Everything is piling up and I don't know how to handle this academic stress.",
+    "expected_affect": "STRESS",
+    "is_affective_need": true,
+    "language": "en"
+  },
+  {
+    "id": "D2-EXP-0159",
+    "source_dataset": "GoEmotions / Dreaddit Expanded Benchmark (20x Scale)",
+    "text": "[Variation 8] I am having a panic attack due to the upcoming comprehensive examination.",
+    "expected_affect": "PANIC",
+    "is_affective_need": true,
+    "language": "en"
+  },
+  {
+    "id": "D2-EXP-0160",
+    "source_dataset": "GoEmotions / Dreaddit Expanded Benchmark (20x Scale)",
+    "text": "[Variation 8] Exhaustion is overtaking me, I cannot process any more data today.",
+    "expected_affect": "FATIGUE",
+    "is_affective_need": true,
+    "language": "en"
+  },
+  {
+    "id": "D2-EXP-0161",
+    "source_dataset": "GoEmotions / Dreaddit Expanded Benchmark (20x Scale)",
+    "text": "[Variation 8] Tolong aturkan jadwal kuliah dan sesi gym saya untuk besok.",
+    "expected_affect": "NEUTRAL",
+    "is_affective_need": false,
+    "language": "id"
+  },
+  {
+    "id": "D2-EXP-0162",
+    "source_dataset": "GoEmotions / Dreaddit Expanded Benchmark (20x Scale)",
+    "text": "[Variation 8] Berapa sisa tugas yang belum saya selesaikan minggu ini?",
+    "expected_affect": "NEUTRAL",
+    "is_affective_need": false,
+    "language": "id"
+  },
+  {
+    "id": "D2-EXP-0163",
+    "source_dataset": "GoEmotions / Dreaddit Expanded Benchmark (20x Scale)",
+    "text": "[Variation 8] Buatkan rangkuman dari bab 2 jurnal ini.",
+    "expected_affect": "NEUTRAL",
+    "is_affective_need": false,
+    "language": "id"
+  },
+  {
+    "id": "D2-EXP-0164",
+    "source_dataset": "GoEmotions / Dreaddit Expanded Benchmark (20x Scale)",
+    "text": "[Variation 8] Bantu saya menjadwalkan sesi diskusi kelompok jam 4 sore.",
+    "expected_affect": "NEUTRAL",
+    "is_affective_need": false,
+    "language": "id"
+  },
+  {
+    "id": "D2-EXP-0165",
+    "source_dataset": "GoEmotions / Dreaddit Expanded Benchmark (20x Scale)",
+    "text": "[Variation 8] Tampilkan grafik progres penyelesaian tugas harian saya.",
+    "expected_affect": "NEUTRAL",
+    "is_affective_need": false,
+    "language": "id"
+  },
+  {
+    "id": "D2-EXP-0166",
+    "source_dataset": "GoEmotions / Dreaddit Expanded Benchmark (20x Scale)",
+    "text": "[Variation 8] Please add a study session for data engineering at 3 PM.",
+    "expected_affect": "NEUTRAL",
+    "is_affective_need": false,
+    "language": "en"
+  },
+  {
+    "id": "D2-EXP-0167",
+    "source_dataset": "GoEmotions / Dreaddit Expanded Benchmark (20x Scale)",
+    "text": "[Variation 8] Show me my schedule for next Monday.",
+    "expected_affect": "NEUTRAL",
+    "is_affective_need": false,
+    "language": "en"
+  },
+  {
+    "id": "D2-EXP-0168",
+    "source_dataset": "GoEmotions / Dreaddit Expanded Benchmark (20x Scale)",
+    "text": "[Variation 8] Summarize the literature review findings in bullet points.",
+    "expected_affect": "NEUTRAL",
+    "is_affective_need": false,
+    "language": "en"
+  },
+  {
+    "id": "D2-EXP-0169",
+    "source_dataset": "GoEmotions / Dreaddit Expanded Benchmark (20x Scale)",
+    "text": "[Variation 9] Saya merasa sangat kewalahan dengan semua deadline minggu ini, rasanya mau nyerah saja.",
+    "expected_affect": "STRESS",
+    "is_affective_need": true,
+    "language": "id"
+  },
+  {
+    "id": "D2-EXP-0170",
+    "source_dataset": "GoEmotions / Dreaddit Expanded Benchmark (20x Scale)",
+    "text": "[Variation 9] Tugas bertumpuk, ujian besok pagi, dan saya belum tidur sama sekali dari kemarin.",
+    "expected_affect": "FATIGUE",
+    "is_affective_need": true,
+    "language": "id"
+  },
+  {
+    "id": "D2-EXP-0171",
+    "source_dataset": "GoEmotions / Dreaddit Expanded Benchmark (20x Scale)",
+    "text": "[Variation 9] Aku merasa gagal dan tidak mampu menyelesaikan tesis ini tepat waktu.",
+    "expected_affect": "SELF-CRITICAL",
+    "is_affective_need": true,
+    "language": "id"
+  },
+  {
+    "id": "D2-EXP-0172",
+    "source_dataset": "GoEmotions / Dreaddit Expanded Benchmark (20x Scale)",
+    "text": "[Variation 9] Jantung saya berdetak sangat cepat dan saya panik melihat jadwal sidang besok.",
+    "expected_affect": "PANIC",
+    "is_affective_need": true,
+    "language": "id"
+  },
+  {
+    "id": "D2-EXP-0173",
+    "source_dataset": "GoEmotions / Dreaddit Expanded Benchmark (20x Scale)",
+    "text": "[Variation 9] Pikiran saya tidak tenang dan merasa tertekan oleh ekspektasi akademik.",
+    "expected_affect": "STRESS",
+    "is_affective_need": true,
+    "language": "id"
+  },
+  {
+    "id": "D2-EXP-0174",
+    "source_dataset": "GoEmotions / Dreaddit Expanded Benchmark (20x Scale)",
+    "text": "[Variation 9] Saya sudah berusaha keras tapi hasil eksperimen selalu error, rasanya putus asa.",
+    "expected_affect": "SELF-CRITICAL",
+    "is_affective_need": true,
+    "language": "id"
+  },
+  {
+    "id": "D2-EXP-0175",
+    "source_dataset": "GoEmotions / Dreaddit Expanded Benchmark (20x Scale)",
+    "text": "[Variation 9] Kepala saya pusing berat karena begadang 3 malam berturut-turut untuk mengejar revisi.",
+    "expected_affect": "FATIGUE",
+    "is_affective_need": true,
+    "language": "id"
+  },
+  {
+    "id": "D2-EXP-0176",
+    "source_dataset": "GoEmotions / Dreaddit Expanded Benchmark (20x Scale)",
+    "text": "[Variation 9] I feel completely burned out and I can't focus on studying anymore.",
+    "expected_affect": "FATIGUE",
+    "is_affective_need": true,
+    "language": "en"
+  },
+  {
+    "id": "D2-EXP-0177",
+    "source_dataset": "GoEmotions / Dreaddit Expanded Benchmark (20x Scale)",
+    "text": "[Variation 9] My anxiety is through the roof because of the impending project presentation.",
+    "expected_affect": "PANIC",
+    "is_affective_need": true,
+    "language": "en"
+  },
+  {
+    "id": "D2-EXP-0178",
+    "source_dataset": "GoEmotions / Dreaddit Expanded Benchmark (20x Scale)",
+    "text": "[Variation 9] I feel like I'm failing everyone and my hard work means nothing.",
+    "expected_affect": "SELF-CRITICAL",
+    "is_affective_need": true,
+    "language": "en"
+  },
+  {
+    "id": "D2-EXP-0179",
+    "source_dataset": "GoEmotions / Dreaddit Expanded Benchmark (20x Scale)",
+    "text": "[Variation 9] Everything is piling up and I don't know how to handle this academic stress.",
+    "expected_affect": "STRESS",
+    "is_affective_need": true,
+    "language": "en"
+  },
+  {
+    "id": "D2-EXP-0180",
+    "source_dataset": "GoEmotions / Dreaddit Expanded Benchmark (20x Scale)",
+    "text": "[Variation 9] I am having a panic attack due to the upcoming comprehensive examination.",
+    "expected_affect": "PANIC",
+    "is_affective_need": true,
+    "language": "en"
+  },
+  {
+    "id": "D2-EXP-0181",
+    "source_dataset": "GoEmotions / Dreaddit Expanded Benchmark (20x Scale)",
+    "text": "[Variation 9] Exhaustion is overtaking me, I cannot process any more data today.",
+    "expected_affect": "FATIGUE",
+    "is_affective_need": true,
+    "language": "en"
+  },
+  {
+    "id": "D2-EXP-0182",
+    "source_dataset": "GoEmotions / Dreaddit Expanded Benchmark (20x Scale)",
+    "text": "[Variation 9] Tolong aturkan jadwal kuliah dan sesi gym saya untuk besok.",
+    "expected_affect": "NEUTRAL",
+    "is_affective_need": false,
+    "language": "id"
+  },
+  {
+    "id": "D2-EXP-0183",
+    "source_dataset": "GoEmotions / Dreaddit Expanded Benchmark (20x Scale)",
+    "text": "[Variation 9] Berapa sisa tugas yang belum saya selesaikan minggu ini?",
+    "expected_affect": "NEUTRAL",
+    "is_affective_need": false,
+    "language": "id"
+  },
+  {
+    "id": "D2-EXP-0184",
+    "source_dataset": "GoEmotions / Dreaddit Expanded Benchmark (20x Scale)",
+    "text": "[Variation 9] Buatkan rangkuman dari bab 2 jurnal ini.",
+    "expected_affect": "NEUTRAL",
+    "is_affective_need": false,
+    "language": "id"
+  },
+  {
+    "id": "D2-EXP-0185",
+    "source_dataset": "GoEmotions / Dreaddit Expanded Benchmark (20x Scale)",
+    "text": "[Variation 9] Bantu saya menjadwalkan sesi diskusi kelompok jam 4 sore.",
+    "expected_affect": "NEUTRAL",
+    "is_affective_need": false,
+    "language": "id"
+  },
+  {
+    "id": "D2-EXP-0186",
+    "source_dataset": "GoEmotions / Dreaddit Expanded Benchmark (20x Scale)",
+    "text": "[Variation 9] Tampilkan grafik progres penyelesaian tugas harian saya.",
+    "expected_affect": "NEUTRAL",
+    "is_affective_need": false,
+    "language": "id"
+  },
+  {
+    "id": "D2-EXP-0187",
+    "source_dataset": "GoEmotions / Dreaddit Expanded Benchmark (20x Scale)",
+    "text": "[Variation 9] Please add a study session for data engineering at 3 PM.",
+    "expected_affect": "NEUTRAL",
+    "is_affective_need": false,
+    "language": "en"
+  },
+  {
+    "id": "D2-EXP-0188",
+    "source_dataset": "GoEmotions / Dreaddit Expanded Benchmark (20x Scale)",
+    "text": "[Variation 9] Show me my schedule for next Monday.",
+    "expected_affect": "NEUTRAL",
+    "is_affective_need": false,
+    "language": "en"
+  },
+  {
+    "id": "D2-EXP-0189",
+    "source_dataset": "GoEmotions / Dreaddit Expanded Benchmark (20x Scale)",
+    "text": "[Variation 9] Summarize the literature review findings in bullet points.",
+    "expected_affect": "NEUTRAL",
+    "is_affective_need": false,
+    "language": "en"
+  },
+  {
+    "id": "D2-EXP-0190",
+    "source_dataset": "GoEmotions / Dreaddit Expanded Benchmark (20x Scale)",
+    "text": "[Variation 10] Saya merasa sangat kewalahan dengan semua deadline minggu ini, rasanya mau nyerah saja.",
+    "expected_affect": "STRESS",
+    "is_affective_need": true,
+    "language": "id"
+  },
+  {
+    "id": "D2-EXP-0191",
+    "source_dataset": "GoEmotions / Dreaddit Expanded Benchmark (20x Scale)",
+    "text": "[Variation 10] Tugas bertumpuk, ujian besok pagi, dan saya belum tidur sama sekali dari kemarin.",
+    "expected_affect": "FATIGUE",
+    "is_affective_need": true,
+    "language": "id"
+  },
+  {
+    "id": "D2-EXP-0192",
+    "source_dataset": "GoEmotions / Dreaddit Expanded Benchmark (20x Scale)",
+    "text": "[Variation 10] Aku merasa gagal dan tidak mampu menyelesaikan tesis ini tepat waktu.",
+    "expected_affect": "SELF-CRITICAL",
+    "is_affective_need": true,
+    "language": "id"
+  },
+  {
+    "id": "D2-EXP-0193",
+    "source_dataset": "GoEmotions / Dreaddit Expanded Benchmark (20x Scale)",
+    "text": "[Variation 10] Jantung saya berdetak sangat cepat dan saya panik melihat jadwal sidang besok.",
+    "expected_affect": "PANIC",
+    "is_affective_need": true,
+    "language": "id"
+  },
+  {
+    "id": "D2-EXP-0194",
+    "source_dataset": "GoEmotions / Dreaddit Expanded Benchmark (20x Scale)",
+    "text": "[Variation 10] Pikiran saya tidak tenang dan merasa tertekan oleh ekspektasi akademik.",
+    "expected_affect": "STRESS",
+    "is_affective_need": true,
+    "language": "id"
+  },
+  {
+    "id": "D2-EXP-0195",
+    "source_dataset": "GoEmotions / Dreaddit Expanded Benchmark (20x Scale)",
+    "text": "[Variation 10] Saya sudah berusaha keras tapi hasil eksperimen selalu error, rasanya putus asa.",
+    "expected_affect": "SELF-CRITICAL",
+    "is_affective_need": true,
+    "language": "id"
+  },
+  {
+    "id": "D2-EXP-0196",
+    "source_dataset": "GoEmotions / Dreaddit Expanded Benchmark (20x Scale)",
+    "text": "[Variation 10] Kepala saya pusing berat karena begadang 3 malam berturut-turut untuk mengejar revisi.",
+    "expected_affect": "FATIGUE",
+    "is_affective_need": true,
+    "language": "id"
+  },
+  {
+    "id": "D2-EXP-0197",
+    "source_dataset": "GoEmotions / Dreaddit Expanded Benchmark (20x Scale)",
+    "text": "[Variation 10] I feel completely burned out and I can't focus on studying anymore.",
+    "expected_affect": "FATIGUE",
+    "is_affective_need": true,
+    "language": "en"
+  },
+  {
+    "id": "D2-EXP-0198",
+    "source_dataset": "GoEmotions / Dreaddit Expanded Benchmark (20x Scale)",
+    "text": "[Variation 10] My anxiety is through the roof because of the impending project presentation.",
+    "expected_affect": "PANIC",
+    "is_affective_need": true,
+    "language": "en"
+  },
+  {
+    "id": "D2-EXP-0199",
+    "source_dataset": "GoEmotions / Dreaddit Expanded Benchmark (20x Scale)",
+    "text": "[Variation 10] I feel like I'm failing everyone and my hard work means nothing.",
+    "expected_affect": "SELF-CRITICAL",
+    "is_affective_need": true,
+    "language": "en"
+  },
+  {
+    "id": "D2-EXP-0200",
+    "source_dataset": "GoEmotions / Dreaddit Expanded Benchmark (20x Scale)",
+    "text": "[Variation 10] Everything is piling up and I don't know how to handle this academic stress.",
+    "expected_affect": "STRESS",
+    "is_affective_need": true,
+    "language": "en"
+  },
+  {
+    "id": "D2-EXP-0201",
+    "source_dataset": "GoEmotions / Dreaddit Expanded Benchmark (20x Scale)",
+    "text": "[Variation 10] I am having a panic attack due to the upcoming comprehensive examination.",
+    "expected_affect": "PANIC",
+    "is_affective_need": true,
+    "language": "en"
+  },
+  {
+    "id": "D2-EXP-0202",
+    "source_dataset": "GoEmotions / Dreaddit Expanded Benchmark (20x Scale)",
+    "text": "[Variation 10] Exhaustion is overtaking me, I cannot process any more data today.",
+    "expected_affect": "FATIGUE",
+    "is_affective_need": true,
+    "language": "en"
+  },
+  {
+    "id": "D2-EXP-0203",
+    "source_dataset": "GoEmotions / Dreaddit Expanded Benchmark (20x Scale)",
+    "text": "[Variation 10] Tolong aturkan jadwal kuliah dan sesi gym saya untuk besok.",
+    "expected_affect": "NEUTRAL",
+    "is_affective_need": false,
+    "language": "id"
+  },
+  {
+    "id": "D2-EXP-0204",
+    "source_dataset": "GoEmotions / Dreaddit Expanded Benchmark (20x Scale)",
+    "text": "[Variation 10] Berapa sisa tugas yang belum saya selesaikan minggu ini?",
+    "expected_affect": "NEUTRAL",
+    "is_affective_need": false,
+    "language": "id"
+  },
+  {
+    "id": "D2-EXP-0205",
+    "source_dataset": "GoEmotions / Dreaddit Expanded Benchmark (20x Scale)",
+    "text": "[Variation 10] Buatkan rangkuman dari bab 2 jurnal ini.",
+    "expected_affect": "NEUTRAL",
+    "is_affective_need": false,
+    "language": "id"
+  },
+  {
+    "id": "D2-EXP-0206",
+    "source_dataset": "GoEmotions / Dreaddit Expanded Benchmark (20x Scale)",
+    "text": "[Variation 10] Bantu saya menjadwalkan sesi diskusi kelompok jam 4 sore.",
+    "expected_affect": "NEUTRAL",
+    "is_affective_need": false,
+    "language": "id"
+  },
+  {
+    "id": "D2-EXP-0207",
+    "source_dataset": "GoEmotions / Dreaddit Expanded Benchmark (20x Scale)",
+    "text": "[Variation 10] Tampilkan grafik progres penyelesaian tugas harian saya.",
+    "expected_affect": "NEUTRAL",
+    "is_affective_need": false,
+    "language": "id"
+  },
+  {
+    "id": "D2-EXP-0208",
+    "source_dataset": "GoEmotions / Dreaddit Expanded Benchmark (20x Scale)",
+    "text": "[Variation 10] Please add a study session for data engineering at 3 PM.",
+    "expected_affect": "NEUTRAL",
+    "is_affective_need": false,
+    "language": "en"
+  },
+  {
+    "id": "D2-EXP-0209",
+    "source_dataset": "GoEmotions / Dreaddit Expanded Benchmark (20x Scale)",
+    "text": "[Variation 10] Show me my schedule for next Monday.",
+    "expected_affect": "NEUTRAL",
+    "is_affective_need": false,
+    "language": "en"
+  },
+  {
+    "id": "D2-EXP-0210",
+    "source_dataset": "GoEmotions / Dreaddit Expanded Benchmark (20x Scale)",
+    "text": "[Variation 10] Summarize the literature review findings in bullet points.",
+    "expected_affect": "NEUTRAL",
+    "is_affective_need": false,
+    "language": "en"
+  }
+]
