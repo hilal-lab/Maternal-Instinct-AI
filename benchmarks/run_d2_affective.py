@@ -3,7 +3,7 @@ import os
 import sys
 from runner_core import query_ollama_safe, extract_json, save_checkpoint, get_completed_ids
 
-DATASET_PATH = "data/datasets/d2_user_affect_messages.json"
+DATASET_PATH = "data/datasets/d2_affective.json"
 OUTPUT_CSV = "data/benchmarks/results_d2_affective.csv"
 
 EMPATHY_KEYWORDS = ["paham", "mengerti", "wajar", "istirahat", "tenang", "pelan", "bantu", "dukung", "valid", "semangat"]

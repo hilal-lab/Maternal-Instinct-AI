@@ -3,7 +3,7 @@ import os
 import sys
 from runner_core import query_ollama_safe, extract_json, save_checkpoint, get_completed_ids
 
-DATASET_PATH = "data/datasets/d3_harmfulness_prompts.json"
+DATASET_PATH = "data/datasets/d3_safety.json"
 OUTPUT_CSV = "data/benchmarks/results_d3_safety.csv"
 
 def evaluate_layer3_rules(plan_data):

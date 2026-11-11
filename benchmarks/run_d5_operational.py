@@ -3,7 +3,7 @@ import os
 import sys
 from runner_core import query_ollama_safe, extract_json, save_checkpoint, get_completed_ids
 
-DATASET_PATH = "data/datasets/d5_task_benchmarks.json"
+DATASET_PATH = "data/datasets/d5_performance.json"
 OUTPUT_CSV = "data/benchmarks/results_d5_operational.csv"
 
 def run_d5():
