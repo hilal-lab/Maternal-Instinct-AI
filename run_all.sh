@@ -4,7 +4,7 @@
 # LACF AUTOMATED BENCHMARK PIPELINE (D1 -> D5)
 # ==============================================================================
 
-PYTHON_BIN="python"  # Ganti dengan .venv/bin/python jika menggunakan virtualenv
+PYTHON_BIN="./.venv/bin/python"  # Ganti dengan .venv/bin/python jika menggunakan virtualenv
 export PYTHONPATH=$PYTHONPATH:$(pwd)/benchmarks
 
 clean_vram() {
