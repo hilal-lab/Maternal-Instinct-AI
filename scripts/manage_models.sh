@@ -23,7 +23,7 @@ case "$1" in
     pull)
         if [ -z "$2" ]; then
             echo "Usage: $0 pull <model_name>"
-            echo "Example: $0 pull llama3.1:8b"
+            echo "Example: $0 pull llama3.2:3b"
             exit 1
         fi
         echo "Pulling model: $2"
@@ -40,13 +40,16 @@ case "$1" in
     pull-required)
         echo "Pulling required models for Maternal Instinct AI..."
         echo ""
-        echo "Pulling llama3.1:8b (LLM model)..."
+        echo "1. Pulling llama3.2:3b (Tier B SLM Benchmark Model)..."
+        curl -X POST "$OLLAMA_HOST/api/pull" -d '{"name":"llama3.2:3b"}'
+        echo ""
+        echo "2. Pulling llama3.1:8b (Tier A LLM Model)..."
         curl -X POST "$OLLAMA_HOST/api/pull" -d '{"name":"llama3.1:8b"}'
         echo ""
-        echo "Pulling bge-m3 (Embedding model)..."
+        echo "3. Pulling bge-m3 (Embedding Model for RAG)..."
         curl -X POST "$OLLAMA_HOST/api/pull" -d '{"name":"bge-m3"}'
         echo ""
-        echo "Done! Models installed:"
+        echo "Done! Installed models:"
         curl -s "$OLLAMA_HOST/api/tags" | python -m json.tool
         ;;
     *)
@@ -56,7 +59,7 @@ case "$1" in
         echo "  list           - List all installed models"
         echo "  pull <model>   - Pull a specific model"
         echo "  remove <model> - Remove a specific model"
-        echo "  pull-required   - Pull all models required by Maternal Instinct AI"
+        echo "  pull-required  - Pull all models required by Maternal Instinct AI (3b, 8b, bge-m3)"
         exit 1
         ;;
 esac
