@@ -6,9 +6,7 @@ import sys
 import requests
 import pandas as pd
 
-OLLAMA_BASE = os.environ.get("OLLAMA_HOST", "http://127.0.0.1:11434").rstrip("/")
-if not OLLAMA_BASE.startswith("http"):
-    OLLAMA_BASE = "http://" + OLLAMA_BASE
+OLLAMA_BASE = "http://127.0.0.1:11434"
 OLLAMA_URL = f"{OLLAMA_BASE}/api/generate"
 MODEL_NAME = "llama3.2:3b"
 
