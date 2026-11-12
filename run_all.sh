@@ -4,7 +4,8 @@
 # LACF AUTOMATED BENCHMARK PIPELINE (D1 -> D5)
 # ==============================================================================
 
-PYTHON_BIN="./.venv/bin/python"  # Ganti dengan .venv/bin/python jika menggunakan virtualenv
+PYTHON_BIN="python"  # Ganti dengan .venv/bin/python jika menggunakan virtualenv
+command -v "$PYTHON_BIN" >/dev/null 2>&1 || PYTHON_BIN="python3"
 export PYTHONPATH=$PYTHONPATH:$(pwd)/benchmarks
 
 clean_vram() {
@@ -19,6 +20,11 @@ clean_vram() {
 
 echo "🚀 LAUNCHING FULL LACF BENCHMARK SUITE"
 echo "=============================================================================="
+
+# 0. Preflight: pastikan Ollama + model siap SEBELUM benchmark (hindari run penuh SYS_TIMEOUT)
+echo "🔹 [0/5] Preflight Ollama..."
+$PYTHON_BIN benchmarks/preflight.py
+if [ $? -ne 0 ]; then echo "❌ Preflight gagal. Benchmark dibatalkan."; exit 1; fi
 
 # 1. Dataset D1
 echo "🔹 [1/5] Executing Module D1 (Parametric Workload)..."
