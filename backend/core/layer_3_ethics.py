@@ -38,9 +38,10 @@ class PolicyAggregator:
     """
 
     # ── Hard Constraints (Paper Section III-C-a) ──────────────────────────────
-    MAX_WORK_HOURS = 8
-    MIN_BREAK_HOURS = 1
-    MIN_SLEEP_HOURS = 6
+    MAX_WORK_HOURS = 8        # R1: batas harian belajar+kerja (jam)
+    MAX_WEEKLY_HOURS = 48     # R2: batas mingguan (ILO C001)
+    MIN_BREAK_HOURS = 1       # R4: lantai istirahat harian (parameter desain)
+    MIN_SLEEP_HOURS = 7       # R3: lantai tidur (AASM/SRS); sebelumnya 6 dan tidak dipakai
 
     HEALTH_VIOLATION_KEYWORDS = [
         "skip sarapan",
@@ -51,6 +52,62 @@ class PolicyAggregator:
         "begadang",
         "lembur terus",
     ]
+
+    # ── Typed-plan review (deterministik, tidak bergantung isi DB) ────────────
+
+    PLAN_REQUIRED_KEYS = ("study_work_h", "sleep_h", "rest_h", "weekly_load_h")
+
+    @staticmethod
+    def _as_hours(value):
+        """Konversi ketat ke float jam. None jika bukan angka valid (bukan bool, finite, >= 0)."""
+        import math
+        if isinstance(value, bool) or value is None:
+            return None
+        try:
+            x = float(value)
+        except (TypeError, ValueError):
+            return None
+        if not math.isfinite(x) or x < 0:
+            return None
+        return x
+
+    def review_plan(self, plan: dict) -> dict:
+        """
+        Audit sebuah rencana terstruktur terhadap aturan R1-R4.
+
+        plan: {"study_work_h", "sleep_h", "rest_h", "weekly_load_h"} (jam).
+        Return:
+          {"status": "PASS" | "VIOLATION" | "INVALID",
+           "violations": ["R1_DAILY_CAP", "R2_WEEKLY_CAP", "R3_SLEEP_FLOOR", "R4_REST_FLOOR"],
+           "invalid_keys": [...]}
+        INVALID (kunci hilang / bukan angka) TIDAK dianggap aman maupun pelanggaran:
+        pemanggil wajib memperlakukannya sebagai kegagalan format, bukan intersepsi.
+        """
+        if not isinstance(plan, dict):
+            return {"status": "INVALID", "violations": [], "invalid_keys": list(self.PLAN_REQUIRED_KEYS)}
+
+        values, invalid = {}, []
+        for key in self.PLAN_REQUIRED_KEYS:
+            v = self._as_hours(plan.get(key))
+            if v is None:
+                invalid.append(key)
+            else:
+                values[key] = v
+        if invalid:
+            return {"status": "INVALID", "violations": [], "invalid_keys": invalid}
+
+        violations = []
+        if values["study_work_h"] > self.MAX_WORK_HOURS:
+            violations.append("R1_DAILY_CAP")
+        if values["weekly_load_h"] > self.MAX_WEEKLY_HOURS:
+            violations.append("R2_WEEKLY_CAP")
+        if values["sleep_h"] < self.MIN_SLEEP_HOURS:
+            violations.append("R3_SLEEP_FLOOR")
+        if values["rest_h"] < self.MIN_BREAK_HOURS:
+            violations.append("R4_REST_FLOOR")
+
+        return {"status": "VIOLATION" if violations else "PASS",
+                "violations": violations, "invalid_keys": []}
 
     # ── Workload Checking (diagram diamond) ───────────────────────────────────
 

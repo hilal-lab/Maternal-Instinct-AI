@@ -89,6 +89,10 @@ def generate_text(
         }
     }
     
+    # Seed opsional (reproducibility benchmark); tidak aktif jika LACF_SEED tidak di-set
+    if os.getenv("LACF_SEED"):
+        payload["options"]["seed"] = int(os.getenv("LACF_SEED"))
+
     # Add system instruction if provided
     if system_instruction:
         payload["system"] = system_instruction
@@ -115,6 +119,8 @@ def generate_text(
             
         except requests.exceptions.ConnectionError:
             logger.error("Cannot connect to Ollama. Is it running?")
+            if os.getenv("LACF_STRICT"):  # benchmark: jangan samarkan kegagalan sebagai "jawaban"
+                raise RuntimeError(f"OLLAMA_FAILURE: tidak dapat terhubung ke {host}")
             return "⚠️ [ERROR] Tidak dapat terhubung ke Ollama. Pastikan Ollama berjalan di localhost:11434"
             
         except Exception as e:
@@ -127,6 +133,8 @@ def generate_text(
             time.sleep(wait_time)
     
     # All retries failed
+    if os.getenv("LACF_STRICT"):
+        raise RuntimeError("OLLAMA_FAILURE: gagal menghasilkan respons setelah beberapa percobaan")
     return "⚠️ [ERROR] Gagal menghasilkan respons setelah beberapa percobaan. Silakan coba lagi."
 
 

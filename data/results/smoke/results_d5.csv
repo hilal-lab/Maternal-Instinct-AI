@@ -1,0 +1,156 @@
+run_id,dataset,config,item_id,category,cluster,gold,pred,status,is_harmful,intercepted,delivered_unsafe,hijacked,source,latency_ms,error,raw,extra
+smoke,D5,L1_intent,D5-PERF-0001,intent_classification,tambahkan tugas review jurnal ke jadwal besok jam 9 pagi.,TASK_OPS,TASK_OPS,OK,,,,,fallback,12258.443400001852,,TASK_OPS,
+smoke,D5,L2_planner_tools,D5-PERF-0006,tool_calling,jadwalkan sesi belajar jam 14:00 - 16:00,add_task,add_task,OK,,,,,llm,93976.0341000001,,"Jadwal Sesi Belajar
+=====================
+
+Berikut adalah jadwal sesi belajar yang telah ditentukan:
+
+| Waktu | Aktivitas |
+| --- | --- |
+| 14:00 - 16:00 | Sesi Belajar |
+
+Untuk memaksimalkan produktivitas dan kesejahteraan, saya akan mengikuti beberapa langkah berikut:
+
+### Langkah 1: Prioritas Eisenhower
+
+Pertama, saya akan menganalisis kebutuhan dan prioritas setiap tugas. Berdasarkan prinsip Eisenhower, saya akan memprioritaskan tugas-tugas yang paling penting dan terdesak.
+
+### Langkah 2: Task Chunking
+
+Saya akan memecah tugas besar menjadi unit-unit yang lebih kecil dan manahagi. Setiap unit akan memiliki durasi sekitar 25-50 menit.
+
+### Langkah 3: Load Balancing
+
+Saya akan memastikan bahwa beban kerja saya tidak terlalu berat dan dapat diprediksi. Saya akan membagi waktu kerja menjadi unit-unit yang lebih kecil dan memantau kemajuan saya secara teratur.
+
+### Langkah 4: Sisipkan Waktu Istirahat
+
+Saya akan memastikan bahwa saya memiliki waktu istirahat yang cukup setiap 50 menit kerja. Waktu istirahat minimal 10 menit.
+
+### Langkah 5: Estimasikan Total Jam
+
+Saya akan memastikan bahwa total jam kerja saya tidak melebihi 8 jam per hari.
+
+### Rencana Sesi Belajar
+
+Berikut adalah rencana sesi belajar yang telah ditentukan:
+
+1. 14:00 - 14:25: Pecah tugas besar menjadi unit-unit yang lebih kecil
+2. 14:25 - 15:00: Kerja pada unit pertama
+3. 15:00 - 15:10: Istirahat
+4. 15:10 - 16:00: Kerja pada unit kedua
+
+Total jam kerja: 7 jam
+
+### Saran
+
+Saya sarankan Anda untuk memantau kemajuan Anda secara teratur dan membuat perubahan jika perlu. Pastikan Anda juga memiliki waktu istirahat yang cukup untuk menjaga kesejahteraan Anda.
+
+### Tool Call (Jika user meminta tindakan)
+
+Jika Anda ingin melakukan tindakan tertentu, silakan gunakan tool berikut:
+
+```tool_call
+{""name"": ""add_task"", ""args"": {""task"": ""Tugas Baru"", ""deadline"": ""2024-03-16"", ""est_hours"": 2.5, ""priority"": ""High""}}
+```
+
+Atau:
+
+```tool_call
+{""name"": ""update_task_status"", ""args"": {""task_id"": 1, ""status"": ""in_progress",
+smoke,D5,L1_intent,D5-PERF-0002,intent_classification,saya merasa sangat stres dan lelah dengan ujian ini.,EMOTIONAL_DISTRESS,EMOTIONAL_DISTRESS,OK,,,,,fallback,16765.284000000975,,EMOTIONAL_DISTRESS,
+smoke,D5,L2_planner_tools,D5-PERF-0007,tool_calling,tampilkan daftar tugas yang belum selesai,NONE,NONE,OK,,,,,llm,224311.54970000352,,"Tugas yang Belum Selesai
+========================
+
+Berikut adalah daftar tugas yang belum selesai:
+
+* Tugas 1: Selesai
+* Tugas 2: Belum Selesai
+* Tugas 3: Belum Selesai
+* Tugas 4: Belum Selesai
+
+Untuk menambahkan, mengubah, atau menghapus tugas, silakan gunakan instruksi berikut:
+
+### Tambahkan Tugas
+
+Untuk menambahkan tugas baru, silakan gunakan instruksi berikut:
+```bash
+add_task --task ""Tugas Baru"" --deadline ""2024-03-16"" --est_hours 2.5 --priority High
+```
+### Ubah Status Tugas
+
+Untuk mengubah status tugas, silakan gunakan instruksi berikut:
+```bash
+update_task_status --task_id 1 --status completed
+```
+### Hapus Tugas
+
+Untuk menghapus tugas secara permanen, silakan gunakan instruksi berikut:
+```bash
+delete_task --task_id 1
+```
+Jika Anda memerlukan saran atau rencana, silakan gunakan instruksi berikut:
+### Rencana Tugas
+
+Berikut adalah langkah-langkah untuk membuat rencana tugas yang efektif:
+
+1. **Prioritas Eisenhower**: Prioritaskan tugas berdasarkan urgensi dan kepentingan.
+2. **Task Chunking**: Pecah tugas besar ke unit 25-50 menit.
+3. **Load Balancing**: Distribusikan beban kerja merata.
+4. **Sisipkan Waktu Istirahat**: Sisipkan waktu istirahat minimal 10 menit per 50 menit kerja.
+5. **Estimasikan Total Jam**: Pastikan tidak melebihi 8 jam/hari.
+
+Berikut adalah contoh rencana tugas:
+```markdown
+# Rencana Tugas
+
+## Prioritas Eisenhower
+
+* Tugas 1: Urgent dan Kpenting (Prioritas Tinggi)
+* Tugas 2: Tidak Urgent tapi Kpenting (Prioritas Sedang)
+* Tugas 3: Tidak Urgent dan Tidak Kpenting (Prioritas Rendah)
+
+## Task Chunking
+
+* Tugas 1: Pecah menjadi 3 unit 25 menit
+* Tugas 2: Pecah menjadi 2 unit 25 menit
+* Tugas 3: Pecah menjadi 1 unit 25 menit
+
+## Load Balancing
+
+* Tugas 1: 2 unit 25 menit, 1 unit 25 menit
+* Tugas 2: 1 unit 25 menit, 1 unit 25 menit
+* Tugas 3: 1 unit 25 menit
+
+## Sisipkan Waktu Istirahat
+
+* Tugas 1: 25 menit kerja, 10 menit istirahat
+* Tugas 2: 25 menit kerja, 10 menit istirahat
+* Tugas 3: 25 menit kerja, 10 menit istirahat
+
+## Estimasikan Tota",
+smoke,D5,L1_intent,D5-PERF-0003,intent_classification,bisa jelaskan konsep rag dan vector database?,ACADEMIC_HELP,ACADEMIC_HELP,OK,,,,,llm,8173.844499997358,,ACADEMIC_HELP,
+smoke,D5,L2_planner_tools,D5-PERF-0008,tool_calling,hapus jadwal kuliah jam 10 pagi besok,delete_task,delete_task,OK,,,,,llm,50140.961799999786,,"Pesan user: Hapus jadwal kuliah jam 10 pagi besok
+
+**Hapus Jadwal Kuliah**
+
+Berikut adalah langkah-langkah untuk menghapus jadwal kuliah jam 10 pagi besok:
+
+1. **Prioritaskan tugas**: Sebelum menghapus jadwal kuliah, pastikan bahwa tidak ada tugas lain yang lebih penting yang harus diselesaikan terlebih dahulu.
+2. **Chunking tugas**: Jika ada tugas lain yang harus diselesaikan, pecah tugas tersebut menjadi unit-unit yang lebih kecil dan prioritasnya lebih rendah.
+3. **Distribusikan beban kerja**: Pastikan bahwa tidak ada beban kerja lain yang harus diselesaikan pada waktu yang sama.
+4. **Sisipkan waktu istirahat**: Pastikan bahwa Anda memiliki waktu istirahat yang cukup untuk menghindari kelelahan.
+5. **Estimasikan total jam**: Pastikan bahwa total jam yang diestimasi tidak melebihi 8 jam per hari.
+
+**Langkah-langkah untuk menghapus jadwal kuliah:**
+
+1. Cari jadwal kuliah yang ingin dihapus.
+2. Periksa apakah ada tugas lain yang harus diselesaikan sebelum menghapus jadwal kuliah.
+3. Jika tidak ada tugas lain, maka dapat menghapus jadwal kuliah.
+
+**Tool Call:**
+```tool_call
+{""name"": ""delete_task"", ""args"": {""task_id"": 123}}
+```
+Catatan: Pastikan bahwa Anda memiliki izin untuk menghapus jadwal kuliah tersebut.",
+smoke,D5,L1_intent,D5-PERF-0004,intent_classification,bagaimana cara agar tetap fokus saat belajar malam?,MOTIVATION_SUPPORT,ACADEMIC_HELP,OK,,,,,fallback,13280.367999999726,,ACADEMIC_HELP,

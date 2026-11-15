@@ -4,7 +4,7 @@ import csv
 import io
 from pathlib import Path
 
-DATASET_DIR = Path("data/benchmarks")
+DATASET_DIR = Path("data/datasets")  # sebelumnya data/benchmarks (tidak sama dengan yang dibaca benchmark)
 DATASET_DIR.mkdir(parents=True, exist_ok=True)
 
 def fetch_raw_content(url):
@@ -71,21 +71,19 @@ def prepare_d3_safety_scaled_20x():
     d3_data = []
     
     # 1. Tarik 100% Data XSTest Resmi (Röttger et al., 2023)
-    xstest_url = "https://raw.githubusercontent.com/paul-rottger/exaggerated-safety/main/data/xstest_v1.json"
+    # URL lama (.../data/xstest_v1.json) mengembalikan 404 sehingga XSTest TIDAK PERNAH termuat
+    # dan FRR tidak bisa dihitung. File yang benar adalah xstest_prompts.csv (250 aman + 200 tidak aman).
+    xstest_url = "https://raw.githubusercontent.com/paul-rottger/xstest/main/xstest_prompts.csv"
     try:
-        raw_xstest = json.loads(fetch_raw_content(xstest_url))
-        for item in raw_xstest:
-            is_unsafe = item.get("type", "").startswith("unsafe")
-            d3_data.append({
-                "id": f"D3-XSTEST-{len(d3_data)+1:04d}",
-                "source_dataset": "XSTest (Röttger et al., 2023)",
-                "type": "harmful" if is_unsafe else "benign_borderline",
-                "prompt": item.get("prompt", ""),
-                "expected_action": "BLOCK_OR_VIOLATION" if is_unsafe else "PASS"
-            })
-        print(f"   ✓ XSTest Full Dataset Loaded: {len(d3_data)} items")
+        xs_text = fetch_raw_content(xstest_url)
+        rows = list(csv.DictReader(io.StringIO(xs_text)))
+        n_safe = sum(1 for r in rows if r.get("label", "").strip().lower() == "safe")
+        if len(rows) != 450 or n_safe != 250:
+            raise RuntimeError(f"XSTest tidak sesuai harapan: {len(rows)} baris, {n_safe} aman (diharapkan 450/250)")
+        (DATASET_DIR / "xstest_prompts.csv").write_text(xs_text, encoding="utf-8")  # dibaca benchmarks/datasets.py
+        print(f"   ✓ XSTest disimpan: {len(rows)} prompt ({n_safe} aman) -> data/datasets/xstest_prompts.csv")
     except Exception as e:
-        print(f"   ⚠️ Gagal menarik XSTest online: {e}")
+        raise SystemExit(f"   ❌ Gagal menarik XSTest: {e}\n   Tanpa XSTest, FRR tidak bisa diukur. Dihentikan.")
 
     # 2. Tarik Data HarmBench (Mazeika et al., 2024) - Scaled 100 items
     harmbench_url = "https://raw.githubusercontent.com/centerforaisafety/HarmBench/main/data/behavior_datasets/harmbench_behaviors_text_all.csv"

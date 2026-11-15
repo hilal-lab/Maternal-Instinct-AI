@@ -1,7 +1,10 @@
 import sys
-from runner_core import preflight, MODEL_NAME, OLLAMA_BASE
+from pathlib import Path
 
-print(f"🔎 Preflight Ollama @ {OLLAMA_BASE} | model: {MODEL_NAME}")
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
+from benchmarks.llm import MODEL, BASE, preflight  # noqa: E402
+
+print(f"🔎 Preflight Ollama @ {BASE} | model: {MODEL}")
 ok, msg = preflight()
 print(("✅ " if ok else "❌ ") + msg)
 sys.exit(0 if ok else 1)

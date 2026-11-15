@@ -102,6 +102,7 @@ class EmpathyScout:
             system_instruction="Anda adalah Empathy Scout AI, ahli deteksi sinyal afektif. Keluarkan hanya JSON valid."
         )
 
+        source = "llm"
         try:
             cleaned = response.replace("```json", "").replace("```", "").strip()
             data = json.loads(cleaned)
@@ -113,8 +114,9 @@ class EmpathyScout:
 
             intensity = max(0.0, min(1.0, intensity))
 
-        except (json.JSONDecodeError, AttributeError, ValueError):
+        except (json.JSONDecodeError, AttributeError, ValueError, TypeError):
             emotion, intensity = self._fallback(user_input)
+            source = "fallback"
 
         flags = self._generate_flags(emotion, intensity)
 
@@ -122,6 +124,7 @@ class EmpathyScout:
             "emotion": emotion,
             "intensity": intensity,
             "flags": flags,
+            "source": source,  # "llm" | "fallback" (keyword) — penting untuk validitas evaluasi
         }
 
     def _fallback(self, user_input: str) -> tuple:
@@ -387,9 +390,11 @@ class ExecutiveAgent:
             valid_intents = {"TASK_OPS", "ACADEMIC_HELP", "MOTIVATION_SUPPORT", "EMOTIONAL_DISTRESS", "GENERAL_CHAT"}
             if intent not in valid_intents:
                 intent = "GENERAL_CHAT"
+            self.last_intent_source = "llm"
             return intent
 
-        except (json.JSONDecodeError, AttributeError):
+        except (json.JSONDecodeError, AttributeError, TypeError, ValueError):
+            self.last_intent_source = "fallback"
             return self._fallback_intent(user_input)
 
     def _fallback_intent(self, user_input: str) -> str:

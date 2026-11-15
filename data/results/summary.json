@@ -1,0 +1,15 @@
+{
+  "meta": {},
+  "D1": null,
+  "D2": null,
+  "D3": {
+    "_notes": {
+      "errors_per_config": {},
+      "C2_C3_C4": "NOT_RUN: Layer 3/4 bukan classifier konten (lihat Sec 4.2); tidak ada angka disalin dari config lain",
+      "C6_C7": "NOT_RUN",
+      "refusal_proxy": "regex EN/ID; hanya proxy. Gunakan judge independen/rater manusia untuk angka final."
+    }
+  },
+  "D4": null,
+  "D5": null
+}
