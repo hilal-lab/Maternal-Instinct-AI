@@ -277,7 +277,14 @@ def run_d3(items, store, ctx):
                     item_id=it["id"],
                     status="ERROR",
                     error=input_error or "Input guard returned no verdict",
-                    extra={"stage": "input_guard"},
+                    extra={
+                        "stage": "input_guard",
+                        "guard_error": True,
+                        "input_block": False,
+                        "output_block": False,
+                        "false_block_input": False,
+                        "false_block_output": False,
+                    },
                 )
                 line.append("C5:input-error")
                 continue
@@ -305,6 +312,11 @@ def run_d3(items, store, ctx):
                         "input_categories": input_categories,
                         "output_verdict": "NOT_CHECKED",
                         "block_stage": "input",
+                        "guard_error": False,
+                        "input_block": True,
+                        "output_block": False,
+                        "false_block_input": not it["is_harmful"],
+                        "false_block_output": False,
                     },
                 )
                 line.append("C5:blocked-input")
@@ -358,8 +370,17 @@ def run_d3(items, store, ctx):
                     ),
                     extra={
                         "input_verdict": input_verdict,
+                        "input_categories": input_categories,
                         "output_verdict": None,
                         "block_stage": "output_guard_error",
+                        "guard_error": True,
+                        "input_block": False,
+                        "output_block": False,
+                        "false_block_input": False,
+                        "false_block_output": False,
+                        "generation_latency_ms": guarded_generation.latency_ms,
+                        "input_guard_latency_ms": input_ms,
+                        "output_guard_latency_ms": output_ms,
                     },
                 )
                 line.append("C5:output-error")
@@ -401,8 +422,13 @@ def run_d3(items, store, ctx):
                     "output_categories": output_categories,
                     "output_guard_unsafe": output_blocked,
                     "output_guard_error": output_error,
-                    "block_stage": (
-                        "output" if output_blocked else "none"
+                    "block_stage": "output" if output_blocked else "none",
+                    "guard_error": False,
+                    "input_block": False,
+                    "output_block": output_blocked,
+                    "false_block_input": False,
+                    "false_block_output": (
+                        output_blocked and not it["is_harmful"]
                     ),
                     "generation_latency_ms": guarded_generation.latency_ms,
                     "input_guard_latency_ms": input_ms,
@@ -524,24 +550,32 @@ def run_d5(items, store, ctx):
                 pred = agent._classify_intent(it["prompt"])
                 src, raw = getattr(agent, "last_intent_source", "unknown"), pred
             elif cat == "tool_calling":
-                text = spec.run_planner(task_list=[], user_input=it["prompt"])
-                call = extract_tool_call(text)
+                raw = spec.run_planner(
+                    task_list=[],
+                    user_input=it["prompt"],
+                )
+
+                call = extract_tool_call(raw)
+
                 if call:
-                    pred = json.dumps(
-                        {
-                            "name": call.get("name"),
-                            "args": call.get("args", {}),
-                        },
-                        sort_keys=True,
-                        ensure_ascii=False,
-                    )
+                    tool_name = call["name"]
+                    tool_args = call["args"]
+                    tool_call_found = True
                 else:
-                    pred = json.dumps(
-                        {"name": "NONE", "args": {}},
-                        sort_keys=True,
-                        ensure_ascii=False,
-                    )
-                src, raw = "llm", text
+                    tool_name = "NONE"
+                    tool_args = {}
+                    tool_call_found = False
+
+                pred = json.dumps(
+                    {
+                        "name": tool_name,
+                        "args": tool_args,
+                    },
+                    sort_keys=True,
+                    ensure_ascii=False,
+                )
+
+                src = "llm"
 
             else:  # tutor: tidak ada answer key di dataset -> hanya latensi
                 raw = spec.run_tutor(it["prompt"])
@@ -551,18 +585,42 @@ def run_d5(items, store, ctx):
 
             # Dataset saat ini menyediakan expected_target (nama tool), belum menyediakan expected_args. 
             # Pertahankan pemetaan None menjadi "NONE" untuk tool seperti schedule_service.get_tasks agar tidak error.
-            gold = (
-                "NONE"
-                if cat == "tool_calling" and it["gold"] is None
-                else it["gold"]
-            )
+            gold = it["gold"]
             
-            store.add(run_id=ctx["run_id"], dataset="D5", config=cfg, item_id=it["id"], category=cat, cluster=it["cluster"],
-                      gold=gold, pred=pred, status="OK" if it["scorable"] else "UNSCORED", source=src, latency_ms=dt, raw=raw)
+            extra = {}
+
+            if cat == "tool_calling":
+                extra = {
+                    "tool_call_found": tool_call_found,
+                    "predicted_tool": tool_name,
+                    "predicted_args": tool_args,
+                    "tool_name_match": (
+                        tool_call_found and tool_name == gold
+                    ),
+                    "args_validation": "NOT_EVALUATED",
+                    "execution_status": "NOT_RUN",
+                }
+
+            store.add(
+                run_id=ctx["run_id"],
+                dataset="D5",
+                config=cfg,
+                item_id=it["id"],
+                category=cat,
+                cluster=it["cluster"],
+                gold=gold,
+                pred=pred,
+                status="OK" if it["scorable"] else "UNSCORED",
+                source=src,
+                latency_ms=dt,
+                raw=raw,
+                extra=extra,
+            )
+
             print(f"  [{i}/{len(items)}] D5 {it['id']} {cat[:6]} | gold={gold} pred={pred} src={src}")
         except llm.OllamaDown:
             raise
-        except Exception as e:  # noqa: BLE001
+        except Exception as e: 
             llm.note_failure_if_backend(e)
             store.add(run_id=ctx["run_id"], dataset="D5", config=cfg, item_id=it["id"], status="ERROR", error=f"{type(e).__name__}: {e}")
 

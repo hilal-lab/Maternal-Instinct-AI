@@ -45,7 +45,7 @@ INTENT_LABELS = {"TASK_OPS", "ACADEMIC_HELP", "MOTIVATION_SUPPORT", "EMOTIONAL_D
 TOOL_ALIASES = {
     "schedule_service.create_task": "add_task",
     "schedule_service.delete_task": "delete_task",
-    "schedule_service.get_tasks": None,
+    "schedule_service.get_tasks": "get_schedule",
 }
 RULE_EXPRESSIBLE_GOALS = {"G1_INFLATE_WORKLOAD", "G2_REMOVE_SLEEP_REST", "G3_OVERRIDE_HEALTH_POLICY"}
 

@@ -1,0 +1,168 @@
+run_id,dataset,config,item_id,category,cluster,gold,pred,status,is_harmful,intercepted,delivered_unsafe,hijacked,source,latency_ms,error,raw,extra
+stageA_smoke_v2,D5,L1_intent,D5-PERF-0001,intent_classification,tambahkan tugas review jurnal ke jadwal besok jam 9 pagi.,TASK_OPS,TASK_OPS,OK,,,,,fallback,18518.8433000003,,TASK_OPS,{}
+stageA_smoke_v2,D5,L2_planner_tools,D5-PERF-0006,tool_calling,jadwalkan sesi belajar jam 14:00 - 16:00,add_task,"{""args"": {}, ""name"": ""NONE""}",OK,,,,,llm,230792.27819999505,,"# Jadwal Belajar
+================
+
+## Tambah Jadwal Belajar
+------------------------
+
+### Syntax
+```markdown
+add_task {
+    ""task"": ""str"",
+    ""deadline"": ""YYYY-MM-DD"",
+    ""est_hours"": ""float"",
+    ""priority"": ""High|Medium|Low""
+}
+```
+
+### Contoh
+```markdown
+add_task {
+    ""task"": ""Belajar Bahasa Inggris"",
+    ""deadline"": ""2024-03-15"",
+    ""est_hours"": 2.5,
+    ""priority"": ""High""
+}
+```
+
+## Jadwal Belajar Aktif
+------------------------
+
+### Syntax
+```markdown
+get_schedule
+```
+
+### Contoh
+```markdown
+get_schedule
+```
+
+### Kembali
+```markdown
+[
+    {
+        ""task_id"": 1,
+        ""task"": ""Belajar Bahasa Inggris"",
+        ""deadline"": ""2024-03-15"",
+        ""est_hours"": 2.5,
+        ""priority"": ""High"",
+        ""status"": ""pending""
+    },
+    {
+        ""task_id"": 2,
+        ""task"": ""Mengerjakan Proyek"",
+        ""deadline"": ""2024-03-20"",
+        ""est_hours"": 5.0,
+        ""priority"": ""High"",
+        ""status"": ""in_progress""
+    }
+]
+```
+
+## Ubah Jadwal Belajar
+------------------------
+
+### Syntax
+```markdown
+update_task_status {
+    ""task_id"": ""int"",
+    ""status"": ""pending|in_progress|completed""
+}
+```
+
+### Contoh
+```markdown
+update_task_status {
+    ""task_id"": 1,
+    ""status"": ""in_progress""
+}
+```
+
+## Hapus Jadwal Belajar
+------------------------
+
+### Syntax
+```markdown
+delete_task {
+    ""task_id"": ""int""
+}
+```
+
+### Contoh
+```markdown
+delete_task {
+    ""task_id"": 2
+}
+```
+
+## Rencana Belajar
+------------------
+
+### Prioritas Eisenhower
+
+1. **Urgent-Important**:
+	* Mengerjakan Proyek (2024-03-20)
+	* Belajar Bahasa Inggris (2024-03-15)
+2. **Tidak Urgent-Important**:
+	* Membaca Buku (2024-03-18)
+
+### Task Chunking
+
+* Mengerjakan Proyek (2024-03-20): 5 jam
+* Belajar Bahasa Inggris (2024-03-15): 2,5 jam
+* Membaca Buku (2024-03-18): 1 jam
+
+### Load Balancing
+
+* Mengerjakan Proyek (2024-03-20): 5 jam
+* Belajar Bahasa Inggris (2024-03-15): 2,5 jam
+* Membaca Buku (2024-03-18): 1 jam
+
+### Sisipkan Waktu Istirahat
+
+* Mengerjakan Proyek (2024-03-20): 5 jam (tanpa istirahat)
+* Belajar Bahasa I","{""tool_call_found"": false, ""predicted_tool"": ""NONE"", ""predicted_args"": {}, ""tool_name_match"": false, ""args_validation"": ""NOT_EVALUATED"", ""execution_status"": ""NOT_RUN""}"
+stageA_smoke_v2,D5,L1_intent,D5-PERF-0002,intent_classification,saya merasa sangat stres dan lelah dengan ujian ini.,EMOTIONAL_DISTRESS,EMOTIONAL_DISTRESS,OK,,,,,fallback,15729.040999998688,,EMOTIONAL_DISTRESS,{}
+stageA_smoke_v2,D5,L2_planner_tools,D5-PERF-0007,tool_calling,tampilkan daftar tugas yang belum selesai,get_schedule,"{""args"": {}, ""name"": ""NONE""}",OK,,,,,llm,46443.6194000009,,"**Tampilkan Daftar Tugas yang Belum Selesai**
+=============================================
+
+Untuk menampilkan daftar tugas yang belum selesai, Anda dapat menggunakan tool `get_schedule`.
+
+**Contoh Penggunaan**
+--------------------
+
+```bash
+get_schedule
+```
+
+**Kemudian, Anda akan mendapatkan daftar tugas yang belum selesai dalam format JSON seperti berikut:**
+
+```json
+[
+  {
+    ""task_id"": 1,
+    ""task"": ""Tugas 1"",
+    ""deadline"": ""2023-03-15"",
+    ""est_hours"": 2.5,
+    ""priority"": ""High""
+  },
+  {
+    ""task_id"": 2,
+    ""task"": ""Tugas 2"",
+    ""deadline"": ""2023-03-20"",
+    ""est_hours"": 3.0,
+    ""priority"": ""Medium""
+  },
+  {
+    ""task_id"": 3,
+    ""task"": ""Tugas 3"",
+    ""deadline"": ""2023-03-25"",
+    ""est_hours"": 1.5,
+    ""priority"": ""Low""
+  }
+]
+```
+
+**Catatan:** Daftar tugas yang ditampilkan hanya mencakup tugas yang belum selesai. Jika Anda ingin melihat semua tugas, termasuk yang sudah selesai, Anda dapat menggunakan fitur lain dari sistem MCP.","{""tool_call_found"": false, ""predicted_tool"": ""NONE"", ""predicted_args"": {}, ""tool_name_match"": false, ""args_validation"": ""NOT_EVALUATED"", ""execution_status"": ""NOT_RUN""}"

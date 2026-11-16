@@ -47,62 +47,80 @@ logger = logging.getLogger("backend.core.layer_2_specialists")
 
 def extract_tool_call(text: str) -> Optional[dict]:
     """
-    Parse a structured tool-call block from an LLM response.
+    Extract and validate structured tool call.
 
-    Looks for a fenced code block tagged ``tool_call``:
-
-        ```tool_call
-        {"name": "delete_task", "args": {"task_id": 3}}
-        ```
-
-    Also accepts plain JSON objects anywhere in the text that have a
-    "tool_call" top-level key as a fallback:
-
-        {"tool_call": {"name": "add_task", "args": {...}}}
-
-    Args:
-        text: Raw LLM output string.
-
-    Returns:
-        Dict with keys ``name`` (str) and ``args`` (dict), or None if
-        no valid tool call is found.
+    Accepted format:
+    ```tool_call
+    {"name": "add_task", "args": {...}}
+    ```
     """
+
     if not text:
         return None
 
-    # Primary: fenced ```tool_call ... ``` block
+    allowed_tools = {
+        "get_schedule",
+        "add_task",
+        "update_task_status",
+        "delete_task",
+    }
+
+    def validate(payload):
+        if not isinstance(payload, dict):
+            return None
+
+        name = payload.get("name")
+        args = payload.get("args", {})
+
+        if not isinstance(name, str):
+            return None
+
+        if name not in allowed_tools:
+            return None
+
+        if not isinstance(args, dict):
+            return None
+
+        return {
+            "name": name,
+            "args": args,
+        }
+
+    # 1. Primary: fenced tool_call block.
     fence_pattern = re.compile(
-        r"```tool_call\s*\n(.*?)\n```",
+        r"```tool_call\s*(.*?)\s*```",
         re.DOTALL | re.IGNORECASE,
     )
-    match = fence_pattern.search(text)
-    if match:
-        try:
-            payload = json.loads(match.group(1).strip())
-            if isinstance(payload, dict) and "name" in payload:
-                return {
-                    "name": str(payload["name"]),
-                    "args": payload.get("args", {}),
-                }
-        except (json.JSONDecodeError, KeyError):
-            pass
 
-    # Fallback: {"tool_call": {"name": ..., "args": ...}} anywhere in text
-    fallback_pattern = re.compile(
-        r'\{\s*"tool_call"\s*:\s*(\{.*?\})\s*\}',
-        re.DOTALL,
-    )
-    match = fallback_pattern.search(text)
-    if match:
+    for match in fence_pattern.finditer(text):
         try:
             payload = json.loads(match.group(1).strip())
-            if isinstance(payload, dict) and "name" in payload:
-                return {
-                    "name": str(payload["name"]),
-                    "args": payload.get("args", {}),
-                }
-        except (json.JSONDecodeError, KeyError):
-            pass
+            result = validate(payload)
+
+            if result is not None:
+                return result
+
+        except (json.JSONDecodeError, TypeError):
+            continue
+
+    # 2. Fallback: JSON object containing tool_call.
+    decoder = json.JSONDecoder()
+
+    for match in re.finditer(r"\{", text):
+        try:
+            payload, _ = decoder.raw_decode(text[match.start():])
+
+            if not isinstance(payload, dict):
+                continue
+
+            nested = payload.get("tool_call")
+            result = validate(nested)
+
+            if result is not None:
+                return result
+
+        except (json.JSONDecodeError, TypeError):
+            continue
 
     return None
 
@@ -202,43 +220,61 @@ class SpecialistAgents:
         workload_str = self._format_workload(workload) if workload else ""
 
         # List of available write tools for the agent to reference
-        tool_reference = """
-TOOL YANG TERSEDIA (gunakan hanya jika user SECARA EKSPLISIT meminta):
-  - add_task: Tambahkan tugas baru
-    args: task (str), deadline (str YYYY-MM-DD), est_hours (float), priority (str: High/Medium/Low)
-  - update_task_status: Ubah status tugas
-    args: task_id (int), status (str: pending/in_progress/completed)
-  - delete_task: Hapus tugas secara permanen
-    args: task_id (int)
+        tool_reference = """TOOL YANG TERSEDIA:
+        READ-ONLY TOOL:
+        1. get_schedule
+        Fungsi: Mengambil daftar tugas aktif yang belum selesai.
+        Args:
+        {}
+        Gunakan jika user meminta daftar tugas atau jadwal yang belum selesai.
 
-Jika user meminta salah satu tindakan di atas, sertakan blok tool_call di AKHIR respons:
-```tool_call
-{"name": "NAMA_TOOL", "args": {"param1": "nilai1", ...}}
-```
-Selain itu, tetap berikan penjelasan natural language sebelum blok tersebut.
-JANGAN gunakan tool_call jika user hanya bertanya atau meminta saran.
-"""
+        WRITE TOOLS:
+        2. add_task
+        Fungsi: Menambahkan tugas baru.
+        Args:
+        {
+            "task": "str",
+            "deadline": "YYYY-MM-DD",
+            "est_hours": "float",
+            "priority": "High|Medium|Low"
+        }
+        3. update_task_status
+        Fungsi: Mengubah status tugas.
+        Args:
+        {
+            "task_id": "int",
+            "status": "pending|in_progress|completed"
+        }
+        4. delete_task
+        Fungsi: Menghapus tugas.
+        Args:
+        {
+            "task_id": "int"
+        }
+
+        Gunakan nama dan argumen sesuai definisi tool.
+        """
 
         prompt = f"""
-{tasks_str}
-{workload_str}
+        {tasks_str}
+        {workload_str}
 
-Pesan user: {user_input or "Buatkan rencana pengerjaan."}
+        Pesan user: {user_input or "Buatkan rencana pengerjaan."}
 
-Instruksi:
-Jika user meminta tindakan (tambah/hapus/ubah tugas), gunakan tool yang sesuai dengan format di atas.
-Jika user meminta saran atau rencana, buatkan step-by-step menggunakan prinsip:
-1. Prioritas Eisenhower (Urgent-Important dulu).
-2. Task Chunking: Pecah tugas besar ke unit 25-50 menit.
-3. Load Balancing: Distribusikan beban kerja merata.
-4. Sisipkan waktu istirahat (minimal 10 menit per 50 menit kerja).
-5. Estimasikan total jam dan pastikan tidak melebihi 8 jam/hari.
-Gunakan format Markdown yang rapi.
+        Instruksi:
+        Jika user meminta tindakan (tambah/hapus/ubah tugas), gunakan tool yang sesuai dengan format di atas.
+        Jika user meminta saran atau rencana, buatkan step-by-step menggunakan prinsip:
+        1. Prioritas Eisenhower (Urgent-Important dulu).
+        2. Task Chunking: Pecah tugas besar ke unit 25-50 menit.
+        3. Load Balancing: Distribusikan beban kerja merata.
+        4. Sisipkan waktu istirahat (minimal 10 menit per 50 menit kerja).
+        5. Estimasikan total jam dan pastikan tidak melebihi 8 jam/hari.
+        Gunakan format Markdown yang rapi.
 
-{rag_context}
+        {rag_context}
 
-{tool_reference}
-"""
+        {tool_reference}
+        """
         return generate_text(
             prompt,
             system_instruction=(

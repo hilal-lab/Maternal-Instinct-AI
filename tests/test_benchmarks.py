@@ -172,8 +172,9 @@ def test_parse_tool_prediction_supports_json_and_legacy():
     assert old_value["args"] == {}
 
 
-def test_d5_tool_gold_none_maps_to_none():
+def test_d5_get_tasks_maps_to_registered_get_schedule():
     items = datasets.load_d5()
+
     get_tasks = [
         x for x in items
         if x["category"] == "tool_calling"
@@ -181,4 +182,20 @@ def test_d5_tool_gold_none_maps_to_none():
     ]
 
     assert get_tasks
-    assert all(x["gold"] is None for x in get_tasks)
+    assert all(x["gold"] == "get_schedule" for x in get_tasks)
+
+def test_extract_tool_call_accepts_get_schedule():
+    from backend.core.layer_2_specialists import extract_tool_call
+
+    raw = (
+        '```tool_call\n'
+        '{"name": "get_schedule", "args": {}}\n'
+        '```'
+    )
+
+    result = extract_tool_call(raw)
+
+    assert result == {
+        "name": "get_schedule",
+        "args": {},
+    }
