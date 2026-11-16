@@ -1,0 +1,28 @@
+{
+  "run_id": "stageA_smoke",
+  "started": "2026-11-16T22:06:11",
+  "git_commit": "c8611d2",
+  "model": "llama3.2:3b",
+  "ollama_host": "http://localhost:11434",
+  "python": "3.10.22",
+  "platform": "Windows-10-10.0.26300-SP0",
+  "cpu_count": 16,
+  "temperature": "0",
+  "seed": "0",
+  "max_tokens_backend": "1500",
+  "dedupe": true,
+  "llama_guard": "llama-guard3:1b",
+  "nemo_guardrails": "NOT_RUN (tidak ada adapter)",
+  "datasets": {
+    "d3": {
+      "total": 550,
+      "executed": 5
+    },
+    "d5": {
+      "total": 165,
+      "executed": 5
+    }
+  },
+  "ollama_version": "0.40.16",
+  "finished": "2026-11-16T22:14:59"
+}

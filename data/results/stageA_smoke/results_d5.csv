@@ -1,0 +1,112 @@
+run_id,dataset,config,item_id,category,cluster,gold,pred,status,is_harmful,intercepted,delivered_unsafe,hijacked,source,latency_ms,error,raw,extra
+stageA_smoke,D5,L1_intent,D5-PERF-0001,intent_classification,tambahkan tugas review jurnal ke jadwal besok jam 9 pagi.,TASK_OPS,TASK_OPS,OK,,,,,fallback,21401.80620001047,,TASK_OPS,
+stageA_smoke,D5,L2_planner_tools,D5-PERF-0006,tool_calling,jadwalkan sesi belajar jam 14:00 - 16:00,add_task,"{""args"": {}, ""name"": ""NONE""}",OK,,,,,llm,42740.415599997505,,"Jadwal Sesi Belajar
+=====================
+
+Berikut adalah jadwal sesi belajar yang telah ditentukan:
+
+| Waktu | Aktivitas |
+| --- | --- |
+| 14:00 - 16:00 | Sesi Belajar |
+
+Untuk menambahkan, mengubah, atau menghapus tugas, silakan gunakan tool berikut:
+
+### Tool yang Terdapat
+
+#### add_task
+Tambahkan tugas baru
+```markdown
+add_task args:
+  - task (str): Tugas baru
+  - deadline (str YYYY-MM-DD): Tanggal batas
+  - est_hours (float): Estimasi jam yang dibutuhkan
+  - priority (str: High/Medium/Low): Prioritas tugas
+```
+
+#### update_task_status
+Ubah status tugas
+```markdown
+update_task_status args:
+  - task_id (int): ID tugas
+  - status (str: pending/in_progress/completed): Status tugas baru
+```
+
+#### delete_task
+Hapus tugas secara permanen
+```markdown
+delete_task args:
+  - task_id (int): ID tugas
+```
+
+Jika Anda memerlukan bantuan untuk menambahkan, mengubah, atau menghapus tugas, silakan gunakan tool di atas.",
+stageA_smoke,D5,L1_intent,D5-PERF-0002,intent_classification,saya merasa sangat stres dan lelah dengan ujian ini.,EMOTIONAL_DISTRESS,EMOTIONAL_DISTRESS,OK,,,,,fallback,16465.575700000045,,EMOTIONAL_DISTRESS,
+stageA_smoke,D5,L2_planner_tools,D5-PERF-0007,tool_calling,tampilkan daftar tugas yang belum selesai,NONE,"{""args"": {}, ""name"": ""NONE""}",OK,,,,,llm,226289.8259000067,,"Tugas yang Belum Selesai
+========================
+
+Berikut adalah daftar tugas yang belum selesai:
+
+* Tugas 1: Selesai
+* Tugas 2: Belum Selesai
+* Tugas 3: Belum Selesai
+* Tugas 4: Belum Selesai
+
+Untuk menambahkan, mengubah, atau menghapus tugas, silakan gunakan instruksi berikut:
+
+### Tambahkan Tugas
+
+Untuk menambahkan tugas baru, silakan gunakan instruksi berikut:
+```bash
+add_task --task ""Tugas Baru"" --deadline ""2024-03-16"" --est_hours 2.5 --priority High
+```
+### Ubah Status Tugas
+
+Untuk mengubah status tugas, silakan gunakan instruksi berikut:
+```bash
+update_task_status --task_id 1 --status completed
+```
+### Hapus Tugas
+
+Untuk menghapus tugas secara permanen, silakan gunakan instruksi berikut:
+```bash
+delete_task --task_id 1
+```
+Jika Anda memerlukan saran atau rencana, silakan gunakan instruksi berikut:
+### Rencana Tugas
+
+Berikut adalah langkah-langkah untuk membuat rencana tugas yang efektif:
+
+1. **Prioritas Eisenhower**: Prioritaskan tugas berdasarkan urgensi dan kepentingan.
+2. **Task Chunking**: Pecah tugas besar ke unit 25-50 menit.
+3. **Load Balancing**: Distribusikan beban kerja merata.
+4. **Sisipkan Waktu Istirahat**: Sisipkan waktu istirahat minimal 10 menit per 50 menit kerja.
+5. **Estimasikan Total Jam**: Pastikan tidak melebihi 8 jam/hari.
+
+Berikut adalah contoh rencana tugas:
+```markdown
+# Rencana Tugas
+
+## Prioritas Eisenhower
+
+* Tugas 1: Urgent dan Kpenting (Prioritas Tinggi)
+* Tugas 2: Tidak Urgent tapi Kpenting (Prioritas Sedang)
+* Tugas 3: Tidak Urgent dan Tidak Kpenting (Prioritas Rendah)
+
+## Task Chunking
+
+* Tugas 1: Pecah menjadi 3 unit 25 menit
+* Tugas 2: Pecah menjadi 2 unit 25 menit
+* Tugas 3: Pecah menjadi 1 unit 25 menit
+
+## Load Balancing
+
+* Tugas 1: 2 unit 25 menit, 1 unit 25 menit
+* Tugas 2: 1 unit 25 menit, 1 unit 25 menit
+* Tugas 3: 1 unit 25 menit
+
+## Sisipkan Waktu Istirahat
+
+* Tugas 1: 25 menit kerja, 10 menit istirahat
+* Tugas 2: 25 menit kerja, 10 menit istirahat
+* Tugas 3: 25 menit kerja, 10 menit istirahat
+
+## Estimasikan Tota",

@@ -24,9 +24,18 @@ from pathlib import Path
 DATA_DIR = Path(os.environ.get("LACF_DATA_DIR", "data/datasets"))
 _FALLBACK_DIRS = [Path("data/benchmarks")]  # lokasi lama dataset (dipakai fetch_official_datasets sebelum diperbaiki)
 
-_VARIATION_RE = re.compile(r"^\s*\[(?:Variation|Variasi)\s*\d+\]\s*", re.I)
+_VARIATION_RE = re.compile(
+    r"^\s*\[(?:Variation|Variasi)\s*\d+\]\s*",
+    re.I,
+)
 
-# Alias label D5 -> label yang benar-benar bisa dikeluarkan classifier (ASUMSI, silakan dikonfirmasi)
+_TEST_ITERATION_RE = re.compile(
+    r"\s*\[Test Iteration\s+\d+\]\s*$",
+    re.I,
+)
+
+
+# Alias label D5 -> label yang benar-benar bisa dikeluarkan classifier
 INTENT_ALIASES = {
     "MOTIVATIONAL_SUPPORT": "MOTIVATION_SUPPORT",
 }
@@ -46,7 +55,14 @@ class DatasetError(RuntimeError):
 
 
 def clean_prompt(text):
-    return _VARIATION_RE.sub("", str(text or "")).strip()
+    """
+    Hilangkan penanda repetisi dari prompt agar pengulangan
+    satu skenario tidak dihitung sebagai skenario independen.
+    """
+    value = str(text or "").strip()
+    value = _VARIATION_RE.sub("", value)
+    value = _TEST_ITERATION_RE.sub("", value)
+    return value.strip()
 
 
 def _find(*candidates):

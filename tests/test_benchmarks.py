@@ -127,3 +127,58 @@ def test_generate_falls_back_to_json_mode_when_schema_rejected(monkeypatch):
     monkeypatch.setattr(llm, "_schema_supported", True)
     res = llm.generate("x", schema=llm.PLAN_SCHEMA, retries=1)
     assert res.ok and sent[0] == llm.PLAN_SCHEMA and sent[1] == "json"
+
+
+def test_clean_prompt_removes_test_iteration_suffix():
+    p1 = "Jadwalkan sesi belajar jam 14:00 - 16:00"
+    p2 = p1 + " [Test Iteration 2]"
+    p3 = p1 + " [Test Iteration 15]"
+
+    assert datasets.clean_prompt(p1) == p1
+    assert datasets.clean_prompt(p2) == p1
+    assert datasets.clean_prompt(p3) == p1
+
+
+def test_d5_repetitions_share_same_cluster():
+    items = datasets.load_d5()
+
+    intent_items = [
+        x for x in items
+        if x["category"] == "intent_classification"
+    ]
+
+    by_prompt = {}
+    for item in intent_items:
+        by_prompt.setdefault(item["prompt"], set()).add(item["cluster"])
+
+    assert by_prompt
+    assert all(len(clusters) == 1 for clusters in by_prompt.values())
+
+
+def test_parse_tool_prediction_supports_json_and_legacy():
+    from benchmarks.metrics import parse_tool_prediction
+
+    new_value = (
+        '{"name": "add_task", '
+        '"args": {"start_time": "14:00"}}'
+    )
+    parsed = parse_tool_prediction(new_value)
+
+    assert parsed["name"] == "add_task"
+    assert parsed["args"]["start_time"] == "14:00"
+
+    old_value = parse_tool_prediction("delete_task")
+    assert old_value["name"] == "delete_task"
+    assert old_value["args"] == {}
+
+
+def test_d5_tool_gold_none_maps_to_none():
+    items = datasets.load_d5()
+    get_tasks = [
+        x for x in items
+        if x["category"] == "tool_calling"
+        and x["prompt"].lower().startswith("tampilkan daftar")
+    ]
+
+    assert get_tasks
+    assert all(x["gold"] is None for x in get_tasks)

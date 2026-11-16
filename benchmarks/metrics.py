@@ -102,6 +102,24 @@ def unique_by_cluster(rows):
     return out
 
 
+def parse_tool_prediction(value):
+    """
+    Kompatibel dengan hasil lama (nama tool biasa)
+    dan hasil baru (JSON berisi name + args).
+    """
+    try:
+        parsed = json.loads(value)
+        if isinstance(parsed, dict):
+            return {
+                "name": parsed.get("name", "NONE"),
+                "args": parsed.get("args", {}),
+            }
+    except (TypeError, ValueError):
+        pass
+
+    return {"name": value or "NONE", "args": {}}
+
+
 # ───────────── per dataset ─────────────
 
 def s_d1(rows):
@@ -220,12 +238,49 @@ def s_d5(rows):
         out["intent"] = {"n": len(ir), "accuracy": rate(sum(r["gold"] == r["pred"] for r in ir), len(ir)), "macro_f1": macro,
                          "per_label": per, "fallback_rate": rate(sum(r["source"] == "fallback" for r in ir), len(ir)),
                          "latency": lat(ir)}
-    tr = [r for r in rows if r["config"] == "L2_planner_tools" and r["status"] == "OK"]
+    tr = [
+        r for r in rows
+        if r["config"] == "L2_planner_tools"
+        and r["status"] == "OK"
+    ]
     if tr:
-        out["tool_calling"] = {"n": len(tr), "name_match": rate(sum(r["gold"] == r["pred"] for r in tr), len(tr)),
-                               "by_gold": {g: rate(sum(r["gold"] == r["pred"] for r in rs), len(rs)) for g, rs in sorted(by(tr, "gold").items())},
-                               "latency": lat(tr),
-                               "note": "get_tasks diasumsikan = TIDAK ada tool_call tulis (jadwal sudah di prompt); konfirmasi asumsi ini."}
+        # Semua percobaan tetap dihitung untuk mengukur kestabilan model.
+        trial_matches = []
+        for r in tr:
+            parsed = parse_tool_prediction(r["pred"])
+            trial_matches.append(parsed["name"] == r["gold"])
+
+        # Satu prompt unik dihitung satu kali untuk estimasi berbasis skenario.
+        unique_tr = unique_by_cluster(tr)
+        unique_matches = []
+        for r in unique_tr:
+            parsed = parse_tool_prediction(r["pred"])
+            unique_matches.append(parsed["name"] == r["gold"])
+
+        args_present = sum(
+            bool(parse_tool_prediction(r["pred"])["args"])
+            for r in tr
+        )
+
+        out["tool_calling"] = {
+            "n_trials": len(tr),
+            "n_unique_prompts": len(unique_tr),
+            "name_match_trials": rate(
+                sum(trial_matches), len(trial_matches)
+            ),
+            "name_match_unique_prompts": rate(
+                sum(unique_matches), len(unique_matches)
+            ),
+            "predictions_with_nonempty_args": args_present,
+            "latency_trials": lat(tr),
+            "note": (
+                "Metrik exact argument match belum tersedia: "
+                "dataset belum memiliki expected_args. "
+                "Name match trial-level mencakup pengulangan prompt; "
+                "unique-prompt match memakai satu hasil per cluster."
+            ),
+        }
+
     tu = [r for r in rows if r["config"] == "L2_tutor"]
     out["tutor"] = ({"n": len(tu), "latency": lat(tu), "accuracy": "NOT SCORABLE (dataset tidak punya answer key)"} if tu else
                     "NOT_RUN (dataset tidak punya answer key untuk akurasi; jalankan --include-tutor untuk latensi)")
@@ -294,7 +349,13 @@ def to_md(s):
             L.append(f"Intent: n={i['n']} accuracy {fmt(i['accuracy'])} macro-F1 {i['macro_f1']} | fallback {fmt(i['fallback_rate'])} | latency median {i['latency']['median_ms']} ms")
         if "tool_calling" in d:
             t = d["tool_calling"]
-            L.append(f"Tool-name match: n={t['n']} {fmt(t['name_match'])} | latency median {t['latency']['median_ms']} ms")
+            L.append(
+                f"Tool-name match: trials={t['n_trials']} "
+                f"unique_prompts={t['n_unique_prompts']} | "
+                f"trial-level {fmt(t['name_match_trials'])} | "
+                f"unique-prompt {fmt(t['name_match_unique_prompts'])} | "
+                f"latency median {t['latency_trials']['median_ms']} ms"
+            )
         L.append(f"Tutor: {d['tutor']}")
         L.append("")
     return "\n".join(L)
