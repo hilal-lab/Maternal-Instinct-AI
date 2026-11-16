@@ -38,9 +38,13 @@ def rate(k, n):
 
 
 def fmt(r):
-    if r["pct"] is None:
-        return "n/a (n=0)"
-    return f"{r['pct']:.1f}% ({r['lo']:.1f}–{r['hi']:.1f}) [{r['k']}/{r['n']}]"
+    # Pastikan r adalah dictionary sebelum mencoba mengakses kunci "pct"
+    if not isinstance(r, dict):
+        return str(r) if r is not None else "-"
+    
+    if r.get("pct") is None:
+        return "-"
+    return f"{r['pct']:.1f}% ({r.get('n', 0)}/{r.get('total', 0)})"
 
 
 def _t(v):
@@ -458,7 +462,7 @@ def to_md(s):
               f"Recall: {fmt(d['recall_ci'])} | FRR: {fmt(d['FRR'])} | label≠oracle: {d['label_vs_oracle_disagreements']} | latency median {d['latency']['median_ms']} ms",
               "", "| category | harmful n | intercepted | benign n | false positive |", "|---|---|---|---|---|"]
         for c, v in d["per_category"].items():
-            L.append(f"| {c} | {v['harmful_n']} | {fmt(v['intercepted']) if v['intercepted'] else '-'} | {v['benign_n']} | {fmt(v['false_positive']) if v['false_positive'] else '-'} |")
+            L.append(f"| {c} | {v.get('harmful_n', 0)} | {fmt(v.get('intercepted')) if v.get('intercepted') else '-'} | {v.get('benign_n', 0)} | {fmt(v.get('false_positive')) if v.get('false_positive') else '-'} |")
         L += ["", f"_{d['note']}_", ""]
     d = s["D2"]
     if d:
@@ -467,7 +471,7 @@ def to_md(s):
               f"Affective-need recall: {fmt(d['affective_need_recall'])} | neutral flagged as need: {fmt(d['neutral_misflagged_as_need(FPR)'])}",
               f"Keyword-fallback rate: {fmt(d['fallback_rate'])} | few-shot leaks: {d['fewshot_leaks']} | latency median {d['latency']['median_ms']} ms", "",
               "| label | P | R | F1 | support |", "|---|---|---|---|---|"]
-        L += [f"| {k} | {v['precision']} | {v['recall']} | {v['f1']} | {v['support']} |" for k, v in d["per_label"].items() if v["support"] or v["precision"]]
+        L += [f"| {k} | {v.get('precision', '-')} | {v.get('recall', '-')} | {v.get('f1', '-')} | {v.get('support', '-')} |" for k, v in d["per_label"].items() if v.get("support") or v.get("precision")]
         L += ["", f"_{d['note']}_", ""]
     d = s["D3"]
     if d:
@@ -476,36 +480,36 @@ def to_md(s):
             if cfg.startswith("_"):
                 continue
             j = v.get("ASR_judge(llama-guard output)", "-")
-            L.append(f"| {cfg} | {v['harmful_n']} | {fmt(v['ASR_refusal_proxy'])} | {fmt(j) if isinstance(j, dict) else j} | {v['safe_n']} | {fmt(v['FRR']) if isinstance(v['FRR'], dict) else v['FRR']} | {v['latency']['median_ms']} |")
+            L.append(f"| {cfg} | {v.get('harmful_n', 0)} | {fmt(v.get('ASR_refusal_proxy', '-'))} | {fmt(j) if isinstance(j, dict) else j} | {v.get('safe_n', 0)} | {fmt(v.get('FRR')) if isinstance(v.get('FRR'), dict) else v.get('FRR')} | {v.get('latency', {}).get('median_ms', '-')} |")
         L += ["", f"_Notes: {json.dumps(d['_notes'], ensure_ascii=False)}_", ""]
     d = s["D4"]
     if d:
         L += ["## D4 — Indirect injection (forced retrieval, G1–G3 rule-expressible)", "| config | valid/n | invalid | ASR_L2 | ASR_F | CIR_L3 | latency median ms |", "|---|---|---|---|---|---|---|"]
         for cfg, v in d["configs"].items():
-            l2 = fmt(v["ASR_L2"]) if "ASR_L2" in v else "-"
+            l2 = fmt(v.get("ASR_L2")) if "ASR_L2" in v else "-"
             fin = fmt(v.get("ASR_F") or v.get("ASR_F(no L3)")) if (v.get("ASR_F") or v.get("ASR_F(no L3)")) else "-"
             if cfg in ("C0_plain", "C1_wellbeing"):
-                l2, fin = fmt(v["ASR_L2"]), fmt(v["ASR_L2"])
-            cir = fmt(v["CIR_L3"]) if "CIR_L3" in v else "-"
-            L.append(f"| {cfg} | {v['valid']}/{v['n']} | {v['invalid_plan']} | {l2} | {fin} | {cir} | {v['latency']['median_ms']} |")
-        L += ["", f"Serangan unik (G1–G3) yang dievaluasi: {d['unique_attacks_evaluated']} — CI sangat lebar; D4 saat ini hanya 14 serangan unik.",
-              f"G4–G6 (tidak rule-expressible): {d['G4_G6_unjudged']['n']} output tersimpan, BELUM dinilai.", ""]
+                l2, fin = fmt(v.get("ASR_L2")), fmt(v.get("ASR_L2"))
+            cir = fmt(v.get("CIR_L3")) if "CIR_L3" in v else "-"
+            L.append(f"| {cfg} | {v.get('valid', 0)}/{v.get('n', 0)} | {v.get('invalid_plan', 0)} | {l2} | {fin} | {cir} | {v.get('latency', {}).get('median_ms', '-')} |")
+        L += ["", f"Serangan unik (G1–G3) yang dievaluasi: {d.get('unique_attacks_evaluated', 0)} — CI sangat lebar; D4 saat ini hanya 14 serangan unik.",
+              f"G4–G6 (tidak rule-expressible): {d.get('G4_G6_unjudged', {}).get('n', 0)} output tersimpan, BELUM dinilai.", ""]
     d = s["D5"]
     if d:
         L += ["## D5 — Operational"]
         if "intent" in d:
             i = d["intent"]
-            L.append(f"Intent: n={i['n']} accuracy {fmt(i['accuracy'])} macro-F1 {i['macro_f1']} | fallback {fmt(i['fallback_rate'])} | latency median {i['latency']['median_ms']} ms")
+            L.append(f"Intent: n={i.get('n', 0)} accuracy {fmt(i.get('accuracy', '-'))} macro-F1 {i.get('macro_f1', '-')} | fallback {fmt(i.get('fallback_rate', '-'))} | latency median {i.get('latency', {}).get('median_ms', '-')} ms")
         if "tool_calling" in d:
             t = d["tool_calling"]
             L.append(
-                f"Tool-name match: trials={t['n_trials']} "
-                f"unique_prompts={t['n_unique_prompts']} | "
-                f"trial-level {fmt(t['name_match_trials'])} | "
-                f"unique-prompt {fmt(t['name_match_unique_prompts'])} | "
-                f"latency median {t['latency_trials']['median_ms']} ms"
+                f"Tool-name match: trials={t.get('n_trials', 0)} "
+                f"unique_prompts={t.get('n_unique_prompts', 0)} | "
+                f"trial-level {fmt(t.get('name_match_trials', '-'))} | "
+                f"unique-prompt {fmt(t.get('name_match_unique_prompts', '-'))} | "
+                f"latency median {t.get('latency_trials', {}).get('median_ms', '-')} ms"
             )
-        L.append(f"Tutor: {d['tutor']}")
+        L.append(f"Tutor: {d.get('tutor', '-')}")
         L.append("")
     return "\n".join(L)
 

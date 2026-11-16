@@ -269,8 +269,25 @@ class SpecialistAgents:
         3. Load Balancing: Distribusikan beban kerja merata.
         4. Sisipkan waktu istirahat (minimal 10 menit per 50 menit kerja).
         5. Estimasikan total jam dan pastikan tidak melebihi 8 jam/hari.
+         
         Gunakan format Markdown yang rapi.
 
+        ATURAN WAJIB TOOL CALL:
+
+        1. Jika user meminta daftar tugas atau jadwal yang belum selesai, WAJIB gunakan get_schedule.
+        2. Jangan membuat contoh, daftar, atau isi jadwal seolah-olah berasal dari database jika get_schedule belum dipanggil.
+        3. Untuk pemanggilan tool, WAJIB keluarkan blok berikut:
+
+        ```tool_call
+        {{"name": "get_schedule", "args": {{}}}}
+        ```
+
+        4. Jangan mengganti pemanggilan tool dengan penjelasan tentang cara menggunakan tool.
+        5. Untuk add_task, semua argumen wajib harus tersedia: task, deadline, est_hours, priority.
+        6. Jika argumen wajib belum tersedia, tanyakan informasi yang kurang. Jangan mengarang nilai argumen.
+        7. Untuk update_task_status, wajib tersedia task_id dan status.
+        8. Untuk delete_task, wajib tersedia task_id.
+        9. Jika tidak membutuhkan tool, jawab secara normal.
         {rag_context}
 
         {tool_reference}
@@ -283,7 +300,6 @@ class SpecialistAgents:
                 "Anda dapat menggunakan tool untuk mengelola jadwal jika user memintanya secara eksplisit."
             )
         )
-
     # ── Tutor Agent ───────────────────────────────────────────────────────────
 
     def run_tutor(self, topic: str, rag_context: str = "",

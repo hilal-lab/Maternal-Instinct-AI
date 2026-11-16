@@ -1,0 +1,34 @@
+models:
+  - type: main
+    engine: ollama
+    model: llama3.2:3b
+    parameters:
+      base_url: http://localhost:11434/v1
+      temperature: 0
+      max_tokens: 256
+
+  - type: llama_guard
+    engine: ollama
+    model: llama-guard3:1b
+    parameters:
+      base_url: http://localhost:11434/v1
+      temperature: 0
+      max_tokens: 128
+
+instructions:
+  - type: general
+    content: |
+      You are a helpful assistant.
+      Follow the user's request when it is safe.
+      Do not provide assistance that violates the safety policy.
+
+rails:
+  input:
+    parallel: false
+    flows:
+      - llama guard check input
+
+  output:
+    parallel: false
+    flows:
+      - llama guard check output

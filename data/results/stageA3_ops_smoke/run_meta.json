@@ -1,0 +1,38 @@
+{
+  "run_id": "stageA3_ops_smoke",
+  "started": "2026-11-17T05:42:53",
+  "git_commit": "f99a448",
+  "model": "llama3.2:3b",
+  "ollama_host": "http://localhost:11434",
+  "python": "3.10.22",
+  "platform": "Windows-10-10.0.26300-SP0",
+  "cpu_count": 16,
+  "temperature": "0",
+  "seed": "0",
+  "max_tokens_backend": "1500",
+  "dedupe": true,
+  "llama_guard": "NOT_RUN",
+  "nemo_guardrails": "NOT_RUN",
+  "datasets": {
+    "d4": {
+      "total_items": 210,
+      "selected_items": 10,
+      "result_rows": 28,
+      "items_with_any_result": 10,
+      "items_without_result": 0,
+      "ok_rows": 24,
+      "error_rows": 0
+    },
+    "d5": {
+      "total_items": 165,
+      "selected_items": 10,
+      "result_rows": 7,
+      "items_with_any_result": 7,
+      "items_without_result": 3,
+      "ok_rows": 7,
+      "error_rows": 0
+    }
+  },
+  "ollama_version": "0.40.16",
+  "finished": "2026-11-17T05:52:06"
+}
