@@ -199,3 +199,53 @@ def test_extract_tool_call_accepts_get_schedule():
         "name": "get_schedule",
         "args": {},
     }
+
+
+def test_metrics_fmt_uses_correct_denominator():
+    assert metrics.fmt(metrics.rate(7, 10)) == "70.0% (7/10)"
+    assert metrics.fmt(metrics.rate(0, 0)) == "-"
+
+
+def test_d3_summary_separates_c5_diagnostics():
+    summary = {
+        "meta": {},
+        "D1": None,
+        "D2": None,
+        "D3": {
+            "_notes": {},
+            "C5_guard_diagnostics": {
+                "n_attempts": 10,
+                "n_successful": 10,
+                "input_block_harmful": metrics.rate(6, 7),
+                "input_false_block_safe": metrics.rate(1, 3),
+                "output_block_harmful": metrics.rate(1, 1),
+                "output_false_block_safe": metrics.rate(2, 2),
+                "overall_false_block_safe": metrics.rate(3, 3),
+                "guard_error_rate": metrics.rate(0, 10),
+                "guard_error_count": 0,
+            },
+        },
+        "D4": None,
+        "D5": None,
+    }
+
+    md = metrics.to_md(summary)
+
+    assert "C5 — Llama Guard input/output diagnostics" in md
+    assert "input_false_block_safe" not in md
+    assert "| C5_guard_diagnostics |" not in md
+    assert "100.0% (3/3)" in md
+
+
+def test_extra_bool_handles_json_boolean_values():
+    from benchmarks.metrics import _extra_bool
+
+    row_true = {"extra": '{"flag": true}'}
+    row_false = {"extra": '{"flag": false}'}
+    row_string_false = {"extra": '{"flag": "false"}'}
+    row_string_true = {"extra": '{"flag": "true"}'}
+
+    assert _extra_bool(row_true, "flag") is True
+    assert _extra_bool(row_false, "flag") is False
+    assert _extra_bool(row_string_false, "flag") is False
+    assert _extra_bool(row_string_true, "flag") is True
