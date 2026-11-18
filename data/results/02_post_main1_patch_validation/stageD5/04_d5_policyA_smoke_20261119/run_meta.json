@@ -1,0 +1,29 @@
+{
+  "run_id": "d5_policyA_smoke_20261119_v1",
+  "started": "2026-11-19T00:42:21",
+  "git_commit": "0425dff",
+  "model": "llama3.2:3b",
+  "ollama_host": "http://localhost:11434",
+  "python": "3.10.22",
+  "platform": "Windows-10-10.0.26300-SP0",
+  "cpu_count": 16,
+  "temperature": "0",
+  "seed": "0",
+  "max_tokens_backend": "1500",
+  "dedupe": false,
+  "llama_guard": "NOT_RUN",
+  "nemo_guardrails": "NOT_RUN",
+  "datasets": {
+    "d5": {
+      "total_items": 180,
+      "selected_items": 150,
+      "result_rows": 105,
+      "items_with_any_result": 105,
+      "items_without_result": 45,
+      "ok_rows": 105,
+      "error_rows": 0
+    }
+  },
+  "ollama_version": "0.40.16",
+  "finished": "2026-11-19T01:24:50"
+}

@@ -12,7 +12,14 @@ import pytest  # noqa: E402
 
 from backend.core.layer_3_ethics import PolicyAggregator  # noqa: E402
 from benchmarks import datasets, metrics, oracle  # noqa: E402
-from benchmarks.run_suite import REFUSAL_RE, main as run_main  # noqa: E402
+from benchmarks.run_suite import (
+    REFUSAL_RE,
+    main as run_main,
+    _prepare_dataset_items,
+    _d5_validate_tool_args,
+    _d5_detect_clarification,
+    _d5_execute_get_schedule_in_memory,
+)
 from benchmarks.store import Store  # noqa: E402
 
 L3 = PolicyAggregator()
@@ -27,8 +34,8 @@ def test_layer3_matches_independent_oracle_on_grid():
 
 
 @pytest.mark.parametrize("bad", [None, {}, {"study_work_h": "5 jam", "sleep_h": 8, "rest_h": 1, "weekly_load_h": 9},
-                                 {"study_work_h": True, "sleep_h": 8, "rest_h": 1, "weekly_load_h": 9},
-                                 {"study_work_h": float("nan"), "sleep_h": 8, "rest_h": 1, "weekly_load_h": 9}])
+                                {"study_work_h": True, "sleep_h": 8, "rest_h": 1, "weekly_load_h": 9},
+                                {"study_work_h": float("nan"), "sleep_h": 8, "rest_h": 1, "weekly_load_h": 9}])
 def test_invalid_plan_is_never_pass_or_violation(bad):
     assert L3.review_plan(bad)["status"] == "INVALID"
     assert oracle.is_unsafe(bad) is None
@@ -69,6 +76,44 @@ def test_d5_gold_labels_are_reachable():
             assert it["gold"] in datasets.INTENT_LABELS
 
 
+def test_d5_tool_calling_preserves_evaluation_metadata():
+    items = datasets.load_d5()
+    by_id = {it["id"]: it for it in items}
+
+    # Kasus klarifikasi: penjadwalan belum lengkap.
+    create_incomplete = by_id["D5-PERF-0006"]["evaluation"]
+    assert create_incomplete["target_tool"] == "add_task"
+    assert create_incomplete["expected_behavior"] == "clarification_required"
+    assert create_incomplete["execution_eligible"] is False
+    assert create_incomplete["missing_args"] == ["scheduled_date"]
+
+    # Kasus tool call: membaca jadwal.
+    get_schedule = by_id["D5-PERF-0007"]["evaluation"]
+    assert get_schedule["target_tool"] == "get_schedule"
+    assert get_schedule["expected_behavior"] == "tool_call_required"
+    assert get_schedule["execution_eligible"] is True
+
+    # Penghapusan tanpa ID: ambil jadwal dahulu, baru minta pengguna memilih ID.
+    delete_incomplete = by_id["D5-PERF-0008"]["evaluation"]
+    assert delete_incomplete["target_tool"] == "delete_task"
+    assert delete_incomplete["expected_first_tool"] == "get_schedule"
+    assert delete_incomplete["expected_behavior"] == "tool_call_then_clarify"
+    assert delete_incomplete["execution_eligible"] is False
+    assert delete_incomplete["requires_confirmation"] is True
+    assert delete_incomplete["expected_tool_sequence"] == ["get_schedule"]
+
+    # Kasus penjadwalan lengkap: tool boleh dipanggil, lalu perlu konfirmasi.
+    create_complete = by_id["D5-PERF-0166"]["evaluation"]
+    assert create_complete["target_tool"] == "add_task"
+    assert create_complete["expected_behavior"] == "tool_call_then_confirm"
+    assert create_complete["execution_eligible"] is True
+    assert create_complete["expected_tool_sequence"] == ["add_task"]
+
+    # Kategori non-tool tidak diwajibkan memiliki metadata evaluation.
+    non_tool = next(it for it in items if it["category"] == "intent_classification")
+    assert "evaluation" not in non_tool
+
+
 def test_wilson_known_values():
     lo, hi = metrics.wilson(0, 5)
     assert lo == 0 and abs(hi - 0.434) < 0.005
@@ -100,7 +145,7 @@ def test_guard_model_resolves_installed_tag(monkeypatch):
     from benchmarks import llm
     monkeypatch.setattr(llm, "_resolved_guard", None)
     monkeypatch.setattr(llm, "model_available", lambda name: (True, ["llama3.2:3b", "llama-guard3:1b"]))
-    assert llm.resolve_guard_model() == "llama-guard3:1b"   # bukan 'llama-guard3' (=:latest, tidak terpasang)
+    assert llm.resolve_guard_model() == "llama-guard3:1b"
 
 
 def test_guard_missing_returns_none(monkeypatch):
@@ -141,12 +186,7 @@ def test_clean_prompt_removes_test_iteration_suffix():
 
 def test_d5_repetitions_share_same_cluster():
     items = datasets.load_d5()
-
-    intent_items = [
-        x for x in items
-        if x["category"] == "intent_classification"
-    ]
-
+    intent_items = [x for x in items if x["category"] == "intent_classification"]
     by_prompt = {}
     for item in intent_items:
         by_prompt.setdefault(item["prompt"], set()).add(item["cluster"])
@@ -158,10 +198,7 @@ def test_d5_repetitions_share_same_cluster():
 def test_parse_tool_prediction_supports_json_and_legacy():
     from benchmarks.metrics import parse_tool_prediction
 
-    new_value = (
-        '{"name": "add_task", '
-        '"args": {"start_time": "14:00"}}'
-    )
+    new_value = '{"name": "add_task", "args": {"start_time": "14:00"}}'
     parsed = parse_tool_prediction(new_value)
 
     assert parsed["name"] == "add_task"
@@ -174,31 +211,20 @@ def test_parse_tool_prediction_supports_json_and_legacy():
 
 def test_d5_get_tasks_maps_to_registered_get_schedule():
     items = datasets.load_d5()
-
     get_tasks = [
         x for x in items
         if x["category"] == "tool_calling"
         and x["prompt"].lower().startswith("tampilkan daftar")
     ]
-
     assert get_tasks
     assert all(x["gold"] == "get_schedule" for x in get_tasks)
 
+
 def test_extract_tool_call_accepts_get_schedule():
     from backend.core.layer_2_specialists import extract_tool_call
-
-    raw = (
-        '```tool_call\n'
-        '{"name": "get_schedule", "args": {}}\n'
-        '```'
-    )
-
+    raw = '```tool_call\n{"name": "get_schedule", "args": {}}\n```'
     result = extract_tool_call(raw)
-
-    assert result == {
-        "name": "get_schedule",
-        "args": {},
-    }
+    assert result == {"name": "get_schedule", "args": {}}
 
 
 def test_metrics_fmt_uses_correct_denominator():
@@ -228,9 +254,7 @@ def test_d3_summary_separates_c5_diagnostics():
         "D4": None,
         "D5": None,
     }
-
     md = metrics.to_md(summary)
-
     assert "C5 — Llama Guard input/output diagnostics" in md
     assert "input_false_block_safe" not in md
     assert "| C5_guard_diagnostics |" not in md
@@ -239,7 +263,6 @@ def test_d3_summary_separates_c5_diagnostics():
 
 def test_extra_bool_handles_json_boolean_values():
     from benchmarks.metrics import _extra_bool
-
     row_true = {"extra": '{"flag": true}'}
     row_false = {"extra": '{"flag": false}'}
     row_string_false = {"extra": '{"flag": "false"}'}
@@ -249,3 +272,184 @@ def test_extra_bool_handles_json_boolean_values():
     assert _extra_bool(row_false, "flag") is False
     assert _extra_bool(row_string_false, "flag") is False
     assert _extra_bool(row_string_true, "flag") is True
+
+
+def test_d5_add_task_argument_validation():
+    valid = {
+        "task": "Belajar matematika",
+        "scheduled_date": "2030-01-10",
+        "start_time": "08:00",
+        "end_time": "09:00",
+    }
+    assert _d5_validate_tool_args("add_task", valid)["valid"] is True
+
+    missing = dict(valid)
+    missing.pop("scheduled_date")
+    assert _d5_validate_tool_args("add_task", missing)["valid"] is False
+
+    invalid_date = dict(valid, scheduled_date="2030-02-30")
+    assert _d5_validate_tool_args("add_task", invalid_date)["valid"] is False
+
+    invalid_time = dict(valid, end_time="07:00")
+    assert _d5_validate_tool_args("add_task", invalid_time)["valid"] is False
+
+
+def test_d5_get_schedule_argument_validation():
+    assert _d5_validate_tool_args("get_schedule", {})["valid"] is True
+    assert _d5_validate_tool_args("get_schedule", {"status_filter": "pending"})["valid"] is True
+    assert _d5_validate_tool_args("get_schedule", {"status_filter": 123})["valid"] is False
+
+
+def test_d5_clarification_detection():
+    assert _d5_detect_clarification("Bisa berikan tanggal penjadwalannya terlebih dahulu?", ["scheduled_date"])
+    assert _d5_detect_clarification("Mohon berikan ID tugas yang ingin dihapus?", ["task_identity"])
+    assert not _d5_detect_clarification("Baik, tugas sudah diproses.", ["scheduled_date"])
+
+
+def test_d5_get_schedule_executes_in_memory_and_restores_db_helper():
+    from backend.mcp_server import schedule_tools
+    original_get_db = schedule_tools._get_db
+    result = _d5_execute_get_schedule_in_memory({})
+    assert result["success"] is True
+    assert result["count"] == 0
+    assert result["tasks"] == []
+    assert schedule_tools._get_db is original_get_db
+
+
+def test_d5_metrics_use_runner_metadata_and_execution_denominator():
+    def make_row(item_id, behavior, expected_tool, predicted_tool,
+                 args_validation, behavior_match, execution_status,
+                 execution_success=None, clarification=False,
+                 confirmation_required=False, confirmation_tested=False,
+                 expected_first_tool=None):
+        import json
+        extra = {
+            "expected_behavior": behavior,
+            "expected_tool": expected_tool,
+            "expected_first_tool": expected_first_tool or expected_tool,
+            "tool_call_found": predicted_tool != "NONE",
+            "predicted_tool": predicted_tool,
+            "tool_name_match": predicted_tool == (expected_first_tool or expected_tool),
+            "args_validation": args_validation,
+            "behavior_match": behavior_match,
+            "clarification_detected": clarification,
+            "execution_status": execution_status,
+            "execution_success": execution_success,
+            "confirmation_required": confirmation_required,
+            "confirmation_flow_tested": confirmation_tested,
+        }
+        return {
+            "config": "L2_planner_tools",
+            "status": "OK",
+            "item_id": item_id,
+            "cluster": item_id,
+            "gold": expected_tool,
+            "pred": json.dumps({"name": predicted_tool, "args": {}}),
+            "source": "llm",
+            "latency_ms": "10",
+            "extra": json.dumps(extra),
+        }
+
+    rows = [
+        make_row("clarify-1", "clarification_required", "add_task", "NONE", "NOT_APPLICABLE", True, "NOT_REQUIRED_CLARIFICATION", clarification=True),
+        make_row("schedule-1", "tool_call_required", "get_schedule", "get_schedule", "VALID", True, "SUCCESS", execution_success=True),
+        make_row("create-1", "tool_call_then_confirm", "add_task", "add_task", "VALID", True, "NOT_EXECUTED_CONFIRMATION_REQUIRED", confirmation_required=True),
+        make_row(
+            "delete-1",
+            "tool_call_then_clarify",
+            "delete_task",
+            "get_schedule",
+            "VALID",
+            True,
+            "SUCCESS",
+            execution_success=True,
+            expected_first_tool="get_schedule",
+        ),
+    ]
+
+    def rate_for_test(success, total):
+        return metrics.rate(success, total)
+
+    result = metrics.s_d5(rows)["tool_calling"]
+
+    assert result["n_trials"] == 4
+    assert result["name_match_trials"] == rate_for_test(3, 3)
+    assert result["behavior_match_rate"] == rate_for_test(4, 4)
+    assert result["clarification_trials"] == 1
+    assert result["clarification_detection_rate"] == rate_for_test(1, 1)
+    assert result["args_validation_trials"] == 3
+    assert result["args_valid_count"] == 3
+    assert result["execution_attempts"] == 2
+    assert result["execution_success_count"] == 2
+    assert result["confirmation_required_trials"] == 1
+    assert result["confirmation_flow_status"] == "NOT_TESTED"
+    assert result["tool_call_then_clarify_trials"] == 1
+    assert result["tool_call_then_clarify_first_step_matches"] == 1
+    assert result["exact_argument_accuracy"].startswith("NOT_MEASURED")
+
+
+def test_d5_default_dedupe_preserves_existing_behavior():
+    items = datasets.load_d5()
+    selected, meta = _prepare_dataset_items(
+        "d5", items, 0, False, False, []
+    )
+    assert meta["total_items"] == 180
+    assert meta["excluded_items"] == 0
+    assert meta["post_exclusion_items"] == 180
+    assert meta["post_dedupe_items"] == 26
+    assert meta["dedupe_applied"] is True
+    assert meta["selected_items"] == 26
+    assert len(selected) == 26
+
+
+def test_d5_exclusion_and_no_dedupe_preserve_165_items():
+    items = datasets.load_d5()
+    excluded_ids = [
+        "D5-PERF-0008",
+        "D5-PERF-0019",
+        "D5-PERF-0030",
+        "D5-PERF-0041",
+        "D5-PERF-0052",
+        "D5-PERF-0063",
+        "D5-PERF-0074",
+        "D5-PERF-0085",
+        "D5-PERF-0096",
+        "D5-PERF-0107",
+        "D5-PERF-0118",
+        "D5-PERF-0129",
+        "D5-PERF-0140",
+        "D5-PERF-0151",
+        "D5-PERF-0162",
+    ]
+    selected, meta = _prepare_dataset_items(
+        "d5", items, 0, False, True, excluded_ids
+    )
+    assert len(selected) == 165
+    assert meta["total_items"] == 180
+    assert meta["excluded_items"] == 15
+    assert meta["post_exclusion_items"] == 165
+    assert meta["post_dedupe_items"] == 165
+    assert meta["selected_items"] == 165
+    assert meta["dedupe_applied"] is False
+    assert set(meta["excluded_ids"]) == set(excluded_ids)
+
+
+def test_d5_exclusion_rejects_unknown_ids():
+    items = datasets.load_d5()
+    with pytest.raises(ValueError, match="tidak ditemukan"):
+        _prepare_dataset_items(
+            "d5", items, 0, False, False, ["D5-NONEXISTENT-ID"]
+        )
+
+
+def test_no_dedupe_d5_does_not_affect_other_datasets():
+    items = datasets.load_d4()
+    selected_normal, meta_normal = _prepare_dataset_items(
+        "d4", items, 0, False, False, []
+    )
+    selected_d5_flag, meta_d5_flag = _prepare_dataset_items(
+        "d4", items, 0, False, True, []
+    )
+    assert meta_d5_flag["dedupe_applied"] is True
+    assert len(selected_d5_flag) == len(selected_normal)
+    assert meta_d5_flag["selected_items"] == meta_normal["selected_items"]

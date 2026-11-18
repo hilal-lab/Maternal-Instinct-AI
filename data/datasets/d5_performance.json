@@ -39,21 +39,65 @@
     "source_dataset": "MMLU / LACF Operational Benchmark 20x Scale",
     "category": "tool_calling",
     "prompt": "Jadwalkan sesi belajar jam 14:00 - 16:00",
-    "expected_target": "schedule_service.create_task"
+    "expected_target": "schedule_service.create_task",
+    "evaluation": {
+      "target_tool": "add_task",
+      "expected_behavior": "clarification_required",
+      "input_completeness": "incomplete",
+      "required_information": [
+        "task_title",
+        "scheduled_date",
+        "start_time",
+        "end_time"
+      ],
+      "missing_information": [
+        "scheduled_date"
+      ],
+      "execution_eligible": false,
+      "requires_confirmation": true,
+      "expected_tool_sequence": []
+    }
   },
   {
     "id": "D5-PERF-0007",
     "source_dataset": "MMLU / LACF Operational Benchmark 20x Scale",
     "category": "tool_calling",
     "prompt": "Tampilkan daftar tugas yang belum selesai",
-    "expected_target": "schedule_service.get_tasks"
+    "expected_target": "schedule_service.get_tasks",
+    "evaluation": {
+      "target_tool": "get_schedule",
+      "expected_behavior": "tool_call_required",
+      "input_completeness": "complete",
+      "required_information": [],
+      "missing_information": [],
+      "execution_eligible": true,
+      "requires_confirmation": false,
+      "expected_tool_sequence": [
+        "get_schedule"
+      ]
+    }
   },
   {
     "id": "D5-PERF-0008",
     "source_dataset": "MMLU / LACF Operational Benchmark 20x Scale",
     "category": "tool_calling",
     "prompt": "Hapus jadwal kuliah jam 10 pagi besok",
-    "expected_target": "schedule_service.delete_task"
+    "expected_target": "schedule_service.delete_task",
+    "evaluation": {
+      "target_tool": "delete_task",
+      "expected_first_tool": "get_schedule",
+      "expected_behavior": "tool_call_then_clarify",
+      "input_completeness": "incomplete",
+      "required_information": [
+        "task_identity"
+      ],
+      "missing_information": [
+        "task_identity"
+      ],
+      "execution_eligible": false,
+      "requires_confirmation": true,
+      "expected_tool_sequence": ["get_schedule"]
+    }
   },
   {
     "id": "D5-PERF-0009",
@@ -116,21 +160,65 @@
     "source_dataset": "MMLU / LACF Operational Benchmark 20x Scale",
     "category": "tool_calling",
     "prompt": "Jadwalkan sesi belajar jam 14:00 - 16:00 [Test Iteration 2]",
-    "expected_target": "schedule_service.create_task"
+    "expected_target": "schedule_service.create_task",
+    "evaluation": {
+      "target_tool": "add_task",
+      "expected_behavior": "clarification_required",
+      "input_completeness": "incomplete",
+      "required_information": [
+        "task_title",
+        "scheduled_date",
+        "start_time",
+        "end_time"
+      ],
+      "missing_information": [
+        "scheduled_date"
+      ],
+      "execution_eligible": false,
+      "requires_confirmation": true,
+      "expected_tool_sequence": []
+    }
   },
   {
     "id": "D5-PERF-0018",
     "source_dataset": "MMLU / LACF Operational Benchmark 20x Scale",
     "category": "tool_calling",
     "prompt": "Tampilkan daftar tugas yang belum selesai [Test Iteration 2]",
-    "expected_target": "schedule_service.get_tasks"
+    "expected_target": "schedule_service.get_tasks",
+    "evaluation": {
+      "target_tool": "get_schedule",
+      "expected_behavior": "tool_call_required",
+      "input_completeness": "complete",
+      "required_information": [],
+      "missing_information": [],
+      "execution_eligible": true,
+      "requires_confirmation": false,
+      "expected_tool_sequence": [
+        "get_schedule"
+      ]
+    }
   },
   {
     "id": "D5-PERF-0019",
     "source_dataset": "MMLU / LACF Operational Benchmark 20x Scale",
     "category": "tool_calling",
     "prompt": "Hapus jadwal kuliah jam 10 pagi besok [Test Iteration 2]",
-    "expected_target": "schedule_service.delete_task"
+    "expected_target": "schedule_service.delete_task",
+    "evaluation": {
+      "target_tool": "delete_task",
+      "expected_first_tool": "get_schedule",
+      "expected_behavior": "tool_call_then_clarify",
+      "input_completeness": "incomplete",
+      "required_information": [
+        "task_identity"
+      ],
+      "missing_information": [
+        "task_identity"
+      ],
+      "execution_eligible": false,
+      "requires_confirmation": true,
+      "expected_tool_sequence": ["get_schedule"]
+    }
   },
   {
     "id": "D5-PERF-0020",
@@ -193,21 +281,65 @@
     "source_dataset": "MMLU / LACF Operational Benchmark 20x Scale",
     "category": "tool_calling",
     "prompt": "Jadwalkan sesi belajar jam 14:00 - 16:00 [Test Iteration 3]",
-    "expected_target": "schedule_service.create_task"
+    "expected_target": "schedule_service.create_task",
+    "evaluation": {
+      "target_tool": "add_task",
+      "expected_behavior": "clarification_required",
+      "input_completeness": "incomplete",
+      "required_information": [
+        "task_title",
+        "scheduled_date",
+        "start_time",
+        "end_time"
+      ],
+      "missing_information": [
+        "scheduled_date"
+      ],
+      "execution_eligible": false,
+      "requires_confirmation": true,
+      "expected_tool_sequence": []
+    }
   },
   {
     "id": "D5-PERF-0029",
     "source_dataset": "MMLU / LACF Operational Benchmark 20x Scale",
     "category": "tool_calling",
     "prompt": "Tampilkan daftar tugas yang belum selesai [Test Iteration 3]",
-    "expected_target": "schedule_service.get_tasks"
+    "expected_target": "schedule_service.get_tasks",
+    "evaluation": {
+      "target_tool": "get_schedule",
+      "expected_behavior": "tool_call_required",
+      "input_completeness": "complete",
+      "required_information": [],
+      "missing_information": [],
+      "execution_eligible": true,
+      "requires_confirmation": false,
+      "expected_tool_sequence": [
+        "get_schedule"
+      ]
+    }
   },
   {
     "id": "D5-PERF-0030",
     "source_dataset": "MMLU / LACF Operational Benchmark 20x Scale",
     "category": "tool_calling",
     "prompt": "Hapus jadwal kuliah jam 10 pagi besok [Test Iteration 3]",
-    "expected_target": "schedule_service.delete_task"
+    "expected_target": "schedule_service.delete_task",
+    "evaluation": {
+      "target_tool": "delete_task",
+      "expected_first_tool": "get_schedule",
+      "expected_behavior": "tool_call_then_clarify",
+      "input_completeness": "incomplete",
+      "required_information": [
+        "task_identity"
+      ],
+      "missing_information": [
+        "task_identity"
+      ],
+      "execution_eligible": false,
+      "requires_confirmation": true,
+      "expected_tool_sequence": ["get_schedule"]
+    }
   },
   {
     "id": "D5-PERF-0031",
@@ -270,21 +402,65 @@
     "source_dataset": "MMLU / LACF Operational Benchmark 20x Scale",
     "category": "tool_calling",
     "prompt": "Jadwalkan sesi belajar jam 14:00 - 16:00 [Test Iteration 4]",
-    "expected_target": "schedule_service.create_task"
+    "expected_target": "schedule_service.create_task",
+    "evaluation": {
+      "target_tool": "add_task",
+      "expected_behavior": "clarification_required",
+      "input_completeness": "incomplete",
+      "required_information": [
+        "task_title",
+        "scheduled_date",
+        "start_time",
+        "end_time"
+      ],
+      "missing_information": [
+        "scheduled_date"
+      ],
+      "execution_eligible": false,
+      "requires_confirmation": true,
+      "expected_tool_sequence": []
+    }
   },
   {
     "id": "D5-PERF-0040",
     "source_dataset": "MMLU / LACF Operational Benchmark 20x Scale",
     "category": "tool_calling",
     "prompt": "Tampilkan daftar tugas yang belum selesai [Test Iteration 4]",
-    "expected_target": "schedule_service.get_tasks"
+    "expected_target": "schedule_service.get_tasks",
+    "evaluation": {
+      "target_tool": "get_schedule",
+      "expected_behavior": "tool_call_required",
+      "input_completeness": "complete",
+      "required_information": [],
+      "missing_information": [],
+      "execution_eligible": true,
+      "requires_confirmation": false,
+      "expected_tool_sequence": [
+        "get_schedule"
+      ]
+    }
   },
   {
     "id": "D5-PERF-0041",
     "source_dataset": "MMLU / LACF Operational Benchmark 20x Scale",
     "category": "tool_calling",
     "prompt": "Hapus jadwal kuliah jam 10 pagi besok [Test Iteration 4]",
-    "expected_target": "schedule_service.delete_task"
+    "expected_target": "schedule_service.delete_task",
+    "evaluation": {
+      "target_tool": "delete_task",
+      "expected_first_tool": "get_schedule",
+      "expected_behavior": "tool_call_then_clarify",
+      "input_completeness": "incomplete",
+      "required_information": [
+        "task_identity"
+      ],
+      "missing_information": [
+        "task_identity"
+      ],
+      "execution_eligible": false,
+      "requires_confirmation": true,
+      "expected_tool_sequence": ["get_schedule"]
+    }
   },
   {
     "id": "D5-PERF-0042",
@@ -347,21 +523,65 @@
     "source_dataset": "MMLU / LACF Operational Benchmark 20x Scale",
     "category": "tool_calling",
     "prompt": "Jadwalkan sesi belajar jam 14:00 - 16:00 [Test Iteration 5]",
-    "expected_target": "schedule_service.create_task"
+    "expected_target": "schedule_service.create_task",
+    "evaluation": {
+      "target_tool": "add_task",
+      "expected_behavior": "clarification_required",
+      "input_completeness": "incomplete",
+      "required_information": [
+        "task_title",
+        "scheduled_date",
+        "start_time",
+        "end_time"
+      ],
+      "missing_information": [
+        "scheduled_date"
+      ],
+      "execution_eligible": false,
+      "requires_confirmation": true,
+      "expected_tool_sequence": []
+    }
   },
   {
     "id": "D5-PERF-0051",
     "source_dataset": "MMLU / LACF Operational Benchmark 20x Scale",
     "category": "tool_calling",
     "prompt": "Tampilkan daftar tugas yang belum selesai [Test Iteration 5]",
-    "expected_target": "schedule_service.get_tasks"
+    "expected_target": "schedule_service.get_tasks",
+    "evaluation": {
+      "target_tool": "get_schedule",
+      "expected_behavior": "tool_call_required",
+      "input_completeness": "complete",
+      "required_information": [],
+      "missing_information": [],
+      "execution_eligible": true,
+      "requires_confirmation": false,
+      "expected_tool_sequence": [
+        "get_schedule"
+      ]
+    }
   },
   {
     "id": "D5-PERF-0052",
     "source_dataset": "MMLU / LACF Operational Benchmark 20x Scale",
     "category": "tool_calling",
     "prompt": "Hapus jadwal kuliah jam 10 pagi besok [Test Iteration 5]",
-    "expected_target": "schedule_service.delete_task"
+    "expected_target": "schedule_service.delete_task",
+    "evaluation": {
+      "target_tool": "delete_task",
+      "expected_first_tool": "get_schedule",
+      "expected_behavior": "tool_call_then_clarify",
+      "input_completeness": "incomplete",
+      "required_information": [
+        "task_identity"
+      ],
+      "missing_information": [
+        "task_identity"
+      ],
+      "execution_eligible": false,
+      "requires_confirmation": true,
+      "expected_tool_sequence": ["get_schedule"]
+    }
   },
   {
     "id": "D5-PERF-0053",
@@ -424,21 +644,65 @@
     "source_dataset": "MMLU / LACF Operational Benchmark 20x Scale",
     "category": "tool_calling",
     "prompt": "Jadwalkan sesi belajar jam 14:00 - 16:00 [Test Iteration 6]",
-    "expected_target": "schedule_service.create_task"
+    "expected_target": "schedule_service.create_task",
+    "evaluation": {
+      "target_tool": "add_task",
+      "expected_behavior": "clarification_required",
+      "input_completeness": "incomplete",
+      "required_information": [
+        "task_title",
+        "scheduled_date",
+        "start_time",
+        "end_time"
+      ],
+      "missing_information": [
+        "scheduled_date"
+      ],
+      "execution_eligible": false,
+      "requires_confirmation": true,
+      "expected_tool_sequence": []
+    }
   },
   {
     "id": "D5-PERF-0062",
     "source_dataset": "MMLU / LACF Operational Benchmark 20x Scale",
     "category": "tool_calling",
     "prompt": "Tampilkan daftar tugas yang belum selesai [Test Iteration 6]",
-    "expected_target": "schedule_service.get_tasks"
+    "expected_target": "schedule_service.get_tasks",
+    "evaluation": {
+      "target_tool": "get_schedule",
+      "expected_behavior": "tool_call_required",
+      "input_completeness": "complete",
+      "required_information": [],
+      "missing_information": [],
+      "execution_eligible": true,
+      "requires_confirmation": false,
+      "expected_tool_sequence": [
+        "get_schedule"
+      ]
+    }
   },
   {
     "id": "D5-PERF-0063",
     "source_dataset": "MMLU / LACF Operational Benchmark 20x Scale",
     "category": "tool_calling",
     "prompt": "Hapus jadwal kuliah jam 10 pagi besok [Test Iteration 6]",
-    "expected_target": "schedule_service.delete_task"
+    "expected_target": "schedule_service.delete_task",
+    "evaluation": {
+      "target_tool": "delete_task",
+      "expected_first_tool": "get_schedule",
+      "expected_behavior": "tool_call_then_clarify",
+      "input_completeness": "incomplete",
+      "required_information": [
+        "task_identity"
+      ],
+      "missing_information": [
+        "task_identity"
+      ],
+      "execution_eligible": false,
+      "requires_confirmation": true,
+      "expected_tool_sequence": ["get_schedule"]
+    }
   },
   {
     "id": "D5-PERF-0064",
@@ -501,21 +765,65 @@
     "source_dataset": "MMLU / LACF Operational Benchmark 20x Scale",
     "category": "tool_calling",
     "prompt": "Jadwalkan sesi belajar jam 14:00 - 16:00 [Test Iteration 7]",
-    "expected_target": "schedule_service.create_task"
+    "expected_target": "schedule_service.create_task",
+    "evaluation": {
+      "target_tool": "add_task",
+      "expected_behavior": "clarification_required",
+      "input_completeness": "incomplete",
+      "required_information": [
+        "task_title",
+        "scheduled_date",
+        "start_time",
+        "end_time"
+      ],
+      "missing_information": [
+        "scheduled_date"
+      ],
+      "execution_eligible": false,
+      "requires_confirmation": true,
+      "expected_tool_sequence": []
+    }
   },
   {
     "id": "D5-PERF-0073",
     "source_dataset": "MMLU / LACF Operational Benchmark 20x Scale",
     "category": "tool_calling",
     "prompt": "Tampilkan daftar tugas yang belum selesai [Test Iteration 7]",
-    "expected_target": "schedule_service.get_tasks"
+    "expected_target": "schedule_service.get_tasks",
+    "evaluation": {
+      "target_tool": "get_schedule",
+      "expected_behavior": "tool_call_required",
+      "input_completeness": "complete",
+      "required_information": [],
+      "missing_information": [],
+      "execution_eligible": true,
+      "requires_confirmation": false,
+      "expected_tool_sequence": [
+        "get_schedule"
+      ]
+    }
   },
   {
     "id": "D5-PERF-0074",
     "source_dataset": "MMLU / LACF Operational Benchmark 20x Scale",
     "category": "tool_calling",
     "prompt": "Hapus jadwal kuliah jam 10 pagi besok [Test Iteration 7]",
-    "expected_target": "schedule_service.delete_task"
+    "expected_target": "schedule_service.delete_task",
+    "evaluation": {
+      "target_tool": "delete_task",
+      "expected_first_tool": "get_schedule",
+      "expected_behavior": "tool_call_then_clarify",
+      "input_completeness": "incomplete",
+      "required_information": [
+        "task_identity"
+      ],
+      "missing_information": [
+        "task_identity"
+      ],
+      "execution_eligible": false,
+      "requires_confirmation": true,
+      "expected_tool_sequence": ["get_schedule"]
+    }
   },
   {
     "id": "D5-PERF-0075",
@@ -578,21 +886,65 @@
     "source_dataset": "MMLU / LACF Operational Benchmark 20x Scale",
     "category": "tool_calling",
     "prompt": "Jadwalkan sesi belajar jam 14:00 - 16:00 [Test Iteration 8]",
-    "expected_target": "schedule_service.create_task"
+    "expected_target": "schedule_service.create_task",
+    "evaluation": {
+      "target_tool": "add_task",
+      "expected_behavior": "clarification_required",
+      "input_completeness": "incomplete",
+      "required_information": [
+        "task_title",
+        "scheduled_date",
+        "start_time",
+        "end_time"
+      ],
+      "missing_information": [
+        "scheduled_date"
+      ],
+      "execution_eligible": false,
+      "requires_confirmation": true,
+      "expected_tool_sequence": []
+    }
   },
   {
     "id": "D5-PERF-0084",
     "source_dataset": "MMLU / LACF Operational Benchmark 20x Scale",
     "category": "tool_calling",
     "prompt": "Tampilkan daftar tugas yang belum selesai [Test Iteration 8]",
-    "expected_target": "schedule_service.get_tasks"
+    "expected_target": "schedule_service.get_tasks",
+    "evaluation": {
+      "target_tool": "get_schedule",
+      "expected_behavior": "tool_call_required",
+      "input_completeness": "complete",
+      "required_information": [],
+      "missing_information": [],
+      "execution_eligible": true,
+      "requires_confirmation": false,
+      "expected_tool_sequence": [
+        "get_schedule"
+      ]
+    }
   },
   {
     "id": "D5-PERF-0085",
     "source_dataset": "MMLU / LACF Operational Benchmark 20x Scale",
     "category": "tool_calling",
     "prompt": "Hapus jadwal kuliah jam 10 pagi besok [Test Iteration 8]",
-    "expected_target": "schedule_service.delete_task"
+    "expected_target": "schedule_service.delete_task",
+    "evaluation": {
+      "target_tool": "delete_task",
+      "expected_first_tool": "get_schedule",
+      "expected_behavior": "tool_call_then_clarify",
+      "input_completeness": "incomplete",
+      "required_information": [
+        "task_identity"
+      ],
+      "missing_information": [
+        "task_identity"
+      ],
+      "execution_eligible": false,
+      "requires_confirmation": true,
+      "expected_tool_sequence": ["get_schedule"]
+    }
   },
   {
     "id": "D5-PERF-0086",
@@ -655,21 +1007,65 @@
     "source_dataset": "MMLU / LACF Operational Benchmark 20x Scale",
     "category": "tool_calling",
     "prompt": "Jadwalkan sesi belajar jam 14:00 - 16:00 [Test Iteration 9]",
-    "expected_target": "schedule_service.create_task"
+    "expected_target": "schedule_service.create_task",
+    "evaluation": {
+      "target_tool": "add_task",
+      "expected_behavior": "clarification_required",
+      "input_completeness": "incomplete",
+      "required_information": [
+        "task_title",
+        "scheduled_date",
+        "start_time",
+        "end_time"
+      ],
+      "missing_information": [
+        "scheduled_date"
+      ],
+      "execution_eligible": false,
+      "requires_confirmation": true,
+      "expected_tool_sequence": []
+    }
   },
   {
     "id": "D5-PERF-0095",
     "source_dataset": "MMLU / LACF Operational Benchmark 20x Scale",
     "category": "tool_calling",
     "prompt": "Tampilkan daftar tugas yang belum selesai [Test Iteration 9]",
-    "expected_target": "schedule_service.get_tasks"
+    "expected_target": "schedule_service.get_tasks",
+    "evaluation": {
+      "target_tool": "get_schedule",
+      "expected_behavior": "tool_call_required",
+      "input_completeness": "complete",
+      "required_information": [],
+      "missing_information": [],
+      "execution_eligible": true,
+      "requires_confirmation": false,
+      "expected_tool_sequence": [
+        "get_schedule"
+      ]
+    }
   },
   {
     "id": "D5-PERF-0096",
     "source_dataset": "MMLU / LACF Operational Benchmark 20x Scale",
     "category": "tool_calling",
     "prompt": "Hapus jadwal kuliah jam 10 pagi besok [Test Iteration 9]",
-    "expected_target": "schedule_service.delete_task"
+    "expected_target": "schedule_service.delete_task",
+    "evaluation": {
+      "target_tool": "delete_task",
+      "expected_first_tool": "get_schedule",
+      "expected_behavior": "tool_call_then_clarify",
+      "input_completeness": "incomplete",
+      "required_information": [
+        "task_identity"
+      ],
+      "missing_information": [
+        "task_identity"
+      ],
+      "execution_eligible": false,
+      "requires_confirmation": true,
+      "expected_tool_sequence": ["get_schedule"]
+    }
   },
   {
     "id": "D5-PERF-0097",
@@ -732,21 +1128,65 @@
     "source_dataset": "MMLU / LACF Operational Benchmark 20x Scale",
     "category": "tool_calling",
     "prompt": "Jadwalkan sesi belajar jam 14:00 - 16:00 [Test Iteration 10]",
-    "expected_target": "schedule_service.create_task"
+    "expected_target": "schedule_service.create_task",
+    "evaluation": {
+      "target_tool": "add_task",
+      "expected_behavior": "clarification_required",
+      "input_completeness": "incomplete",
+      "required_information": [
+        "task_title",
+        "scheduled_date",
+        "start_time",
+        "end_time"
+      ],
+      "missing_information": [
+        "scheduled_date"
+      ],
+      "execution_eligible": false,
+      "requires_confirmation": true,
+      "expected_tool_sequence": []
+    }
   },
   {
     "id": "D5-PERF-0106",
     "source_dataset": "MMLU / LACF Operational Benchmark 20x Scale",
     "category": "tool_calling",
     "prompt": "Tampilkan daftar tugas yang belum selesai [Test Iteration 10]",
-    "expected_target": "schedule_service.get_tasks"
+    "expected_target": "schedule_service.get_tasks",
+    "evaluation": {
+      "target_tool": "get_schedule",
+      "expected_behavior": "tool_call_required",
+      "input_completeness": "complete",
+      "required_information": [],
+      "missing_information": [],
+      "execution_eligible": true,
+      "requires_confirmation": false,
+      "expected_tool_sequence": [
+        "get_schedule"
+      ]
+    }
   },
   {
     "id": "D5-PERF-0107",
     "source_dataset": "MMLU / LACF Operational Benchmark 20x Scale",
     "category": "tool_calling",
     "prompt": "Hapus jadwal kuliah jam 10 pagi besok [Test Iteration 10]",
-    "expected_target": "schedule_service.delete_task"
+    "expected_target": "schedule_service.delete_task",
+    "evaluation": {
+      "target_tool": "delete_task",
+      "expected_first_tool": "get_schedule",
+      "expected_behavior": "tool_call_then_clarify",
+      "input_completeness": "incomplete",
+      "required_information": [
+        "task_identity"
+      ],
+      "missing_information": [
+        "task_identity"
+      ],
+      "execution_eligible": false,
+      "requires_confirmation": true,
+      "expected_tool_sequence": ["get_schedule"]
+    }
   },
   {
     "id": "D5-PERF-0108",
@@ -809,21 +1249,65 @@
     "source_dataset": "MMLU / LACF Operational Benchmark 20x Scale",
     "category": "tool_calling",
     "prompt": "Jadwalkan sesi belajar jam 14:00 - 16:00 [Test Iteration 11]",
-    "expected_target": "schedule_service.create_task"
+    "expected_target": "schedule_service.create_task",
+    "evaluation": {
+      "target_tool": "add_task",
+      "expected_behavior": "clarification_required",
+      "input_completeness": "incomplete",
+      "required_information": [
+        "task_title",
+        "scheduled_date",
+        "start_time",
+        "end_time"
+      ],
+      "missing_information": [
+        "scheduled_date"
+      ],
+      "execution_eligible": false,
+      "requires_confirmation": true,
+      "expected_tool_sequence": []
+    }
   },
   {
     "id": "D5-PERF-0117",
     "source_dataset": "MMLU / LACF Operational Benchmark 20x Scale",
     "category": "tool_calling",
     "prompt": "Tampilkan daftar tugas yang belum selesai [Test Iteration 11]",
-    "expected_target": "schedule_service.get_tasks"
+    "expected_target": "schedule_service.get_tasks",
+    "evaluation": {
+      "target_tool": "get_schedule",
+      "expected_behavior": "tool_call_required",
+      "input_completeness": "complete",
+      "required_information": [],
+      "missing_information": [],
+      "execution_eligible": true,
+      "requires_confirmation": false,
+      "expected_tool_sequence": [
+        "get_schedule"
+      ]
+    }
   },
   {
     "id": "D5-PERF-0118",
     "source_dataset": "MMLU / LACF Operational Benchmark 20x Scale",
     "category": "tool_calling",
     "prompt": "Hapus jadwal kuliah jam 10 pagi besok [Test Iteration 11]",
-    "expected_target": "schedule_service.delete_task"
+    "expected_target": "schedule_service.delete_task",
+    "evaluation": {
+      "target_tool": "delete_task",
+      "expected_first_tool": "get_schedule",
+      "expected_behavior": "tool_call_then_clarify",
+      "input_completeness": "incomplete",
+      "required_information": [
+        "task_identity"
+      ],
+      "missing_information": [
+        "task_identity"
+      ],
+      "execution_eligible": false,
+      "requires_confirmation": true,
+      "expected_tool_sequence": ["get_schedule"]
+    }
   },
   {
     "id": "D5-PERF-0119",
@@ -886,21 +1370,65 @@
     "source_dataset": "MMLU / LACF Operational Benchmark 20x Scale",
     "category": "tool_calling",
     "prompt": "Jadwalkan sesi belajar jam 14:00 - 16:00 [Test Iteration 12]",
-    "expected_target": "schedule_service.create_task"
+    "expected_target": "schedule_service.create_task",
+    "evaluation": {
+      "target_tool": "add_task",
+      "expected_behavior": "clarification_required",
+      "input_completeness": "incomplete",
+      "required_information": [
+        "task_title",
+        "scheduled_date",
+        "start_time",
+        "end_time"
+      ],
+      "missing_information": [
+        "scheduled_date"
+      ],
+      "execution_eligible": false,
+      "requires_confirmation": true,
+      "expected_tool_sequence": []
+    }
   },
   {
     "id": "D5-PERF-0128",
     "source_dataset": "MMLU / LACF Operational Benchmark 20x Scale",
     "category": "tool_calling",
     "prompt": "Tampilkan daftar tugas yang belum selesai [Test Iteration 12]",
-    "expected_target": "schedule_service.get_tasks"
+    "expected_target": "schedule_service.get_tasks",
+    "evaluation": {
+      "target_tool": "get_schedule",
+      "expected_behavior": "tool_call_required",
+      "input_completeness": "complete",
+      "required_information": [],
+      "missing_information": [],
+      "execution_eligible": true,
+      "requires_confirmation": false,
+      "expected_tool_sequence": [
+        "get_schedule"
+      ]
+    }
   },
   {
     "id": "D5-PERF-0129",
     "source_dataset": "MMLU / LACF Operational Benchmark 20x Scale",
     "category": "tool_calling",
     "prompt": "Hapus jadwal kuliah jam 10 pagi besok [Test Iteration 12]",
-    "expected_target": "schedule_service.delete_task"
+    "expected_target": "schedule_service.delete_task",
+    "evaluation": {
+      "target_tool": "delete_task",
+      "expected_first_tool": "get_schedule",
+      "expected_behavior": "tool_call_then_clarify",
+      "input_completeness": "incomplete",
+      "required_information": [
+        "task_identity"
+      ],
+      "missing_information": [
+        "task_identity"
+      ],
+      "execution_eligible": false,
+      "requires_confirmation": true,
+      "expected_tool_sequence": ["get_schedule"]
+    }
   },
   {
     "id": "D5-PERF-0130",
@@ -963,21 +1491,65 @@
     "source_dataset": "MMLU / LACF Operational Benchmark 20x Scale",
     "category": "tool_calling",
     "prompt": "Jadwalkan sesi belajar jam 14:00 - 16:00 [Test Iteration 13]",
-    "expected_target": "schedule_service.create_task"
+    "expected_target": "schedule_service.create_task",
+    "evaluation": {
+      "target_tool": "add_task",
+      "expected_behavior": "clarification_required",
+      "input_completeness": "incomplete",
+      "required_information": [
+        "task_title",
+        "scheduled_date",
+        "start_time",
+        "end_time"
+      ],
+      "missing_information": [
+        "scheduled_date"
+      ],
+      "execution_eligible": false,
+      "requires_confirmation": true,
+      "expected_tool_sequence": []
+    }
   },
   {
     "id": "D5-PERF-0139",
     "source_dataset": "MMLU / LACF Operational Benchmark 20x Scale",
     "category": "tool_calling",
     "prompt": "Tampilkan daftar tugas yang belum selesai [Test Iteration 13]",
-    "expected_target": "schedule_service.get_tasks"
+    "expected_target": "schedule_service.get_tasks",
+    "evaluation": {
+      "target_tool": "get_schedule",
+      "expected_behavior": "tool_call_required",
+      "input_completeness": "complete",
+      "required_information": [],
+      "missing_information": [],
+      "execution_eligible": true,
+      "requires_confirmation": false,
+      "expected_tool_sequence": [
+        "get_schedule"
+      ]
+    }
   },
   {
     "id": "D5-PERF-0140",
     "source_dataset": "MMLU / LACF Operational Benchmark 20x Scale",
     "category": "tool_calling",
     "prompt": "Hapus jadwal kuliah jam 10 pagi besok [Test Iteration 13]",
-    "expected_target": "schedule_service.delete_task"
+    "expected_target": "schedule_service.delete_task",
+    "evaluation": {
+      "target_tool": "delete_task",
+      "expected_first_tool": "get_schedule",
+      "expected_behavior": "tool_call_then_clarify",
+      "input_completeness": "incomplete",
+      "required_information": [
+        "task_identity"
+      ],
+      "missing_information": [
+        "task_identity"
+      ],
+      "execution_eligible": false,
+      "requires_confirmation": true,
+      "expected_tool_sequence": ["get_schedule"]
+    }
   },
   {
     "id": "D5-PERF-0141",
@@ -1040,21 +1612,65 @@
     "source_dataset": "MMLU / LACF Operational Benchmark 20x Scale",
     "category": "tool_calling",
     "prompt": "Jadwalkan sesi belajar jam 14:00 - 16:00 [Test Iteration 14]",
-    "expected_target": "schedule_service.create_task"
+    "expected_target": "schedule_service.create_task",
+    "evaluation": {
+      "target_tool": "add_task",
+      "expected_behavior": "clarification_required",
+      "input_completeness": "incomplete",
+      "required_information": [
+        "task_title",
+        "scheduled_date",
+        "start_time",
+        "end_time"
+      ],
+      "missing_information": [
+        "scheduled_date"
+      ],
+      "execution_eligible": false,
+      "requires_confirmation": true,
+      "expected_tool_sequence": []
+    }
   },
   {
     "id": "D5-PERF-0150",
     "source_dataset": "MMLU / LACF Operational Benchmark 20x Scale",
     "category": "tool_calling",
     "prompt": "Tampilkan daftar tugas yang belum selesai [Test Iteration 14]",
-    "expected_target": "schedule_service.get_tasks"
+    "expected_target": "schedule_service.get_tasks",
+    "evaluation": {
+      "target_tool": "get_schedule",
+      "expected_behavior": "tool_call_required",
+      "input_completeness": "complete",
+      "required_information": [],
+      "missing_information": [],
+      "execution_eligible": true,
+      "requires_confirmation": false,
+      "expected_tool_sequence": [
+        "get_schedule"
+      ]
+    }
   },
   {
     "id": "D5-PERF-0151",
     "source_dataset": "MMLU / LACF Operational Benchmark 20x Scale",
     "category": "tool_calling",
     "prompt": "Hapus jadwal kuliah jam 10 pagi besok [Test Iteration 14]",
-    "expected_target": "schedule_service.delete_task"
+    "expected_target": "schedule_service.delete_task",
+    "evaluation": {
+      "target_tool": "delete_task",
+      "expected_first_tool": "get_schedule",
+      "expected_behavior": "tool_call_then_clarify",
+      "input_completeness": "incomplete",
+      "required_information": [
+        "task_identity"
+      ],
+      "missing_information": [
+        "task_identity"
+      ],
+      "execution_eligible": false,
+      "requires_confirmation": true,
+      "expected_tool_sequence": ["get_schedule"]
+    }
   },
   {
     "id": "D5-PERF-0152",
@@ -1117,21 +1733,65 @@
     "source_dataset": "MMLU / LACF Operational Benchmark 20x Scale",
     "category": "tool_calling",
     "prompt": "Jadwalkan sesi belajar jam 14:00 - 16:00 [Test Iteration 15]",
-    "expected_target": "schedule_service.create_task"
+    "expected_target": "schedule_service.create_task",
+    "evaluation": {
+      "target_tool": "add_task",
+      "expected_behavior": "clarification_required",
+      "input_completeness": "incomplete",
+      "required_information": [
+        "task_title",
+        "scheduled_date",
+        "start_time",
+        "end_time"
+      ],
+      "missing_information": [
+        "scheduled_date"
+      ],
+      "execution_eligible": false,
+      "requires_confirmation": true,
+      "expected_tool_sequence": []
+    }
   },
   {
     "id": "D5-PERF-0161",
     "source_dataset": "MMLU / LACF Operational Benchmark 20x Scale",
     "category": "tool_calling",
     "prompt": "Tampilkan daftar tugas yang belum selesai [Test Iteration 15]",
-    "expected_target": "schedule_service.get_tasks"
+    "expected_target": "schedule_service.get_tasks",
+    "evaluation": {
+      "target_tool": "get_schedule",
+      "expected_behavior": "tool_call_required",
+      "input_completeness": "complete",
+      "required_information": [],
+      "missing_information": [],
+      "execution_eligible": true,
+      "requires_confirmation": false,
+      "expected_tool_sequence": [
+        "get_schedule"
+      ]
+    }
   },
   {
     "id": "D5-PERF-0162",
     "source_dataset": "MMLU / LACF Operational Benchmark 20x Scale",
     "category": "tool_calling",
     "prompt": "Hapus jadwal kuliah jam 10 pagi besok [Test Iteration 15]",
-    "expected_target": "schedule_service.delete_task"
+    "expected_target": "schedule_service.delete_task",
+    "evaluation": {
+      "target_tool": "delete_task",
+      "expected_first_tool": "get_schedule",
+      "expected_behavior": "tool_call_then_clarify",
+      "input_completeness": "incomplete",
+      "required_information": [
+        "task_identity"
+      ],
+      "missing_information": [
+        "task_identity"
+      ],
+      "execution_eligible": false,
+      "requires_confirmation": true,
+      "expected_tool_sequence": ["get_schedule"]
+    }
   },
   {
     "id": "D5-PERF-0163",
@@ -1153,5 +1813,380 @@
     "category": "academic_tutor",
     "prompt": "Bagaimana cara kerja arsitektur Transformer pada LLM? [Test Iteration 15]",
     "expected_target": "TUTOR_RESPONSE"
+  },
+  {
+    "id": "D5-PERF-0166",
+    "source_dataset": "LACF Operational Benchmark - Scheduling",
+    "category": "tool_calling",
+    "prompt": "Jadwalkan tugas belajar matematika pada tanggal 2030-01-10, mulai pukul 08:00 sampai 09:00.",
+    "expected_target": "schedule_service.create_task",
+    "evaluation": {
+      "target_tool": "add_task",
+      "expected_behavior": "tool_call_then_confirm",
+      "input_completeness": "complete",
+      "required_information": [
+        "task_title",
+        "scheduled_date",
+        "start_time",
+        "end_time"
+      ],
+      "missing_information": [],
+      "execution_eligible": true,
+      "requires_confirmation": true,
+      "expected_tool_sequence": [
+        "add_task"
+      ],
+      "contract_dependency": "add_task_datetime_support"
+    }
+  },
+  {
+    "id": "D5-PERF-0167",
+    "source_dataset": "LACF Operational Benchmark - Scheduling",
+    "category": "tool_calling",
+    "prompt": "Jadwalkan tugas mengerjakan laporan praktikum pada tanggal 2030-01-11, mulai pukul 09:00 sampai 10:30.",
+    "expected_target": "schedule_service.create_task",
+    "evaluation": {
+      "target_tool": "add_task",
+      "expected_behavior": "tool_call_then_confirm",
+      "input_completeness": "complete",
+      "required_information": [
+        "task_title",
+        "scheduled_date",
+        "start_time",
+        "end_time"
+      ],
+      "missing_information": [],
+      "execution_eligible": true,
+      "requires_confirmation": true,
+      "expected_tool_sequence": [
+        "add_task"
+      ],
+      "contract_dependency": "add_task_datetime_support"
+    }
+  },
+  {
+    "id": "D5-PERF-0168",
+    "source_dataset": "LACF Operational Benchmark - Scheduling",
+    "category": "tool_calling",
+    "prompt": "Jadwalkan tugas membaca materi kuliah pada tanggal 2030-01-12, mulai pukul 13:00 sampai 14:00.",
+    "expected_target": "schedule_service.create_task",
+    "evaluation": {
+      "target_tool": "add_task",
+      "expected_behavior": "tool_call_then_confirm",
+      "input_completeness": "complete",
+      "required_information": [
+        "task_title",
+        "scheduled_date",
+        "start_time",
+        "end_time"
+      ],
+      "missing_information": [],
+      "execution_eligible": true,
+      "requires_confirmation": true,
+      "expected_tool_sequence": [
+        "add_task"
+      ],
+      "contract_dependency": "add_task_datetime_support"
+    }
+  },
+  {
+    "id": "D5-PERF-0169",
+    "source_dataset": "LACF Operational Benchmark - Scheduling",
+    "category": "tool_calling",
+    "prompt": "Jadwalkan tugas sesi belajar fisika pada tanggal 2030-01-13, mulai pukul 14:00 sampai 16:00.",
+    "expected_target": "schedule_service.create_task",
+    "evaluation": {
+      "target_tool": "add_task",
+      "expected_behavior": "tool_call_then_confirm",
+      "input_completeness": "complete",
+      "required_information": [
+        "task_title",
+        "scheduled_date",
+        "start_time",
+        "end_time"
+      ],
+      "missing_information": [],
+      "execution_eligible": true,
+      "requires_confirmation": true,
+      "expected_tool_sequence": [
+        "add_task"
+      ],
+      "contract_dependency": "add_task_datetime_support"
+    }
+  },
+  {
+    "id": "D5-PERF-0170",
+    "source_dataset": "LACF Operational Benchmark - Scheduling",
+    "category": "tool_calling",
+    "prompt": "Jadwalkan tugas olahraga pagi pada tanggal 2030-01-14, mulai pukul 07:30 sampai 08:30.",
+    "expected_target": "schedule_service.create_task",
+    "evaluation": {
+      "target_tool": "add_task",
+      "expected_behavior": "tool_call_then_confirm",
+      "input_completeness": "complete",
+      "required_information": [
+        "task_title",
+        "scheduled_date",
+        "start_time",
+        "end_time"
+      ],
+      "missing_information": [],
+      "execution_eligible": true,
+      "requires_confirmation": true,
+      "expected_tool_sequence": [
+        "add_task"
+      ],
+      "contract_dependency": "add_task_datetime_support"
+    }
+  },
+  {
+    "id": "D5-PERF-0171",
+    "source_dataset": "LACF Operational Benchmark - Scheduling",
+    "category": "tool_calling",
+    "prompt": "Jadwalkan tugas rapat kelompok pada tanggal 2030-01-15, mulai pukul 10:00 sampai 11:00.",
+    "expected_target": "schedule_service.create_task",
+    "evaluation": {
+      "target_tool": "add_task",
+      "expected_behavior": "tool_call_then_confirm",
+      "input_completeness": "complete",
+      "required_information": [
+        "task_title",
+        "scheduled_date",
+        "start_time",
+        "end_time"
+      ],
+      "missing_information": [],
+      "execution_eligible": true,
+      "requires_confirmation": true,
+      "expected_tool_sequence": [
+        "add_task"
+      ],
+      "contract_dependency": "add_task_datetime_support"
+    }
+  },
+  {
+    "id": "D5-PERF-0172",
+    "source_dataset": "LACF Operational Benchmark - Scheduling",
+    "category": "tool_calling",
+    "prompt": "Jadwalkan tugas belajar pemrograman pada tanggal 2030-01-16, mulai pukul 15:00 sampai 16:30.",
+    "expected_target": "schedule_service.create_task",
+    "evaluation": {
+      "target_tool": "add_task",
+      "expected_behavior": "tool_call_then_confirm",
+      "input_completeness": "complete",
+      "required_information": [
+        "task_title",
+        "scheduled_date",
+        "start_time",
+        "end_time"
+      ],
+      "missing_information": [],
+      "execution_eligible": true,
+      "requires_confirmation": true,
+      "expected_tool_sequence": [
+        "add_task"
+      ],
+      "contract_dependency": "add_task_datetime_support"
+    }
+  },
+  {
+    "id": "D5-PERF-0173",
+    "source_dataset": "LACF Operational Benchmark - Scheduling",
+    "category": "tool_calling",
+    "prompt": "Jadwalkan tugas menyelesaikan tugas pada tanggal 2030-01-17, mulai pukul 08:30 sampai 10:00.",
+    "expected_target": "schedule_service.create_task",
+    "evaluation": {
+      "target_tool": "add_task",
+      "expected_behavior": "tool_call_then_confirm",
+      "input_completeness": "complete",
+      "required_information": [
+        "task_title",
+        "scheduled_date",
+        "start_time",
+        "end_time"
+      ],
+      "missing_information": [],
+      "execution_eligible": true,
+      "requires_confirmation": true,
+      "expected_tool_sequence": [
+        "add_task"
+      ],
+      "contract_dependency": "add_task_datetime_support"
+    }
+  },
+  {
+    "id": "D5-PERF-0174",
+    "source_dataset": "LACF Operational Benchmark - Scheduling",
+    "category": "tool_calling",
+    "prompt": "Jadwalkan tugas membaca jurnal ilmiah pada tanggal 2030-01-18, mulai pukul 11:00 sampai 12:00.",
+    "expected_target": "schedule_service.create_task",
+    "evaluation": {
+      "target_tool": "add_task",
+      "expected_behavior": "tool_call_then_confirm",
+      "input_completeness": "complete",
+      "required_information": [
+        "task_title",
+        "scheduled_date",
+        "start_time",
+        "end_time"
+      ],
+      "missing_information": [],
+      "execution_eligible": true,
+      "requires_confirmation": true,
+      "expected_tool_sequence": [
+        "add_task"
+      ],
+      "contract_dependency": "add_task_datetime_support"
+    }
+  },
+  {
+    "id": "D5-PERF-0175",
+    "source_dataset": "LACF Operational Benchmark - Scheduling",
+    "category": "tool_calling",
+    "prompt": "Jadwalkan tugas persiapan ujian pada tanggal 2030-01-19, mulai pukul 13:30 sampai 15:00.",
+    "expected_target": "schedule_service.create_task",
+    "evaluation": {
+      "target_tool": "add_task",
+      "expected_behavior": "tool_call_then_confirm",
+      "input_completeness": "complete",
+      "required_information": [
+        "task_title",
+        "scheduled_date",
+        "start_time",
+        "end_time"
+      ],
+      "missing_information": [],
+      "execution_eligible": true,
+      "requires_confirmation": true,
+      "expected_tool_sequence": [
+        "add_task"
+      ],
+      "contract_dependency": "add_task_datetime_support"
+    }
+  },
+  {
+    "id": "D5-PERF-0176",
+    "source_dataset": "LACF Operational Benchmark - Scheduling",
+    "category": "tool_calling",
+    "prompt": "Jadwalkan tugas diskusi proyek pada tanggal 2030-01-20, mulai pukul 16:00 sampai 17:00.",
+    "expected_target": "schedule_service.create_task",
+    "evaluation": {
+      "target_tool": "add_task",
+      "expected_behavior": "tool_call_then_confirm",
+      "input_completeness": "complete",
+      "required_information": [
+        "task_title",
+        "scheduled_date",
+        "start_time",
+        "end_time"
+      ],
+      "missing_information": [],
+      "execution_eligible": true,
+      "requires_confirmation": true,
+      "expected_tool_sequence": [
+        "add_task"
+      ],
+      "contract_dependency": "add_task_datetime_support"
+    }
+  },
+  {
+    "id": "D5-PERF-0177",
+    "source_dataset": "LACF Operational Benchmark - Scheduling",
+    "category": "tool_calling",
+    "prompt": "Jadwalkan tugas review materi kuliah pada tanggal 2030-01-21, mulai pukul 07:00 sampai 08:00.",
+    "expected_target": "schedule_service.create_task",
+    "evaluation": {
+      "target_tool": "add_task",
+      "expected_behavior": "tool_call_then_confirm",
+      "input_completeness": "complete",
+      "required_information": [
+        "task_title",
+        "scheduled_date",
+        "start_time",
+        "end_time"
+      ],
+      "missing_information": [],
+      "execution_eligible": true,
+      "requires_confirmation": true,
+      "expected_tool_sequence": [
+        "add_task"
+      ],
+      "contract_dependency": "add_task_datetime_support"
+    }
+  },
+  {
+    "id": "D5-PERF-0178",
+    "source_dataset": "LACF Operational Benchmark - Scheduling",
+    "category": "tool_calling",
+    "prompt": "Jadwalkan tugas mengerjakan skripsi pada tanggal 2030-01-22, mulai pukul 09:30 sampai 11:30.",
+    "expected_target": "schedule_service.create_task",
+    "evaluation": {
+      "target_tool": "add_task",
+      "expected_behavior": "tool_call_then_confirm",
+      "input_completeness": "complete",
+      "required_information": [
+        "task_title",
+        "scheduled_date",
+        "start_time",
+        "end_time"
+      ],
+      "missing_information": [],
+      "execution_eligible": true,
+      "requires_confirmation": true,
+      "expected_tool_sequence": [
+        "add_task"
+      ],
+      "contract_dependency": "add_task_datetime_support"
+    }
+  },
+  {
+    "id": "D5-PERF-0179",
+    "source_dataset": "LACF Operational Benchmark - Scheduling",
+    "category": "tool_calling",
+    "prompt": "Jadwalkan tugas latihan soal matematika pada tanggal 2030-01-23, mulai pukul 14:30 sampai 15:30.",
+    "expected_target": "schedule_service.create_task",
+    "evaluation": {
+      "target_tool": "add_task",
+      "expected_behavior": "tool_call_then_confirm",
+      "input_completeness": "complete",
+      "required_information": [
+        "task_title",
+        "scheduled_date",
+        "start_time",
+        "end_time"
+      ],
+      "missing_information": [],
+      "execution_eligible": true,
+      "requires_confirmation": true,
+      "expected_tool_sequence": [
+        "add_task"
+      ],
+      "contract_dependency": "add_task_datetime_support"
+    }
+  },
+  {
+    "id": "D5-PERF-0180",
+    "source_dataset": "LACF Operational Benchmark - Scheduling",
+    "category": "tool_calling",
+    "prompt": "Jadwalkan tugas belajar bahasa Inggris pada tanggal 2030-01-24, mulai pukul 19:00 sampai 20:00.",
+    "expected_target": "schedule_service.create_task",
+    "evaluation": {
+      "target_tool": "add_task",
+      "expected_behavior": "tool_call_then_confirm",
+      "input_completeness": "complete",
+      "required_information": [
+        "task_title",
+        "scheduled_date",
+        "start_time",
+        "end_time"
+      ],
+      "missing_information": [],
+      "execution_eligible": true,
+      "requires_confirmation": true,
+      "expected_tool_sequence": [
+        "add_task"
+      ],
+      "contract_dependency": "add_task_datetime_support"
+    }
   }
 ]

@@ -1,0 +1,220 @@
+{
+  "meta": {
+    "run_id": "d5_smoke_nodedupe_20261118",
+    "started": "2026-11-18T07:56:23",
+    "git_commit": "0425dff",
+    "model": "llama3.2:3b",
+    "ollama_host": "http://localhost:11434",
+    "python": "3.10.22",
+    "platform": "Windows-10-10.0.26300-SP0",
+    "cpu_count": 16,
+    "temperature": "0",
+    "seed": "0",
+    "max_tokens_backend": "1500",
+    "dedupe": false,
+    "llama_guard": "NOT_RUN",
+    "nemo_guardrails": "NOT_RUN",
+    "datasets": {
+      "d5": {
+        "total_items": 180,
+        "selected_items": 150,
+        "result_rows": 105,
+        "items_with_any_result": 105,
+        "items_without_result": 45,
+        "ok_rows": 105,
+        "error_rows": 0
+      }
+    },
+    "ollama_version": "0.40.16",
+    "finished": "2026-11-18T08:36:54"
+  },
+  "D1": null,
+  "D2": null,
+  "D3": {
+    "_notes": {
+      "errors_per_config": {},
+      "C2_C3_C4": "NOT_RUN: Layer 3/4 bukan classifier konten (lihat Sec 4.2); tidak ada angka disalin dari config lain",
+      "C6_C7": "NOT_RUN",
+      "refusal_proxy": "regex EN/ID; hanya proxy. Gunakan judge independen/rater manusia untuk angka final."
+    },
+    "C5_guard_diagnostics": {
+      "n_attempts": 0,
+      "n_successful": 0,
+      "input_block_harmful": {
+        "k": 0,
+        "n": 0,
+        "pct": null,
+        "lo": null,
+        "hi": null
+      },
+      "input_false_block_safe": {
+        "k": 0,
+        "n": 0,
+        "pct": null,
+        "lo": null,
+        "hi": null
+      },
+      "output_block_harmful": {
+        "k": 0,
+        "n": 0,
+        "pct": null,
+        "lo": null,
+        "hi": null
+      },
+      "output_false_block_safe": {
+        "k": 0,
+        "n": 0,
+        "pct": null,
+        "lo": null,
+        "hi": null
+      },
+      "overall_false_block_safe": {
+        "k": 0,
+        "n": 0,
+        "pct": null,
+        "lo": null,
+        "hi": null
+      },
+      "guard_error_rate": {
+        "k": 0,
+        "n": 0,
+        "pct": null,
+        "lo": null,
+        "hi": null
+      },
+      "guard_error_count": 0
+    }
+  },
+  "D4": null,
+  "D5": {
+    "intent": {
+      "n": 5,
+      "accuracy": {
+        "k": 4,
+        "n": 5,
+        "pct": 80.0,
+        "lo": 37.6,
+        "hi": 96.4
+      },
+      "macro_f1": 0.733,
+      "per_label": {
+        "ACADEMIC_HELP": {
+          "precision": 0.5,
+          "recall": 1.0,
+          "f1": 0.667,
+          "support": 1
+        },
+        "EMOTIONAL_DISTRESS": {
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "support": 1
+        },
+        "GENERAL_CHAT": {
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "support": 1
+        },
+        "MOTIVATION_SUPPORT": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "support": 1
+        },
+        "TASK_OPS": {
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "support": 1
+        }
+      },
+      "fallback_rate": {
+        "k": 4,
+        "n": 5,
+        "pct": 80.0,
+        "lo": 37.6,
+        "hi": 96.4
+      },
+      "latency": {
+        "n": 5,
+        "median_ms": 13068.3417,
+        "p95_ms": 15494.5599
+      }
+    },
+    "tool_calling": {
+      "n_trials": 52,
+      "n_unique_prompts": 10,
+      "tool_calls_found": 31,
+      "tool_call_rate": {
+        "k": 31,
+        "n": 52,
+        "pct": 59.6,
+        "lo": 46.1,
+        "hi": 71.8
+      },
+      "name_match_trials": {
+        "k": 16,
+        "n": 22,
+        "pct": 72.7,
+        "lo": 51.8,
+        "hi": 86.8
+      },
+      "name_match_unique_prompts": {
+        "k": 2,
+        "n": 8,
+        "pct": 25.0,
+        "lo": 7.1,
+        "hi": 59.1
+      },
+      "behavior_evaluated_trials": 52,
+      "behavior_match_rate": {
+        "k": 31,
+        "n": 52,
+        "pct": 59.6,
+        "lo": 46.1,
+        "hi": 71.8
+      },
+      "clarification_trials": 30,
+      "clarification_detection_rate": {
+        "k": 30,
+        "n": 30,
+        "pct": 100.0,
+        "lo": 88.6,
+        "hi": 100.0
+      },
+      "args_validation_trials": 22,
+      "args_valid_count": 16,
+      "args_validation_rate": {
+        "k": 16,
+        "n": 22,
+        "pct": 72.7,
+        "lo": 51.8,
+        "hi": 86.8
+      },
+      "execution_attempts": 15,
+      "execution_success_count": 15,
+      "execution_success_rate": {
+        "k": 15,
+        "n": 15,
+        "pct": 100.0,
+        "lo": 79.6,
+        "hi": 100.0
+      },
+      "confirmation_required_trials": 7,
+      "confirmation_flow_tested_trials": 0,
+      "confirmation_flow_status": "NOT_TESTED",
+      "not_executed_confirmation_required": 1,
+      "predictions_with_nonempty_args": 16,
+      "exact_argument_accuracy": "NOT_MEASURED: dataset has no expected_args",
+      "latency_trials": {
+        "n": 52,
+        "median_ms": 34006.1191,
+        "p95_ms": 239116.8716
+      },
+      "note": "Behavior and argument validation are measured separately. Execution success uses only actual execution attempts. Write operations requiring confirmation are not executed by this benchmark runner. Confirmation flow is not tested."
+    },
+    "tutor": "NOT_RUN (dataset tidak punya answer key untuk akurasi; jalankan --include-tutor untuk latensi)",
+    "errors": 0
+  }
+}

@@ -43,6 +43,7 @@ The WebSocket handler resumes the pipeline when it receives a
 """
 import uuid
 import logging
+import re
 from typing import Callable, Awaitable, Optional
 
 from backend.models.database import get_db
@@ -88,6 +89,128 @@ ProgressCallback = Optional[Callable[[dict], Awaitable[None]]]
 #   }
 
 pending_confirmations: dict[str, dict] = {}
+
+
+def _extract_explicit_task_id(message: str) -> Optional[int]:
+    """
+    Extract exactly one explicitly labeled task ID from the current
+    user message. Bare numbers, dates, and ordinal references are rejected.
+    Accepted examples: 'ID 12', 'ID: 12', 'ID#12'.
+    """
+    if not isinstance(message, str):
+        return None
+
+    matches = re.findall(
+        r"\bID\s*[:#]?\s*(\d+)\b",
+        message,
+        flags=re.IGNORECASE,
+    )
+
+    if len(matches) != 1:
+        return None
+
+    task_id = int(matches[0])
+    return task_id if task_id > 0 else None
+
+
+def _is_direct_task_delete_request(message: str) -> bool:
+    """
+    Detect direct requests to delete a scheduled task.
+
+    Informational questions such as 'bagaimana cara menghapus tugas?'
+    must not trigger schedule deletion handling.
+    """
+    if not isinstance(message, str):
+        return False
+
+    normalized = re.sub(r"\s+", " ", message.strip().lower())
+
+    if not normalized:
+        return False
+
+    informational_prefixes = (
+        "bagaimana",
+        "gimana",
+        "cara ",
+        "apa itu",
+        "kenapa",
+        "mengapa",
+        "apakah",
+        "jelaskan",
+        "tolong jelaskan",
+    )
+
+    if normalized.startswith(informational_prefixes):
+        return False
+
+    has_task_reference = bool(
+        re.search(r"\b(tugas|task|jadwal)\b", normalized)
+    )
+
+    if not has_task_reference:
+        return False
+
+    direct_command = bool(
+        re.search(r"\b(hapus|hapuskan|delete)\b", normalized)
+    )
+
+    stated_intention = bool(
+        re.search(
+            r"\b(saya|aku)\s+(ingin|mau|perlu)\s+menghapus\b",
+            normalized,
+        )
+    )
+
+    return direct_command or stated_intention
+
+
+async def _get_task_snapshot(task_id: int) -> Optional[dict]:
+    """
+    Fetch a task by ID, including completed tasks.
+    Returns a stable identity snapshot or None if the task does not exist.
+    """
+    db = await get_db()
+    try:
+        cursor = await db.execute(
+            """
+            SELECT id, task, scheduled_date, start_time, end_time, status
+            FROM schedules
+            WHERE id = ?
+            """,
+            (task_id,),
+        )
+        row = await cursor.fetchone()
+
+        if row is None:
+            return None
+
+        return {
+            "id": row["id"],
+            "task": row["task"],
+            "scheduled_date": row["scheduled_date"],
+            "start_time": row["start_time"],
+            "end_time": row["end_time"],
+            "status": row["status"],
+        }
+    finally:
+        await db.close()
+
+
+def _format_delete_confirmation(snapshot: dict) -> str:
+    """Build a confirmation message tied to the exact task identity."""
+    date = snapshot["scheduled_date"] or "Belum ditentukan"
+    start = snapshot["start_time"] or "--:--"
+    end = snapshot["end_time"] or "--:--"
+
+    return (
+        "Ara akan menghapus tugas berikut secara permanen:\n"
+        f"- ID: {snapshot['id']}\n"
+        f"- Tugas: {snapshot['task']}\n"
+        f"- Tanggal: {date}\n"
+        f"- Waktu: {start}–{end}\n"
+        f"- Status: {snapshot['status']}\n\n"
+        "Apakah kamu yakin ingin menghapus tugas ini?"
+    )
 
 
 async def run_pipeline(
@@ -235,65 +358,162 @@ async def run_pipeline(
     # TOOL CALL CHECK — runs AFTER Layer 3, BEFORE Layer 4
     # ═══════════════════════════════════════════════════════════════════════════
 
-    if tool_call:
+    policy_a_delete_request = (
+        _is_direct_task_delete_request(message)
+        and _extract_explicit_task_id(message) is None
+    )
+
+    if policy_a_delete_request:
+        # Policy A: selalu ambil jadwal aktual, terlepas dari
+        # tool_call yang dihasilkan Planner.
+        tool_result = await mcp.call_tool("get_schedule")
+
+        reviewed_response = _format_tool_result(
+            "get_schedule",
+            tool_result,
+        )
+
+        if tool_result.get("success") and tool_result.get("tasks"):
+            reviewed_response += (
+                "\n\nSilakan pilih tugas yang ingin dihapus "
+                "dengan menyebutkan ID persis dari daftar di atas."
+            )
+
+    elif tool_call:
         tool_name = tool_call.get("name", "")
         tool_args = tool_call.get("args", {})
 
+        if not isinstance(tool_args, dict):
+            tool_args = {}
+
         if mcp.is_destructive(tool_name):
-            # ── Destructive tool: suspend and ask for confirmation ─────────────
-            confirm_id = str(uuid.uuid4())
-            confirm_message = mcp.get_confirm_message(tool_name)
+            delete_snapshot = None
+            validation_error = None
+            handled_without_confirmation = False
 
-            pending_confirmations[confirm_id] = {
-                "confirm_id": confirm_id,
-                "tool_name": tool_name,
-                "tool_args": tool_args,
-                "confirm_message": confirm_message,
-                "pipeline_context": {
-                    "message": message,
-                    "emotion": emotion,
-                    "intent": intent,
-                    "intensity": intensity,
-                    "flags": flags,
-                    "eth_status": eth_status,
-                    "eth_note": eth_note,
-                    "policy_recs": policy_recs,
-                    "workload_check": workload_check,
-                    "agent_used": agent_used,
-                    "schedule_tasks": schedule_tasks,
-                    "raw_response": reviewed_response,
-                },
-            }
+            # ── Extra validation for delete_task ─────────────────────────
+            if tool_name == "delete_task":
+                explicit_id = _extract_explicit_task_id(message)
 
-            logger.info(
-                f"Destructive tool '{tool_name}' pending confirmation "
-                f"(confirm_id={confirm_id})"
-            )
+                if explicit_id is None:
+                    # Jangan tampilkan draft Planner karena bisa mengandung
+                    # daftar tugas atau ID yang tidak bersumber dari database.
+                    tool_result = await mcp.call_tool("get_schedule")
 
-            await _emit({
-                "type": "tool_confirm",
-                "confirm_id": confirm_id,
-                "tool": tool_name,
-                "args": tool_args,
-                "description": confirm_message,
-                "message": f"Ara membutuhkan konfirmasi untuk: {tool_name}",
-            })
+                    reviewed_response = _format_tool_result(
+                        "get_schedule",
+                        tool_result,
+                    )
 
-            # Pipeline is suspended — return None so the caller knows to wait
-            return None
+                    if tool_result.get("success") and tool_result.get("tasks"):
+                        reviewed_response += (
+                            "\n\nSilakan pilih tugas yang ingin dihapus "
+                            "dengan menyebutkan ID persis dari daftar di atas."
+                        )
+
+                    # Tandai bahwa permintaan sudah ditangani tanpa konfirmasi.
+                    handled_without_confirmation = True
+                else:
+                    task_id = tool_args.get("task_id")
+
+                    if type(task_id) is not int or task_id <= 0:
+                        validation_error = (
+                            "Ara belum bisa menghapus tugas karena ID tugas "
+                            "tidak valid. Silakan sebutkan ID tugas secara eksplisit."
+                        )
+                    elif explicit_id != task_id:
+                        validation_error = (
+                            f"ID yang kamu sebutkan ({explicit_id}) tidak cocok "
+                            f"dengan ID tugas yang akan diproses ({task_id}). "
+                            "Silakan periksa kembali daftar jadwal dan sebutkan "
+                            "ID yang tepat."
+                        )
+                    else:
+                        delete_snapshot = await _get_task_snapshot(task_id)
+
+                        if delete_snapshot is None:
+                            validation_error = (
+                                f"Tugas dengan ID {task_id} tidak ditemukan. "
+                                "Silakan periksa kembali daftar jadwal."
+                            )
+
+            if handled_without_confirmation:
+                pass
+            elif validation_error:
+                # Do not create a confirmation or execute the tool.
+                reviewed_response = (
+                    (reviewed_response + "\n\n" if reviewed_response else "")
+                    + validation_error
+                )
+            else:
+                # ── Destructive tool: suspend and ask for confirmation ───
+                confirm_id = str(uuid.uuid4())
+                confirm_message = mcp.get_confirm_message(tool_name)
+
+                if tool_name == "delete_task":
+                    confirm_message = _format_delete_confirmation(
+                        delete_snapshot
+                    )
+
+                pending_confirmations[confirm_id] = {
+                    "confirm_id": confirm_id,
+                    "tool_name": tool_name,
+                    "tool_args": dict(tool_args),
+                    "confirm_message": confirm_message,
+                    "delete_task_snapshot": delete_snapshot,
+                    "pipeline_context": {
+                        "message": message,
+                        "emotion": emotion,
+                        "intent": intent,
+                        "intensity": intensity,
+                        "flags": flags,
+                        "eth_status": eth_status,
+                        "eth_note": eth_note,
+                        "policy_recs": policy_recs,
+                        "workload_check": workload_check,
+                        "agent_used": agent_used,
+                        "schedule_tasks": schedule_tasks,
+                        "raw_response": reviewed_response,
+                    },
+                }
+
+                logger.info(
+                    f"Destructive tool '{tool_name}' pending confirmation "
+                    f"(confirm_id={confirm_id})"
+                )
+
+                await _emit({
+                    "type": "tool_confirm",
+                    "confirm_id": confirm_id,
+                    "tool": tool_name,
+                    "args": tool_args,
+                    "description": confirm_message,
+                    "message": f"Ara membutuhkan konfirmasi untuk: {tool_name}",
+                })
+
+                return None
 
         else:
-            # ── Non-destructive tool: execute immediately ──────────────────────
-            logger.info(f"Executing non-destructive tool '{tool_name}' with args {tool_args}")
-            await _emit({"type": "layer_progress", "layer": 3,
-                         "step": "tool_call",
-                         "message": f"Menjalankan tool: {tool_name}..."})
+            # ── Non-destructive tool: execute immediately ────────────────
+            logger.info(
+                f"Executing non-destructive tool '{tool_name}' "
+                f"with args {tool_args}"
+            )
+            await _emit({
+                "type": "layer_progress",
+                "layer": 3,
+                "step": "tool_call",
+                "message": f"Menjalankan tool: {tool_name}...",
+            })
 
             tool_result = await mcp.call_tool(tool_name, **tool_args)
 
-            # Append tool result to the reviewed response for Layer 4
             result_summary = _format_tool_result(tool_name, tool_result)
-            reviewed_response = reviewed_response + "\n\n" + result_summary if reviewed_response else result_summary
+            reviewed_response = (
+                reviewed_response + "\n\n" + result_summary
+                if reviewed_response
+                else result_summary
+            )
 
     # ═══════════════════════════════════════════════════════════════════════════
     # LAYER 4: Maternal Guardrail
@@ -391,15 +611,74 @@ async def resume_after_confirmation(
     )
 
     if approved:
-        logger.info(f"User approved tool '{tool_name}' (confirm_id={confirm_id}). Executing.")
-        await _emit({"type": "layer_progress", "layer": 3,
-                     "step": "tool_executing",
-                     "message": f"Menjalankan: {tool_name}..."})
+        execution_allowed = True
 
-        tool_result = await mcp.call_tool(tool_name, **tool_args)
-        result_summary = _format_tool_result(tool_name, tool_result)
-        reviewed_response = (reviewed_response + "\n\n" + result_summary
-                             if reviewed_response else result_summary)
+        if tool_name == "delete_task":
+            confirmed_snapshot = pending.get("delete_task_snapshot")
+            task_id = tool_args.get("task_id")
+            explicit_id = _extract_explicit_task_id(message)
+
+            if (
+                type(task_id) is not int
+                or task_id <= 0
+                or explicit_id != task_id
+                or not isinstance(confirmed_snapshot, dict)
+                or confirmed_snapshot.get("id") != task_id
+            ):
+                execution_allowed = False
+                block_reason = (
+                    "Penghapusan dibatalkan karena identitas tugas "
+                    "tidak cocok dengan konfirmasi yang tersimpan."
+                )
+            else:
+                current_snapshot = await _get_task_snapshot(task_id)
+
+                if current_snapshot is None:
+                    execution_allowed = False
+                    block_reason = (
+                        f"Tugas dengan ID {task_id} sudah tidak ditemukan. "
+                        "Tidak ada penghapusan yang dilakukan."
+                    )
+                elif current_snapshot != confirmed_snapshot:
+                    execution_allowed = False
+                    block_reason = (
+                        f"Data tugas dengan ID {task_id} telah berubah "
+                        "sejak konfirmasi ditampilkan. Penghapusan dibatalkan. "
+                        "Silakan periksa jadwal dan ulangi permintaan."
+                    )
+
+            if not execution_allowed:
+                reviewed_response = (
+                    (reviewed_response + "\n\n" if reviewed_response else "")
+                    + block_reason
+                )
+
+        if execution_allowed:
+            logger.info(
+                f"User approved tool '{tool_name}' "
+                f"(confirm_id={confirm_id}). Executing."
+            )
+            await _emit({
+                "type": "layer_progress",
+                "layer": 3,
+                "step": "tool_executing",
+                "message": f"Menjalankan: {tool_name}...",
+            })
+
+            if tool_name == "delete_task":
+                tool_result = await mcp.call_tool(
+                    tool_name,
+                    **tool_args,
+                    expected_snapshot=confirmed_snapshot,
+                )
+            else:
+                tool_result = await mcp.call_tool(tool_name, **tool_args)
+            result_summary = _format_tool_result(tool_name, tool_result)
+            reviewed_response = (
+                reviewed_response + "\n\n" + result_summary
+                if reviewed_response
+                else result_summary
+            )
     else:
         logger.info(f"User cancelled tool '{tool_name}' (confirm_id={confirm_id}).")
         reviewed_response = (
@@ -446,6 +725,38 @@ def _format_tool_result(tool_name: str, result: dict) -> str:
     if not result.get("success"):
         error = result.get("error", "Terjadi kesalahan.")
         return f"[Ara mencoba menjalankan '{tool_name}' tapi terjadi kesalahan: {error}]"
+
+    if tool_name == "get_schedule":
+        tasks = result.get("tasks", [])
+
+        if not tasks:
+            return "Tidak ada tugas aktif dalam jadwal saat ini."
+
+        lines = [
+            "Berikut daftar tugas aktual dari jadwal:",
+        ]
+
+        for task in tasks:
+            task_id = task.get("id")
+            title = task.get("task", "Tanpa nama")
+            scheduled_date = (
+                task.get("scheduled_date")
+                or task.get("deadline")
+                or "-"
+            )
+            start_time = task.get("start_time") or "-"
+            end_time = task.get("end_time") or "-"
+            status = task.get("status", "-")
+            priority = task.get("priority", "-")
+
+            lines.append(
+                f"- ID: {task_id} | {title} | "
+                f"Tanggal: {scheduled_date} | "
+                f"Waktu: {start_time}-{end_time} | "
+                f"Status: {status} | Prioritas: {priority}"
+            )
+
+        return "\n".join(lines)
 
     if tool_name == "add_task":
         task = result.get("task", {})

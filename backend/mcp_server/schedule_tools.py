@@ -32,37 +32,38 @@ async def _get_db():
 async def get_schedule(status_filter: Optional[str] = None) -> dict:
     """
     Retrieve the user's task list from the database.
-
-    Args:
-        status_filter: Optional — one of 'pending', 'in_progress', 'completed'.
-                       If None, returns all non-completed tasks.
-
-    Returns:
-        {
-            "success": bool,
-            "tasks": [ { id, task, deadline, est_hours, priority, status, created_at } ],
-            "count": int
-        }
     """
     db = await _get_db()
     try:
+        columns = (
+            "id, task, deadline, scheduled_date, start_time, end_time, "
+            "est_hours, priority, status, created_at"
+        )
         if status_filter:
             cursor = await db.execute(
-                "SELECT id, task, deadline, est_hours, priority, status, created_at "
-                "FROM schedules WHERE status = ? ORDER BY deadline",
+                f"SELECT {columns} FROM schedules "
+                "WHERE status = ? ORDER BY deadline, start_time",
                 (status_filter,)
             )
         else:
             cursor = await db.execute(
-                "SELECT id, task, deadline, est_hours, priority, status, created_at "
-                "FROM schedules WHERE status != 'completed' ORDER BY deadline"
+                f"SELECT {columns} FROM schedules "
+                "WHERE status != 'completed' "
+                "ORDER BY deadline, start_time"
             )
         rows = await cursor.fetchall()
         tasks = [
             {
-                "id": r[0], "task": r[1], "deadline": r[2],
-                "est_hours": r[3], "priority": r[4],
-                "status": r[5], "created_at": str(r[6]),
+                "id": r[0],
+                "task": r[1],
+                "deadline": r[2],
+                "scheduled_date": r[3],
+                "start_time": r[4],
+                "end_time": r[5],
+                "est_hours": r[6],
+                "priority": r[7],
+                "status": r[8],
+                "created_at": str(r[9]),
             }
             for r in rows
         ]
@@ -140,36 +141,144 @@ async def get_upcoming_deadlines(days: int = 3) -> dict:
 
 async def add_task(
     task: str,
-    deadline: str,
+    scheduled_date: Optional[str] = None,
+    start_time: Optional[str] = None,
+    end_time: Optional[str] = None,
     est_hours: float = 2.0,
     priority: str = "Medium",
+    deadline: Optional[str] = None,
 ) -> dict:
     """
     Add a new task to the schedule.
 
     Args:
-        task:      Task description.
-        deadline:  Deadline string (e.g. '2026-03-10').
-        est_hours: Estimated hours to complete (default: 2.0).
-        priority:  'High', 'Medium', or 'Low' (default: 'Medium').
+        task:           Task description.
+        scheduled_date: Scheduled date (YYYY-MM-DD).
+        start_time:     Start time (HH:MM).
+        end_time:       End time (HH:MM).
+        est_hours:      Estimated hours to complete (default: 2.0).
+        priority:       'High', 'Medium', or 'Low' (default: 'Medium').
+        deadline:       Legacy deadline parameter for backward compatibility.
 
     Returns:
         { "success": bool, "task": { ... } | None, "error": str | None }
     """
+    legacy_call = scheduled_date is None and deadline is not None
+
+    if legacy_call:
+        scheduled_date = deadline
+
+    if not scheduled_date:
+        return {
+            "success": False,
+            "task": None,
+            "error": "scheduled_date is required.",
+        }
+
+    if not legacy_call and (start_time is None or end_time is None):
+        return {
+            "success": False,
+            "task": None,
+            "error": (
+                "scheduled_date, start_time, and end_time are required "
+                "for new scheduled tasks."
+            ),
+        }
+
+    if (start_time is None) != (end_time is None):
+        return {
+            "success": False,
+            "task": None,
+            "error": "start_time and end_time must be provided together.",
+        }
+
+    # Validate task description
+    task = str(task).strip() if task is not None else ""
+    if not task:
+        return {
+            "success": False,
+            "task": None,
+            "error": "Task description is required.",
+        }
+
+    # Validate date format
+    try:
+        parsed_date = datetime.strptime(scheduled_date, "%Y-%m-%d").date()
+        if parsed_date.isoformat() != scheduled_date:
+            raise ValueError
+    except (TypeError, ValueError):
+        return {
+            "success": False,
+            "task": None,
+            "error": "scheduled_date must use YYYY-MM-DD format.",
+        }
+
+    # Validate time range when provided
+    if start_time is not None:
+        try:
+            parsed_start = datetime.strptime(start_time, "%H:%M").time()
+            parsed_end = datetime.strptime(end_time, "%H:%M").time()
+
+            if parsed_start.strftime("%H:%M") != start_time:
+                raise ValueError
+            if parsed_end.strftime("%H:%M") != end_time:
+                raise ValueError
+            if parsed_end <= parsed_start:
+                raise ValueError
+
+        except (TypeError, ValueError):
+            return {
+                "success": False,
+                "task": None,
+                "error": (
+                    "Invalid time range. Use HH:MM format and ensure "
+                    "end_time is later than start_time."
+                ),
+            }
+
     # Normalize priority
-    priority = priority.capitalize()
+    priority = (priority or "Medium").capitalize()
     if priority not in ("High", "Medium", "Low"):
         priority = "Medium"
 
-    # Clamp hours
-    est_hours = max(0.5, min(24.0, float(est_hours)))
+    # Validate and clamp estimated hours
+    try:
+        est_hours = float(est_hours)
+        if not 0.5 <= est_hours <= 24.0:
+            return {
+                "success": False,
+                "task": None,
+                "error": "est_hours must be between 0.5 and 24.0.",
+            }
+    except (TypeError, ValueError):
+        return {
+            "success": False,
+            "task": None,
+            "error": "est_hours must be a valid number.",
+        }
 
     db = await _get_db()
     try:
         cursor = await db.execute(
-            "INSERT INTO schedules (task, deadline, est_hours, priority) "
-            "VALUES (?, ?, ?, ?) RETURNING id, task, deadline, est_hours, priority, status, created_at",
-            (task, deadline, est_hours, priority)
+            """
+            INSERT INTO schedules (
+                task, deadline, scheduled_date,
+                start_time, end_time, est_hours,
+                priority
+            ) VALUES (?, ?, ?, ?, ?, ?, ?)
+            RETURNING id, task, deadline, scheduled_date,
+                start_time, end_time, est_hours,
+                priority, status, created_at
+            """,
+            (
+                task,
+                scheduled_date,
+                scheduled_date,
+                start_time,
+                end_time,
+                est_hours,
+                priority,
+            ),
         )
         row = await cursor.fetchone()
         await db.commit()
@@ -177,12 +286,23 @@ async def add_task(
             return {
                 "success": True,
                 "task": {
-                    "id": row[0], "task": row[1], "deadline": row[2],
-                    "est_hours": row[3], "priority": row[4],
-                    "status": row[5], "created_at": str(row[6]),
+                    "id": row[0],
+                    "task": row[1],
+                    "deadline": row[2],
+                    "scheduled_date": row[3],
+                    "start_time": row[4],
+                    "end_time": row[5],
+                    "est_hours": row[6],
+                    "priority": row[7],
+                    "status": row[8],
+                    "created_at": str(row[9]),
                 },
             }
-        return {"success": False, "task": None, "error": "Insert returned no row"}
+        return {
+            "success": False,
+            "task": None,
+            "error": "Insert returned no row",
+        }
     except Exception as e:
         logger.error(f"add_task error: {e}")
         return {"success": False, "task": None, "error": str(e)}
@@ -241,47 +361,139 @@ async def update_task_status(task_id: int, status: str) -> dict:
         await db.close()
 
 
-async def delete_task(task_id: int) -> dict:
+async def delete_task(
+    task_id: int,
+    expected_snapshot: Optional[dict] = None,
+) -> dict:
     """
-    Permanently delete a task from the schedule.
-
-    Args:
-        task_id: The integer ID of the task to delete.
-
-    Returns:
-        { "success": bool, "deleted_task": { ... } | None, "error": str | None }
+    Delete a task only if its current identity still matches the
+    snapshot that was shown to and approved by the user.
     """
+    if type(task_id) is not int or task_id <= 0:
+        return {
+            "success": False,
+            "deleted_task": None,
+            "error": "ID tugas tidak valid.",
+        }
+
+    required_fields = {
+        "id",
+        "task",
+        "scheduled_date",
+        "start_time",
+        "end_time",
+        "status",
+    }
+
+    if (
+        not isinstance(expected_snapshot, dict)
+        or not required_fields.issubset(expected_snapshot)
+        or expected_snapshot.get("id") != task_id
+    ):
+        return {
+            "success": False,
+            "deleted_task": None,
+            "error": (
+                "Snapshot konfirmasi tidak valid. "
+                "Penghapusan hanya dapat dilakukan melalui "
+                "konfirmasi yang telah diverifikasi."
+            ),
+        }
+
     db = await _get_db()
+
     try:
-        # Fetch the task first so we can return it in the result
+        # Acquire the SQLite write reservation before reading the task.
+        # This prevents another writer from changing it between SELECT and DELETE.
+        await db.execute("BEGIN IMMEDIATE")
+
         cursor = await db.execute(
-            "SELECT id, task, deadline, est_hours, priority, status, created_at "
-            "FROM schedules WHERE id = ?",
-            (task_id,)
+            """
+            SELECT
+                id, task, deadline, scheduled_date,
+                start_time, end_time, est_hours,
+                priority, status, created_at
+            FROM schedules
+            WHERE id = ?
+            """,
+            (task_id,),
         )
         row = await cursor.fetchone()
-        if not row:
+
+        if row is None:
+            await db.rollback()
             return {
                 "success": False,
                 "deleted_task": None,
-                "error": f"Task dengan ID {task_id} tidak ditemukan.",
+                "error": f"Tugas dengan ID {task_id} tidak ditemukan.",
             }
 
-        deleted_task = {
-            "id": row[0], "task": row[1], "deadline": row[2],
-            "est_hours": row[3], "priority": row[4],
-            "status": row[5], "created_at": str(row[6]),
-        }
+        # Delete only if the identity still matches the approved snapshot.
+        cursor = await db.execute(
+            """
+            DELETE FROM schedules
+            WHERE id = ?
+              AND task = ?
+              AND scheduled_date IS ?
+              AND start_time IS ?
+              AND end_time IS ?
+              AND status IS ?
+            """,
+            (
+                task_id,
+                expected_snapshot["task"],
+                expected_snapshot["scheduled_date"],
+                expected_snapshot["start_time"],
+                expected_snapshot["end_time"],
+                expected_snapshot["status"],
+            ),
+        )
 
-        await db.execute("DELETE FROM schedules WHERE id = ?", (task_id,))
+        if cursor.rowcount != 1:
+            await db.rollback()
+            return {
+                "success": False,
+                "deleted_task": None,
+                "error": (
+                    f"Data tugas dengan ID {task_id} berubah "
+                    "sejak konfirmasi. Penghapusan dibatalkan."
+                ),
+            }
+
         await db.commit()
 
-        logger.info(f"Deleted task id={task_id}: '{deleted_task['task']}'")
-        return {"success": True, "deleted_task": deleted_task, "error": None}
+        deleted_task = {
+            "id": row[0],
+            "task": row[1],
+            "deadline": row[2],
+            "scheduled_date": row[3],
+            "start_time": row[4],
+            "end_time": row[5],
+            "est_hours": row[6],
+            "priority": row[7],
+            "status": row[8],
+            "created_at": str(row[9]),
+        }
+
+        logger.info(
+            f"Deleted task id={task_id}: '{deleted_task['task']}'"
+        )
+
+        return {
+            "success": True,
+            "deleted_task": deleted_task,
+            "error": None,
+        }
 
     except Exception as e:
+        await db.rollback()
         logger.error(f"delete_task error: {e}")
-        return {"success": False, "deleted_task": None, "error": str(e)}
+        return {
+            "success": False,
+            "deleted_task": None,
+            "error": str(e),
+        }
+
     finally:
         await db.close()
 
@@ -377,14 +589,42 @@ SCHEDULE_TOOLS = {
     },
     "add_task": {
         "fn": add_task,
-        "description": "Tambahkan tugas baru ke jadwal user",
+        "description": (
+            "Tambahkan tugas baru dengan tanggal, jam mulai, dan jam selesai."
+        ),
         "destructive": True,
         "confirm_message": "Ara akan menambahkan tugas baru ke jadwal kamu.",
         "parameters": {
-            "task": {"type": "string", "description": "Deskripsi tugas", "required": True},
-            "deadline": {"type": "string", "description": "Deadline (YYYY-MM-DD)", "required": True},
-            "est_hours": {"type": "number", "description": "Estimasi jam (default: 2.0)", "required": False},
-            "priority": {"type": "string", "description": "'High', 'Medium', atau 'Low'", "required": False},
+            "task": {
+                "type": "string",
+                "description": "Deskripsi tugas",
+                "required": True,
+            },
+            "scheduled_date": {
+                "type": "string",
+                "description": "Tanggal jadwal dalam format YYYY-MM-DD",
+                "required": True,
+            },
+            "start_time": {
+                "type": "string",
+                "description": "Jam mulai dalam format HH:MM",
+                "required": True,
+            },
+            "end_time": {
+                "type": "string",
+                "description": "Jam selesai dalam format HH:MM",
+                "required": True,
+            },
+            "est_hours": {
+                "type": "number",
+                "description": "Estimasi durasi pengerjaan",
+                "required": False,
+            },
+            "priority": {
+                "type": "string",
+                "description": "'High', 'Medium', atau 'Low'",
+                "required": False,
+            },
         },
     },
     "update_task_status": {

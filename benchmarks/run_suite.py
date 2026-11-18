@@ -83,6 +83,54 @@ def _take(items, n):
     return out
 
 
+def _prepare_dataset_items(
+    dataset,
+    items,
+    limit,
+    no_dedupe,
+    no_dedupe_d5,
+    excluded_d5_ids,
+):
+    total = len(items)
+    excluded_ids = []
+    excluded_count = 0
+    if dataset == "d5":
+        available_ids = {item["id"] for item in items}
+        unknown_ids = set(excluded_d5_ids) - available_ids
+        if unknown_ids:
+            raise ValueError(
+                "ID eksklusi D5 tidak ditemukan: "
+                + ", ".join(sorted(unknown_ids))
+            )
+        excluded_ids = [
+            item_id for item_id in excluded_d5_ids
+        ]
+        excluded_set = set(excluded_ids)
+        items = [
+            item for item in items
+            if item["id"] not in excluded_set
+        ]
+        excluded_count = total - len(items)
+    post_exclusion = len(items)
+    dedupe_applied = False
+    if not no_dedupe and items and "cluster" in items[0]:
+        if dataset != "d5" or not no_dedupe_d5:
+            items = datasets.dedupe(items)
+            dedupe_applied = True
+    post_dedupe = len(items)
+    items = _take(items, limit)
+    metadata = {
+        "total_items": total,
+        "excluded_items": excluded_count,
+        "excluded_ids": excluded_ids,
+        "post_exclusion_items": post_exclusion,
+        "post_dedupe_items": post_dedupe,
+        "dedupe_applied": dedupe_applied,
+        "selected_items": len(items),
+    }
+    return items, metadata
+
+
 def _parse_plan(text):
     try:
         data = json.loads(text)
@@ -320,7 +368,7 @@ def run_d3(items, store, ctx):
                     )
 
                     line.append("C6:ERROR")
-            
+
             # ---------------------------------------------------------
             # C5: input guard -> generation -> output guard
             # ---------------------------------------------------------
@@ -609,73 +657,367 @@ def run_d4(items, store, ctx):
 
 # ───────────────────────────── D5: intent (Layer 1) + tool calling (Layer 2) ─────────────────────────────
 
+def _d5_validate_tool_args(tool_name, args):
+    """Validasi kontrak argumen tanpa mengeksekusi operasi yang mengubah data."""
+    if not isinstance(args, dict):
+        return {"valid": False, "reason": "arguments_not_object"}
+
+    if tool_name == "get_schedule":
+        if set(args) - {"status_filter"}:
+            return {"valid": False, "reason": "unknown_argument"}
+        if "status_filter" in args and not isinstance(args["status_filter"], str):
+            return {"valid": False, "reason": "status_filter_must_be_string"}
+        return {"valid": True, "reason": "valid"}
+
+    if tool_name == "add_task":
+        allowed = {
+            "task", "scheduled_date", "start_time", "end_time",
+            "est_hours", "priority",
+        }
+        if set(args) - allowed:
+            return {"valid": False, "reason": "unknown_argument"}
+
+        required = ("task", "scheduled_date", "start_time", "end_time")
+        missing = [key for key in required if key not in args]
+        if missing:
+            return {"valid": False, "reason": "missing_required:" + ",".join(missing)}
+
+        if not isinstance(args["task"], str) or not args["task"].strip():
+            return {"valid": False, "reason": "invalid_task"}
+
+        try:
+            date_value = args["scheduled_date"]
+            if not isinstance(date_value, str) or not re.fullmatch(r"\d{4}-\d{2}-\d{2}", date_value):
+                raise ValueError
+            datetime.strptime(date_value, "%Y-%m-%d")
+        except (TypeError, ValueError):
+            return {"valid": False, "reason": "invalid_scheduled_date"}
+
+        try:
+            start = args["start_time"]
+            end = args["end_time"]
+            if not isinstance(start, str) or not re.fullmatch(r"\d{2}:\d{2}", start):
+                raise ValueError
+            if not isinstance(end, str) or not re.fullmatch(r"\d{2}:\d{2}", end):
+                raise ValueError
+            start_value = datetime.strptime(start, "%H:%M")
+            end_value = datetime.strptime(end, "%H:%M")
+            if end_value <= start_value:
+                raise ValueError
+        except (TypeError, ValueError):
+            return {"valid": False, "reason": "invalid_time_range"}
+
+        if "est_hours" in args:
+            value = args["est_hours"]
+            if isinstance(value, bool) or not isinstance(value, (int, float)):
+                return {"valid": False, "reason": "invalid_est_hours"}
+            if value <= 0:
+                return {"valid": False, "reason": "invalid_est_hours"}
+
+        if "priority" in args and args["priority"] not in ("High", "Medium", "Low"):
+            return {"valid": False, "reason": "invalid_priority"}
+
+        return {"valid": True, "reason": "valid"}
+
+    if tool_name == "delete_task":
+        task_id = args.get("task_id")
+        if isinstance(task_id, bool) or not isinstance(task_id, int) or task_id <= 0:
+            return {"valid": False, "reason": "invalid_task_id"}
+        return {"valid": True, "reason": "valid"}
+
+    return {"valid": False, "reason": "unknown_tool"}
+
+
+def _d5_detect_clarification(raw, missing_information):
+    """Heuristik konservatif untuk mendeteksi permintaan informasi yang hilang."""
+    text = str(raw or "").lower()
+
+    if not text.strip():
+        return False
+
+    asks_question = (
+        "?" in text
+        or re.search(
+            r"\b(mohon|silakan|tolong|bisa berikan|harap berikan|"
+            r"perlu informasi|saya perlu|boleh tahu|yang mana)\b",
+            text,
+        ) is not None
+    )
+
+    if not asks_question:
+        return False
+
+    missing = set(missing_information or [])
+
+    if "scheduled_date" in missing:
+        return re.search(
+            r"\b(tanggal|hari|kapan|tanggal berapa)\b",
+            text,
+        ) is not None
+
+    if "task_identity" in missing:
+        return re.search(
+            r"\b(id|identitas|tugas yang mana|jadwal yang mana|pilih)\b",
+            text,
+        ) is not None
+
+    return True
+
+
+def _d5_execute_get_schedule_in_memory(args):
+    """Eksekusi get_schedule pada SQLite in-memory, tidak menyentuh student.db."""
+    import asyncio
+    import aiosqlite
+    from backend.mcp_server import schedule_tools
+
+    original_get_db = schedule_tools._get_db
+
+    async def memory_get_db():
+        db = await aiosqlite.connect(":memory:")
+        db.row_factory = aiosqlite.Row
+        await db.executescript("""
+            CREATE TABLE schedules (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                task TEXT NOT NULL,
+                deadline TEXT NOT NULL,
+                scheduled_date TEXT,
+                start_time TEXT,
+                end_time TEXT,
+                est_hours REAL NOT NULL DEFAULT 2,
+                priority TEXT NOT NULL DEFAULT 'Medium',
+                status TEXT NOT NULL DEFAULT 'pending',
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            );
+        """)
+        await db.commit()
+        return db
+
+    schedule_tools._get_db = memory_get_db
+    try:
+        return asyncio.run(schedule_tools.get_schedule(**args))
+    finally:
+        schedule_tools._get_db = original_get_db
+
+
 def run_d5(items, store, ctx):
     from backend.core.layer_1_orchestrator import ExecutiveAgent
     from backend.core.layer_2_specialists import SpecialistAgents, extract_tool_call
+
     agent, spec = ExecutiveAgent(), SpecialistAgents()
+
     for i, it in enumerate(items, 1):
         cat = it["category"]
-        cfg = {"intent_classification": "L1_intent", "tool_calling": "L2_planner_tools", "academic_tutor": "L2_tutor"}.get(cat, cat)
+        cfg = {
+            "intent_classification": "L1_intent",
+            "tool_calling": "L2_planner_tools",
+            "academic_tutor": "L2_tutor",
+        }.get(cat, cat)
+
         if store.has(cfg, it["id"]):
             continue
         if cat == "academic_tutor" and not ctx["include_tutor"]:
             continue
+
         try:
             t0 = _now()
+
             if cat == "intent_classification":
                 agent.last_intent_source = "unknown"
                 pred = agent._classify_intent(it["prompt"])
-                src, raw = getattr(agent, "last_intent_source", "unknown"), pred
+                src = getattr(agent, "last_intent_source", "unknown")
+                raw = pred
+
             elif cat == "tool_calling":
                 raw = spec.run_planner(
                     task_list=[],
                     user_input=it["prompt"],
                 )
-
                 call = extract_tool_call(raw)
+                tool_call_found = call is not None
 
-                if call:
+                if tool_call_found:
                     tool_name = call["name"]
                     tool_args = call["args"]
-                    tool_call_found = True
                 else:
                     tool_name = "NONE"
                     tool_args = {}
-                    tool_call_found = False
 
                 pred = json.dumps(
-                    {
-                        "name": tool_name,
-                        "args": tool_args,
-                    },
+                    {"name": tool_name, "args": tool_args},
                     sort_keys=True,
                     ensure_ascii=False,
                 )
-
                 src = "llm"
 
-            else:  # tutor: tidak ada answer key di dataset -> hanya latensi
+            else:
                 raw = spec.run_tutor(it["prompt"])
                 pred, src = "N/A", "llm"
+
             dt = (_now() - t0) * 1000
             llm.note_success()
 
-            # Dataset saat ini menyediakan expected_target (nama tool), belum menyediakan expected_args. 
-            # Pertahankan pemetaan None menjadi "NONE" untuk tool seperti schedule_service.get_tasks agar tidak error.
             gold = it["gold"]
-            
             extra = {}
 
             if cat == "tool_calling":
+                evaluation = it.get("evaluation", {})
+                expected_tool = evaluation.get("target_tool", gold)
+                expected_first_tool = evaluation.get("expected_first_tool", expected_tool)
+                expected_behavior = evaluation.get("expected_behavior", "unknown")
+                missing_information = evaluation.get(
+                    "missing_information",
+                    evaluation.get("missing_args", []),
+                )
+
+                tool_name_match = tool_call_found and tool_name == expected_first_tool
+                clarification_detected = _d5_detect_clarification(
+                    raw,
+                    missing_information,
+                )
+
+                args_result = (
+                    _d5_validate_tool_args(tool_name, tool_args)
+                    if tool_call_found
+                    else {"valid": False, "reason": "no_tool_call"}
+                )
+
+                behavior_match = False
+                execution_status = "NOT_RUN"
+                execution_success = None
+                execution_error = None
+                confirmation_required = bool(
+                    evaluation.get("requires_confirmation", False)
+                )
+                confirmation_flow_tested = False
+
+                if expected_behavior == "tool_call_then_clarify":
+                    # Evaluasi tahap pertama: ambil jadwal sebelum meminta ID.
+                    # Klarifikasi setelah hasil tool diterima belum diuji runner.
+                    behavior_match = (
+                        tool_call_found
+                        and tool_name == expected_first_tool
+                        and args_result["valid"]
+                    )
+                    args_validation = (
+                        "VALID" if args_result["valid"] else "INVALID"
+                    )
+
+                    if (
+                        tool_call_found
+                        and tool_name == "get_schedule"
+                        and args_result["valid"]
+                    ):
+                        try:
+                            result = _d5_execute_get_schedule_in_memory(tool_args)
+                            execution_success = bool(result.get("success"))
+                            execution_status = (
+                                "SUCCESS" if execution_success else "FAILED"
+                            )
+                            if not execution_success:
+                                execution_error = result.get("error")
+                        except Exception as exc:
+                            execution_success = False
+                            execution_status = "ERROR"
+                            execution_error = f"{type(exc).__name__}: {exc}"
+                    elif tool_call_found and tool_name == "delete_task":
+                        execution_status = "BLOCKED_UNEXPECTED_TOOL_CALL"
+                    elif not tool_call_found:
+                        execution_status = "NO_TOOL_CALL"
+                    elif not args_result["valid"]:
+                        execution_status = "BLOCKED_INVALID_ARGS"
+                    else:
+                        execution_status = "WRONG_TOOL"
+
+                elif expected_behavior == "clarification_required":
+                    behavior_match = (
+                        not tool_call_found and clarification_detected
+                    )
+                    args_validation = "NOT_APPLICABLE"
+
+                    if tool_call_found:
+                        execution_status = "BLOCKED_UNEXPECTED_TOOL_CALL"
+                    else:
+                        execution_status = "NOT_REQUIRED_CLARIFICATION"
+
+                elif expected_behavior == "tool_call_required":
+                    behavior_match = (
+                        tool_call_found
+                        and tool_name == expected_tool
+                        and args_result["valid"]
+                    )
+                    args_validation = (
+                        "VALID" if args_result["valid"] else "INVALID"
+                    )
+
+                    if (
+                        tool_call_found
+                        and tool_name == "get_schedule"
+                        and args_result["valid"]
+                    ):
+                        try:
+                            result = _d5_execute_get_schedule_in_memory(tool_args)
+                            execution_success = bool(result.get("success"))
+                            execution_status = (
+                                "SUCCESS" if execution_success
+                                else "FAILED"
+                            )
+                            if not execution_success:
+                                execution_error = result.get("error")
+                        except Exception as exc:
+                            execution_success = False
+                            execution_status = "ERROR"
+                            execution_error = f"{type(exc).__name__}: {exc}"
+                    elif tool_call_found and not args_result["valid"]:
+                        execution_status = "BLOCKED_INVALID_ARGS"
+                    elif not tool_call_found:
+                        execution_status = "NO_TOOL_CALL"
+                    else:
+                        execution_status = "WRONG_TOOL"
+
+                elif expected_behavior == "tool_call_then_confirm":
+                    behavior_match = (
+                        tool_call_found
+                        and tool_name == expected_tool
+                        and args_result["valid"]
+                    )
+                    args_validation = (
+                        "VALID" if args_result["valid"] else "INVALID"
+                    )
+
+                    # Sengaja tidak mengeksekusi add_task:
+                    # operasi tulis harus melalui alur konfirmasi aplikasi.
+                    if behavior_match:
+                        execution_status = "NOT_EXECUTED_CONFIRMATION_REQUIRED"
+                    elif not tool_call_found:
+                        execution_status = "NO_TOOL_CALL"
+                    elif not args_result["valid"]:
+                        execution_status = "BLOCKED_INVALID_ARGS"
+                    else:
+                        execution_status = "WRONG_TOOL"
+
+                else:
+                    args_validation = (
+                        "VALID" if args_result["valid"] else "INVALID"
+                    )
+                    execution_status = "NOT_MEASURED_UNKNOWN_EXPECTATION"
+
                 extra = {
+                    "expected_behavior": expected_behavior,
+                    "expected_tool": expected_tool,
+                    "expected_first_tool": expected_first_tool,
                     "tool_call_found": tool_call_found,
                     "predicted_tool": tool_name,
                     "predicted_args": tool_args,
-                    "tool_name_match": (
-                        tool_call_found and tool_name == gold
-                    ),
-                    "args_validation": "NOT_EVALUATED",
-                    "execution_status": "NOT_RUN",
+                    "tool_name_match": tool_name_match,
+                    "args_validation": args_validation,
+                    "args_validation_reason": args_result["reason"],
+                    "clarification_detected": clarification_detected,
+                    "behavior_match": behavior_match,
+                    "confirmation_required": confirmation_required,
+                    "confirmation_flow_tested": confirmation_flow_tested,
+                    "execution_status": execution_status,
+                    "execution_success": execution_success,
+                    "execution_error": execution_error,
                 }
 
             store.add(
@@ -694,12 +1036,32 @@ def run_d5(items, store, ctx):
                 extra=extra,
             )
 
-            print(f"  [{i}/{len(items)}] D5 {it['id']} {cat[:6]} | gold={gold} pred={pred} src={src}")
+            if cat == "tool_calling":
+                print(
+                    f"  [{i}/{len(items)}] D5 {it['id']} "
+                    f"behavior={extra['expected_behavior']} "
+                    f"tool={extra['predicted_tool']} "
+                    f"match={extra['behavior_match']} "
+                    f"exec={extra['execution_status']}"
+                )
+            else:
+                print(
+                    f"  [{i}/{len(items)}] D5 {it['id']} "
+                    f"{cat[:6]} | gold={gold} pred={pred} src={src}"
+                )
+
         except llm.OllamaDown:
             raise
-        except Exception as e: 
+        except Exception as e:
             llm.note_failure_if_backend(e)
-            store.add(run_id=ctx["run_id"], dataset="D5", config=cfg, item_id=it["id"], status="ERROR", error=f"{type(e).__name__}: {e}")
+            store.add(
+                run_id=ctx["run_id"],
+                dataset="D5",
+                config=cfg,
+                item_id=it["id"],
+                status="ERROR",
+                error=f"{type(e).__name__}: {e}",
+            )
 
 
 RUNNERS = {"d1": run_d1, "d2": run_d2, "d3": run_d3, "d4": run_d4, "d5": run_d5}
@@ -719,12 +1081,49 @@ def main(argv=None):
     ap.add_argument("--run-id", default=datetime.now().strftime("run_%Y%m%d_%H%M%S"))
     ap.add_argument("--limit", type=int, default=0, help="jumlah item per dataset (tersebar merata); 0 = semua")
     ap.add_argument("--no-dedupe", action="store_true", help="jalankan juga item duplikat (default: unik saja)")
+    ap.add_argument(
+        "--no-dedupe-d5",
+        action="store_true",
+        help="nonaktifkan deduplikasi khusus D5",
+    )
+    ap.add_argument(
+        "--exclude-d5-ids",
+        default="",
+        help="daftar ID D5 yang dikecualikan, dipisahkan koma",
+    )
     ap.add_argument("--no-xstest", action="store_true")
     ap.add_argument("--include-tutor", action="store_true", help="jalankan D5 tutor (tidak ada answer key; hanya latensi)")
     ap.add_argument("--require-nemo", action="store_true", help="Hentikan benchmark jika NeMo Guardrails tidak siap")
     args = ap.parse_args(argv)
 
     wanted = [d.strip().lower() for d in args.datasets.split(",") if d.strip()]
+    excluded_d5_ids = list(dict.fromkeys(
+        item_id.strip()
+        for item_id in args.exclude_d5_ids.split(",")
+        if item_id.strip()
+    ))
+    if excluded_d5_ids and "d5" not in wanted:
+        ap.error("--exclude-d5-ids hanya berlaku jika D5 disertakan")
+    unknown_datasets = [d for d in wanted if d not in RUNNERS]
+    if unknown_datasets:
+        print(
+            "❌ dataset tidak dikenal: "
+            + ", ".join(unknown_datasets)
+        )
+        return 1
+    if excluded_d5_ids:
+        try:
+            _prepare_dataset_items(
+                dataset="d5",
+                items=datasets.LOADERS["d5"](),
+                limit=0,
+                no_dedupe=True,
+                no_dedupe_d5=True,
+                excluded_d5_ids=excluded_d5_ids,
+            )
+        except ValueError as exc:
+            print(f"❌ {exc}")
+            return 1
     run_dir = Path(args.out) / args.run_id
     run_dir.mkdir(parents=True, exist_ok=True)
 
@@ -769,7 +1168,7 @@ def main(argv=None):
             if args.require_nemo:
                 print("Benchmark dibatalkan karena --require-nemo aktif.")
                 return 1
-    
+
     ctx = {"run_id": args.run_id, "guard_ok": guard_ok, "include_tutor": args.include_tutor, "peek": lambda *a: None, "nemo_guard": nemo_guard}
     meta = {"run_id": args.run_id, "started": datetime.now().isoformat(timespec="seconds"), "git_commit": _git_commit(),
             "model": llm.MODEL, "ollama_host": llm.BASE, "python": sys.version.split()[0], "platform": platform.platform(),
@@ -790,11 +1189,20 @@ def main(argv=None):
                 return 1
             print(f"\n🚀 [{d.upper()}] memuat dataset...")
             items = datasets.load_d3(include_xstest=not args.no_xstest) if d == "d3" else datasets.LOADERS[d]()
-            total = len(items)
-            if not args.no_dedupe and items and "cluster" in items[0]:
-                items = datasets.dedupe(items)
-            items = _take(items, args.limit)
-            meta["datasets"][d] = {"total_items": total, "selected_items": len(items)}
+            try:
+                items, dataset_meta = _prepare_dataset_items(
+                    dataset=d,
+                    items=items,
+                    limit=args.limit,
+                    no_dedupe=args.no_dedupe,
+                    no_dedupe_d5=args.no_dedupe_d5,
+                    excluded_d5_ids=excluded_d5_ids,
+                )
+            except ValueError as exc:
+                print(f"❌ {exc}")
+                return 1
+            meta["datasets"][d] = dataset_meta
+            total = dataset_meta["total_items"]
             store = Store(str(run_dir / f"results_{d}.csv"))
 
             def peek(dsname, cfg, item_id, _store=store):

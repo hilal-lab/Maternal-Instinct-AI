@@ -373,42 +373,126 @@ def s_d4(rows):
 def s_d5(rows):
     if not rows:
         return None
+
     out = {}
-    ir = [r for r in rows if r["config"] == "L1_intent" and r["status"] == "OK"]
+
+    # Intent classification: tetap dihitung per prompt unik.
+    ir = [
+        r for r in rows
+        if r["config"] == "L1_intent" and r["status"] == "OK"
+    ]
     if ir:
         ir = unique_by_cluster(ir)
         labels = sorted({r["gold"] for r in ir})
         per, macro = prf(ir, labels)
-        out["intent"] = {"n": len(ir), "accuracy": rate(sum(r["gold"] == r["pred"] for r in ir), len(ir)), "macro_f1": macro,
-                         "per_label": per, "fallback_rate": rate(sum(r["source"] == "fallback" for r in ir), len(ir)),
-                         "latency": lat(ir)}
+        out["intent"] = {
+            "n": len(ir),
+            "accuracy": rate(
+                sum(r["gold"] == r["pred"] for r in ir),
+                len(ir),
+            ),
+            "macro_f1": macro,
+            "per_label": per,
+            "fallback_rate": rate(
+                sum(r["source"] == "fallback" for r in ir),
+                len(ir),
+            ),
+            "latency": lat(ir),
+        }
+
+    # Tool calling: semua trial teknis yang berhasil diproses.
     tr = [
         r for r in rows
         if r["config"] == "L2_planner_tools"
         and r["status"] == "OK"
     ]
+
     if tr:
-        # Semua percobaan tetap dihitung untuk mengukur kestabilan model.
-        trial_matches = []
-        for r in tr:
-            parsed = parse_tool_prediction(r["pred"])
-            trial_matches.append(parsed["name"] == r["gold"])
+        extras = [_extra_dict(r) for r in tr]
 
-        # Satu prompt unik dihitung satu kali untuk estimasi berbasis skenario.
-        unique_tr = unique_by_cluster(tr)
-        unique_matches = []
-        for r in unique_tr:
-            parsed = parse_tool_prediction(r["pred"])
-            unique_matches.append(parsed["name"] == r["gold"])
+        def expected_behavior(row):
+            return _extra_dict(row).get("expected_behavior", "unknown")
 
-        args_present = sum(
-            bool(parse_tool_prediction(r["pred"])["args"])
-            for r in tr
-        )
+        def tool_name_match(row):
+            extra = _extra_dict(row)
+            # Utamakan hasil eksplisit dari runner.
+            if "tool_name_match" in extra:
+                return _extra_bool(row, "tool_name_match")
+
+            # Kompatibilitas dengan hasil lama.
+            parsed = parse_tool_prediction(row["pred"])
+            expected = extra.get("expected_tool", row["gold"])
+            return parsed["name"] == expected
+
+        def extra_status(row, key):
+            return _extra_dict(row).get(key)
 
         calls_found = [
             r for r in tr
-            if parse_tool_prediction(r["pred"])["name"] != "NONE"
+            if _extra_dict(r).get(
+                "tool_call_found",
+                parse_tool_prediction(r["pred"])["name"] != "NONE",
+            )
+        ]
+
+        unique_tr = unique_by_cluster(tr)
+
+        clarification_trials = [
+            r for r in tr
+            if expected_behavior(r) == "clarification_required"
+        ]
+
+        tool_expected_trials = [
+            r for r in tr
+            if expected_behavior(r) in (
+                "tool_call_required",
+                "tool_call_then_confirm",
+                "tool_call_then_clarify",
+            )
+        ]
+
+        tool_call_then_clarify_trials = [
+            r for r in tr
+            if expected_behavior(r) == "tool_call_then_clarify"
+        ]
+
+        unique_tool_expected_trials = unique_by_cluster(tool_expected_trials)
+
+        args_validated = [
+            r for r in tool_expected_trials
+            if extra_status(r, "args_validation") in ("VALID", "INVALID")
+        ]
+
+        args_valid = [
+            r for r in args_validated
+            if extra_status(r, "args_validation") == "VALID"
+        ]
+
+        execution_attempts = [
+            r for r in tr
+            if extra_status(r, "execution_status")
+            in ("SUCCESS", "FAILED", "ERROR")
+        ]
+
+        execution_successes = [
+            r for r in execution_attempts
+            if _extra_bool(r, "execution_success")
+        ]
+
+        confirmation_trials = [
+            r for r in tr
+            if expected_behavior(r) == "tool_call_then_confirm"
+            and _extra_bool(r, "confirmation_required")
+        ]
+
+        confirmation_flow_tested = [
+            r for r in tr
+            if _extra_bool(r, "confirmation_flow_tested")
+        ]
+
+        behavior_evaluated = [
+            r for r in tr
+            if expected_behavior(r) != "unknown"
         ]
 
         out["tool_calling"] = {
@@ -416,26 +500,76 @@ def s_d5(rows):
             "n_unique_prompts": len(unique_tr),
 
             "tool_calls_found": len(calls_found),
-
-            "tool_call_rate": rate(
-                len(calls_found),
-                len(tr),
-            ),
+            "tool_call_rate": rate(len(calls_found), len(tr)),
 
             "name_match_trials": rate(
-                sum(trial_matches),
-                len(trial_matches),
+                sum(tool_name_match(r) for r in tool_expected_trials),
+                len(tool_expected_trials),
             ),
-
             "name_match_unique_prompts": rate(
-                sum(unique_matches),
-                len(unique_matches),
+                sum(tool_name_match(r) for r in unique_tool_expected_trials),
+                len(unique_tool_expected_trials),
             ),
 
-            "predictions_with_nonempty_args": args_present,
+            "behavior_evaluated_trials": len(behavior_evaluated),
+            "behavior_match_rate": (
+                rate(
+                    sum(_extra_bool(r, "behavior_match")
+                        for r in behavior_evaluated),
+                    len(behavior_evaluated),
+                )
+                if behavior_evaluated else "NOT_MEASURED"
+            ),
 
-            "execution_success": (
-                "NOT_MEASURED: runner does not execute tools"
+            "clarification_trials": len(clarification_trials),
+            "clarification_detection_rate": (
+                rate(
+                    sum(_extra_bool(r, "clarification_detected")
+                        for r in clarification_trials),
+                    len(clarification_trials),
+                )
+                if clarification_trials else "NOT_MEASURED"
+            ),
+
+            "tool_call_then_clarify_trials": len(
+                tool_call_then_clarify_trials
+            ),
+            "tool_call_then_clarify_first_step_matches": sum(
+                _extra_bool(r, "behavior_match")
+                for r in tool_call_then_clarify_trials
+            ),
+
+            "args_validation_trials": len(args_validated),
+            "args_valid_count": len(args_valid),
+            "args_validation_rate": (
+                rate(len(args_valid), len(args_validated))
+                if args_validated else "NOT_MEASURED"
+            ),
+
+            "execution_attempts": len(execution_attempts),
+            "execution_success_count": len(execution_successes),
+            "execution_success_rate": (
+                rate(len(execution_successes), len(execution_attempts))
+                if execution_attempts else "NOT_MEASURED"
+            ),
+
+            "confirmation_required_trials": len(confirmation_trials),
+            "confirmation_flow_tested_trials": len(confirmation_flow_tested),
+            "confirmation_flow_status": (
+                "TESTED"
+                if confirmation_flow_tested
+                else "NOT_TESTED"
+            ),
+
+            "not_executed_confirmation_required": sum(
+                extra_status(r, "execution_status")
+                == "NOT_EXECUTED_CONFIRMATION_REQUIRED"
+                for r in tr
+            ),
+
+            "predictions_with_nonempty_args": sum(
+                bool(parse_tool_prediction(r["pred"])["args"])
+                for r in tr
             ),
 
             "exact_argument_accuracy": (
@@ -445,16 +579,27 @@ def s_d5(rows):
             "latency_trials": lat(tr),
 
             "note": (
-                "Tool-call detection and name match are measured "
-                "separately from tool execution. Exact argument "
-                "accuracy is not measured because expected_args "
-                "are not yet defined."
+                "Behavior and argument validation are measured separately. "
+                "tool_call_then_clarify measures only the first tool step; "
+                "the follow-up clarification after displaying actual "
+                "schedule results is not tested by this Planner benchmark. "
+                "Execution success uses only actual execution attempts. "
+                "Write operations requiring confirmation are not executed "
+                "by this benchmark runner. Confirmation flow is not tested."
             ),
         }
 
     tu = [r for r in rows if r["config"] == "L2_tutor"]
-    out["tutor"] = ({"n": len(tu), "latency": lat(tu), "accuracy": "NOT SCORABLE (dataset tidak punya answer key)"} if tu else
-                    "NOT_RUN (dataset tidak punya answer key untuk akurasi; jalankan --include-tutor untuk latensi)")
+    out["tutor"] = (
+        {
+            "n": len(tu),
+            "latency": lat(tu),
+            "accuracy": "NOT SCORABLE (dataset tidak punya answer key)",
+        }
+        if tu else
+        "NOT_RUN (dataset tidak punya answer key untuk akurasi; jalankan --include-tutor untuk latensi)"
+    )
+
     out["errors"] = sum(r["status"] == "ERROR" for r in rows)
     return out
 
@@ -656,12 +801,49 @@ def to_md(s):
         if "tool_calling" in d:
             t = d["tool_calling"]
             L.append(
-                f"Tool-name match: trials={t.get('n_trials', 0)} "
-                f"unique_prompts={t.get('n_unique_prompts', 0)} | "
-                f"trial-level {fmt(t.get('name_match_trials', '-'))} | "
-                f"unique-prompt {fmt(t.get('name_match_unique_prompts', '-'))} | "
-                f"latency median {t.get('latency_trials', {}).get('median_ms', '-')} ms"
+                f"Tool calling: trials={t.get('n_trials', 0)} "
+                f"unique_prompts={t.get('n_unique_prompts', 0)}"
             )
+            L.append(
+                f"  Tool-call rate {fmt(t.get('tool_call_rate', '-'))} | "
+                f"name match {fmt(t.get('name_match_trials', '-'))} "
+                f"(unique {fmt(t.get('name_match_unique_prompts', '-'))})"
+            )
+            L.append(
+                f"  Behavior match {fmt(t.get('behavior_match_rate', '-'))} | "
+                f"clarification detection "
+                f"{fmt(t.get('clarification_detection_rate', '-'))}"
+            )
+            L.append(
+                f"  Policy A first step (get_schedule): "
+                f"{t.get('tool_call_then_clarify_first_step_matches', 0)}/"
+                f"{t.get('tool_call_then_clarify_trials', 0)}"
+            )
+            L.append(
+                f"  Args valid {t.get('args_valid_count', 0)}/"
+                f"{t.get('args_validation_trials', 0)} "
+                f"({fmt(t.get('args_validation_rate', '-'))})"
+            )
+            L.append(
+                f"  Execution success "
+                f"{t.get('execution_success_count', 0)}/"
+                f"{t.get('execution_attempts', 0)} "
+                f"({fmt(t.get('execution_success_rate', '-'))})"
+            )
+            L.append(
+                f"  Confirmation required "
+                f"{t.get('confirmation_required_trials', 0)} | "
+                f"flow {t.get('confirmation_flow_status', '-')}"
+            )
+            L.append(
+                f"  Exact argument accuracy: "
+                f"{t.get('exact_argument_accuracy', '-')}"
+            )
+            L.append(
+                f"  Latency median "
+                f"{t.get('latency_trials', {}).get('median_ms', '-')} ms"
+            )
+
         L.append(f"Tutor: {d.get('tutor', '-')}")
         L.append("")
 

@@ -28,7 +28,12 @@ delete task, delete document), the Planner agent embeds a structured JSON
 block in its raw response using the following format:
 
     ```tool_call
-    {"name": "add_task", "args": {"task": "...", "deadline": "...", ...}}
+    {"name": "add_task", "args": {
+        "task": "...",
+        "scheduled_date": "YYYY-MM-DD",
+        "start_time": "HH:MM",
+        "end_time": "HH:MM"
+    }}
     ```
 
 `extract_tool_call()` parses this block. If found, the pipeline pauses to
@@ -221,39 +226,79 @@ class SpecialistAgents:
 
         # List of available write tools for the agent to reference
         tool_reference = """TOOL YANG TERSEDIA:
-        READ-ONLY TOOL:
-        1. get_schedule
-        Fungsi: Mengambil daftar tugas aktif yang belum selesai.
-        Args:
-        {}
-        Gunakan jika user meminta daftar tugas atau jadwal yang belum selesai.
 
-        WRITE TOOLS:
-        2. add_task
-        Fungsi: Menambahkan tugas baru.
-        Args:
-        {
-            "task": "str",
-            "deadline": "YYYY-MM-DD",
-            "est_hours": "float",
-            "priority": "High|Medium|Low"
-        }
-        3. update_task_status
-        Fungsi: Mengubah status tugas.
-        Args:
-        {
-            "task_id": "int",
-            "status": "pending|in_progress|completed"
-        }
-        4. delete_task
-        Fungsi: Menghapus tugas.
-        Args:
-        {
-            "task_id": "int"
-        }
+READ-ONLY TOOL:
 
-        Gunakan nama dan argumen sesuai definisi tool.
-        """
+1. get_schedule
+Fungsi: Mengambil daftar tugas aktif yang belum selesai.
+Args: {}
+Gunakan untuk mengambil daftar tugas aktual dari database.
+
+WRITE TOOLS:
+
+2. add_task
+Fungsi: Menambahkan tugas baru dengan tanggal dan rentang waktu terjadwal.
+Args:
+{
+    "task": "str",
+    "scheduled_date": "YYYY-MM-DD",
+    "start_time": "HH:MM",
+    "end_time": "HH:MM",
+    "est_hours": "float (optional)",
+    "priority": "High|Medium|Low (optional)"
+}
+
+3. update_task_status
+Fungsi: Mengubah status tugas.
+Args:
+{
+    "task_id": "int",
+    "status": "pending|in_progress|completed"
+}
+
+4. delete_task
+Fungsi: Menghapus tugas secara permanen.
+Args:
+{
+    "task_id": "int"
+}
+
+ATURAN PENJADWALAN:
+
+- Untuk membuat jadwal baru, wajib tersedia task, scheduled_date,
+  start_time, dan end_time.
+- scheduled_date harus menggunakan format YYYY-MM-DD.
+- start_time dan end_time harus menggunakan format HH:MM (24 jam).
+- Jika user memberikan rentang waktu seperti 14:00-16:00,
+  gunakan start_time 14:00 dan end_time 16:00.
+- Jangan menganggap rentang waktu tidak didukung.
+- Jangan mengganti scheduled_date dengan deadline.
+- Jangan mengarang tanggal atau jam yang tidak diberikan user.
+- Jika informasi wajib belum lengkap, tanyakan hanya informasi
+  yang masih diperlukan. Jangan membuat add_task call.
+- Jangan membuat jadwal jika end_time tidak lebih besar dari start_time.
+
+ATURAN IDENTITAS DAN PENGHAPUSAN:
+
+- Jangan pernah menebak atau mengarang task_id.
+- Jika user meminta penghapusan tetapi belum memberikan ID tugas
+  secara eksplisit, gunakan get_schedule terlebih dahulu.
+- Tampilkan daftar tugas aktif dengan ID, nama, tanggal, jam,
+  dan status jika tersedia.
+- Minta user memilih tugas dengan menyebutkan ID persis
+  sebagaimana tercantum dalam daftar.
+- Jangan memilih tugas berdasarkan nama, kemiripan semantik,
+  posisi, urutan daftar, atau asumsi lainnya.
+- Pada pesan penghapusan berikutnya, hanya buat delete_task
+  jika user menyebutkan ID secara eksplisit pada pesan saat ini.
+- Pastikan ID tersebut sesuai dengan salah satu ID tugas
+  yang tersedia dalam data jadwal.
+- Jika ID tidak disebutkan, tidak ditemukan, atau tidak cocok,
+  jangan membuat delete_task call. Minta klarifikasi atau
+  tampilkan daftar tugas melalui get_schedule.
+- Jangan meminta konfirmasi penghapusan sendiri.
+  Sistem akan meminta konfirmasi setelah identitas tugas jelas.
+"""
 
         prompt = f"""
         {tasks_str}
@@ -269,25 +314,50 @@ class SpecialistAgents:
         3. Load Balancing: Distribusikan beban kerja merata.
         4. Sisipkan waktu istirahat (minimal 10 menit per 50 menit kerja).
         5. Estimasikan total jam dan pastikan tidak melebihi 8 jam/hari.
-         
+
         Gunakan format Markdown yang rapi.
 
         ATURAN WAJIB TOOL CALL:
 
-        1. Jika user meminta daftar tugas atau jadwal yang belum selesai, WAJIB gunakan get_schedule.
-        2. Jangan membuat contoh, daftar, atau isi jadwal seolah-olah berasal dari database jika get_schedule belum dipanggil.
-        3. Untuk pemanggilan tool, WAJIB keluarkan blok berikut:
+        1. Jika user meminta daftar tugas atau jadwal yang belum selesai,
+           WAJIB gunakan get_schedule.
+
+        2. Jangan membuat daftar atau isi jadwal seolah-olah berasal
+           dari database jika data aktual belum tersedia.
+
+        3. Untuk pemanggilan tool, gunakan format:
 
         ```tool_call
-        {{"name": "get_schedule", "args": {{}}}}
+        {{"name": "NAMA_TOOL", "args": {{}}}}
         ```
 
-        4. Jangan mengganti pemanggilan tool dengan penjelasan tentang cara menggunakan tool.
-        5. Untuk add_task, semua argumen wajib harus tersedia: task, deadline, est_hours, priority.
-        6. Jika argumen wajib belum tersedia, tanyakan informasi yang kurang. Jangan mengarang nilai argumen.
-        7. Untuk update_task_status, wajib tersedia task_id dan status.
-        8. Untuk delete_task, wajib tersedia task_id.
-        9. Jika tidak membutuhkan tool, jawab secara normal.
+        4. Untuk add_task:
+           - Wajib tersedia task, scheduled_date, start_time, end_time.
+           - Jika lengkap, buat add_task call dengan seluruh parameter wajib.
+           - Jika belum lengkap, tanyakan informasi yang kurang.
+           - Jangan mengarang tanggal, waktu, atau durasi.
+           - est_hours dan priority bersifat opsional.
+           - Jangan gunakan deadline sebagai pengganti scheduled_date.
+
+        5. Untuk update_task_status:
+           - Wajib tersedia task_id dan status.
+           - Jangan mengarang task_id.
+
+        6. Untuk delete_task:
+           - Jika user meminta penghapusan tanpa menyebutkan ID,
+             WAJIB gunakan get_schedule terlebih dahulu.
+           - Tampilkan daftar tugas aktual beserta ID-nya.
+           - Minta user memilih dengan menyebutkan ID persis.
+           - Jangan membuat delete_task call pada tahap menampilkan daftar.
+           - Pada pesan berikutnya, hanya buat delete_task jika user
+             menyebutkan ID secara eksplisit pada pesan saat ini.
+           - ID harus cocok dengan ID tugas yang tersedia dalam data jadwal.
+           - Jika user hanya menyebutkan nama, posisi, atau deskripsi,
+             jangan menebak ID. Minta ID yang tepat.
+           - Jangan meminta konfirmasi sendiri. Sistem menangani
+             konfirmasi sebelum penghapusan dijalankan.
+
+        7. Jika tidak membutuhkan tool, jawab secara normal.
         {rag_context}
 
         {tool_reference}

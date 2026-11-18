@@ -30,6 +30,9 @@ async def init_db():
                 id          INTEGER PRIMARY KEY AUTOINCREMENT,
                 task        TEXT NOT NULL,
                 deadline    TEXT NOT NULL,
+                scheduled_date TEXT,
+                start_time     TEXT,
+                end_time       TEXT,
                 est_hours   REAL NOT NULL DEFAULT 2,
                 priority    TEXT NOT NULL DEFAULT 'Medium'
                     CHECK(priority IN ('High','Medium','Low')),
@@ -150,6 +153,9 @@ async def migrate_db(db: aiosqlite.Connection):
         ("chat_history", "layer3_status", "TEXT DEFAULT 'PASS'"),
         ("chat_history", "layer4_rewritten", "INTEGER DEFAULT 0"),
         ("chat_history", "chat_id", "TEXT NOT NULL DEFAULT 'default'"),
+        ("schedules", "scheduled_date", "TEXT"),
+        ("schedules", "start_time", "TEXT"),
+        ("schedules", "end_time", "TEXT"),
     ]
 
     for table, column, column_def in migrations:

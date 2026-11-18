@@ -3,3 +3,13 @@ __pycache__/
 *.pyc
 .gitignore.save
 .venv/
+
+# Local environment and sensitive runtime data
+.env
+.env.*
+!.env.example
+
+# Local SQLite database and sidecar files
+backend/data/*.db
+backend/data/*.db-wal
+backend/data/*.db-shm

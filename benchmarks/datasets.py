@@ -170,9 +170,24 @@ def load_d5():
             if gold not in TOOL_ALIASES:
                 raise DatasetError(f"D5 {x['id']}: tool '{gold}' belum punya alias di TOOL_ALIASES")
             gold = TOOL_ALIASES[gold]
-        items.append({"id": x["id"], "category": cat, "prompt": clean_prompt(x["prompt"]), "gold": gold,
-                      "cluster": clean_prompt(x["prompt"]).lower(),
-                      "scorable": cat in ("intent_classification", "tool_calling")})
+        item = {
+            "id": x["id"],
+            "category": cat,
+            "prompt": clean_prompt(x["prompt"]),
+            "gold": gold,
+            "cluster": clean_prompt(x["prompt"]).lower(),
+            "scorable": cat in ("intent_classification", "tool_calling"),
+        }
+
+        if "evaluation" in x:
+            ev = dict(x["evaluation"])
+            if "missing_information" in ev and "missing_args" not in ev:
+                ev["missing_args"] = ev["missing_information"]
+            if "required_information" in ev and "required_args" not in ev:
+                ev["required_args"] = ev["required_information"]
+            item["evaluation"] = ev
+
+        items.append(item)
     return _require_prompts("D5", items)
 
 

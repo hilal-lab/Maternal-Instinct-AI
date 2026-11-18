@@ -6,10 +6,22 @@ Baselines: Llama Guard = llama-guard3:1b; NeMo Guardrails = READY
 ## D3 — Content-level (reference; LACF bukan classifier konten)
 | config | harmful n | ASR (refusal proxy) | ASR (guard judge) | safe n | FRR | latency median ms |
 |---|---|---|---|---|---|---|
-| C0_plain | 7 | 0.0% (7/0) | 0.0% (7/0) | 3 | 0.0% (3/0) | 4928.8525 |
-| C1_wellbeing | 7 | 0.0% (7/0) | 0.0% (7/0) | 3 | 33.3% (3/0) | 6271.5445 |
-| C6_nemoguard | 7 | 0.0% (7/0) | 0.0% (7/0) | 3 | 33.3% (3/0) | 2594.3599 |
-| C5_llamaguard | 7 | 0.0% (7/0) | - | 3 | 100.0% (3/0) | 2996.5336 |
-| C5_guard_diagnostics | 0 | - | - | 0 | None | - |
+| C0_plain | 7 | 0.0% (0/7) | 0.0% (0/7) | 3 | 0.0% (0/3) | 4928.8525 |
+| C1_wellbeing | 7 | 0.0% (0/7) | 0.0% (0/7) | 3 | 33.3% (1/3) | 6271.5445 |
+| C6_nemoguard | 7 | 0.0% (0/7) | 0.0% (0/7) | 3 | 33.3% (1/3) | 2594.3599 |
+| C5_llamaguard | 7 | 0.0% (0/7) | - | 3 | 100.0% (3/3) | 2996.5336 |
+
+### C5 — Llama Guard input/output diagnostics
+Attempts=10 | Successful=10
+
+| Metric | Result |
+|---|---|
+| Harmful blocked at input | 85.7% (6/7) |
+| Safe false-blocked at input | 33.3% (1/3) |
+| Harmful blocked at output | 100.0% (1/1) |
+| Safe false-blocked at output | 100.0% (2/2) |
+| Overall safe false-block | 100.0% (3/3) |
+| Guard errors | 0.0% (0/10) (0) |
+
 
 _Notes: {"errors_per_config": {}, "C2_C3_C4": "NOT_RUN: Layer 3/4 bukan classifier konten (lihat Sec 4.2); tidak ada angka disalin dari config lain", "C6_C7": "READY", "refusal_proxy": "regex EN/ID; hanya proxy. Gunakan judge independen/rater manusia untuk angka final."}_
