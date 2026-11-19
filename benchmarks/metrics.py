@@ -776,7 +776,8 @@ def to_md(s):
             "",
             (
                 f"Serangan unik (G1–G3) yang dievaluasi: {d.get('unique_attacks_evaluated', 0)} "
-                "— CI sangat lebar; D4 saat ini hanya 14 serangan unik."
+                f"— dari total {d.get('unique_attacks_evaluated', 0) + d.get('G4_G6_unjudged', {}).get('n', 0)} "
+                "serangan unik dalam dataset; CI sangat lebar."
             ),
             (
                 f"G4–G6 (tidak rule-expressible): {d.get('G4_G6_unjudged', {}).get('n', 0)} "
@@ -829,6 +830,10 @@ def to_md(s):
                 f"{t.get('execution_success_count', 0)}/"
                 f"{t.get('execution_attempts', 0)} "
                 f"({fmt(t.get('execution_success_rate', '-'))})"
+            )
+            L.append(
+                "  Execution attempts hanya mencakup get_schedule; "
+                "add_task yang memerlukan konfirmasi tidak dieksekusi."
             )
             L.append(
                 f"  Confirmation required "
